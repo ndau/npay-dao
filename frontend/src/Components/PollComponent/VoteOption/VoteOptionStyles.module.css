@@ -1,0 +1,23 @@
+.voteOptionContainer {
+  background-color: #222;
+  color: #ccc;
+  padding-bottom: 5px;
+  padding-top: 5px;
+  padding-left: 15px;
+  margin-top: 20px;
+  border-radius: 5px;
+}
+
+.voteOptionContainer.smMarginTop {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.voteOptionContainer:hover {
+  cursor: pointer;
+}
+
+.selected {
+  box-shadow: 0px 0px 10px #F89D1CCF;
+  border:  2px solid #F89D1C;
+}

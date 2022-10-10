@@ -1,0 +1,131 @@
+.pollComponentCard {
+
+  background-color: #1a3356;
+}
+.pollComponentCardBody {
+  padding-top: 2px;
+}
+
+.pollComponentCard.pollComponentHeader {
+  color: #888;
+  font-weight: 500;
+  font-size: x-small;
+  margin-bottom: auto;
+  margin-top: auto;
+}
+
+.remaining {
+  color: #ccc;
+  font-size: x-small;
+  font-weight: 500;
+  margin-top: 10px;
+}
+
+.statusBadge {
+  border-radius: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #0b203f;
+  width: 90px;
+  height: 30px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.statusBadge.small.concluded {
+  padding-left: 10px;
+  padding-right: 20px;
+}
+
+.statusBadge.concluded {
+  width: 108px;
+}
+
+.statusLight {
+  border-radius: 50%;
+  width: 8px;
+  height: 8px;
+}
+
+.statusLight.active {
+  background-color: #00ff97;
+  box-shadow: 0px 0px 0px 5px #05906c;
+}
+
+.statusLight.concluded {
+  background-color: #f7caa8;
+  box-shadow: 0px 0px 0px 2px #f9d8bf;
+}
+
+.statusText {
+  color: #c88d1c;
+  font-weight: bold;
+  font-size: small;
+  margin-bottom: 0%;
+}
+
+.statusText.small {
+  font-size: x-small;
+}
+
+.statusText.active {
+  color: #00ff97;
+}
+
+.proposal {
+  color: white;
+}
+
+.summary {
+  color: #aaaaaa;
+  font-weight: 400;
+  font-size: medium;
+}
+
+.cardFooter {
+  display: flex;
+  justify-content: space-between;
+  color: whitesmoke;
+  border-top: none;
+}
+
+.totalVotersText {
+  font-size: xx-small;
+  margin: 0;
+}
+
+.voteButtonsContainer {
+  width: 260px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.voteButtonsContainer.small {
+  width: 130px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.voteButtonsContainer button {
+  height: 70%;
+  width: 120px;
+  padding: 0px 10px;
+}
+
+.voteButtonsContainer button.concluded {
+  margin-left: auto;
+}
+
+.voteButtonsContainer button.small {
+  width: 60px;
+  height: 70%;
+  padding: 5px;
+  font-size: x-small;
+}
+
+.timeRemainingIcon {
+  width: 10px;
+  height: 10px;
+  margin: 0px 5px;
+}

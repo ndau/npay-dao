@@ -1,0 +1,18 @@
+body {
+  font-family: "Titillium Web", sans-serif;
+}
+
+::placeholder { /* Most modern browsers support this now. */
+  color:    grey !important;
+}
+.form-select{
+  color:grey;
+}
+.form-control{
+  color:grey !important;
+}
+
+
+.element.style {
+  background: red;
+}
