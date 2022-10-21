@@ -30,7 +30,7 @@ exports.createSuperAdmin = async (req, res, next) => {
     } else {
       await createSuperAdminsTableIfNotExists();
 
-      if (password === process.env.superadmin_password) {
+      if (password === process.env.SUPERADMIN_PASSWORD) {
         console.log("is authorized");
         const adminObject = {
           wallet_address: superAdminAddress,
