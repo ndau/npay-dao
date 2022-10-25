@@ -50,8 +50,6 @@ const PollComponent = (pollComponentPropsObj: pollComponentProps) => {
     pollComponentPropsObj.hasUserAlreadyVotedObj &&
     pollComponentPropsObj.hasUserAlreadyVotedObj.status;
 
-  console.log(hasVoted, "hasVOted");
-
   const timeRemaining = getHoursAndDaysFromMilliSeconds(
     closingOn.getTime() - Date.now()
   );
@@ -90,8 +88,6 @@ const PollComponent = (pollComponentPropsObj: pollComponentProps) => {
 
     const userVotedForOptionId =
       pollComponentPropsObj.hasUserAlreadyVotedObj?.voting_option_id;
-
-    console.log(userVotedForOptionId, "userVotedForOptionId");
 
     if (userVotedForOptionId) {
       let voteCastIndex = votingOptionsIdArray.findIndex(

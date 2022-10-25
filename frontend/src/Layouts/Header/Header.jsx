@@ -59,7 +59,7 @@ const Header = () => {
                   Home
                 </Nav.Link>
                 <Nav.Link
-                  href="http://ec2-54-183-55-233.us-west-1.compute.amazonaws.com/?node=mainnet"
+                  href="http://explorer1.ndau.tech/"
                   target={"_blanK"}
                   style={{ color: "white", marginBottom: "10px" }}
                 >

@@ -21,7 +21,7 @@ function NdauConnect() {
   );
   const walletAddress = useNdauConnectStore((state) => state.walletAddress);
 
-  console.log(walletAddress, "wallet");
+  console.log(walletAddress, "walletAddress");
   const setSocket = useNdauConnectStore((state) => state.setSocket);
   const getAdmin = useNdauConnectStore((state) => state.getIsAdmin);
   const getSuperAdmin = useNdauConnectStore((state) => state.getIsSuperAdmin);
