@@ -2,7 +2,7 @@ import axios from "axios";
 
 type methodType = "get" | "post" | "patch" | "delete";
 
-const baseURL = process.env.SERVICE_ENDPOINT || "http://backend.bpc-dao.ndau.tech/api/";
+const baseURL = process.env.REACT_APP_SERVICE_ENDPOINT || "api";
 
 export const axiosRequest = async (
   method_: methodType,
