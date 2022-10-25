@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { QRCodeSVG } from "qrcode.react";
@@ -30,6 +30,7 @@ function NdauConnect() {
   const handleShow = () => {
     setIsModalOpenstate(true);
   };
+  // const ws = useRef<{socket: Socket}>(null);
 
   useEffect(() => {
     const socket = io(ndauConnectApi);
@@ -236,7 +237,7 @@ function NdauConnect() {
         ) : (
           <>
             {" "}
-            <img src="assets/images/icons/iconsWallet.png" style={{ height: "25px", marginBottom: 2 }} />
+            <img src="assets/images/icons/iconsWallet.png" style={{ height: "25px", marginBottom: 2 }} alt=""/>
             {" Connect Wallet"}
           </>
         )}

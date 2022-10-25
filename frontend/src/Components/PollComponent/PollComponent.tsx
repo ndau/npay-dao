@@ -98,7 +98,7 @@ const PollComponent = (pollComponentPropsObj: pollComponentProps) => {
         setSelectedVoteOptionIndexState(voteCastIndex);
       }
     }
-  }, [isActive, pollComponentPropsObj.hasUserAlreadyVotedObj, pollComponentPropsObj.votingOptionsVotesCast, votingOptionsIdArray]);
+  }, [pollComponentPropsObj.hasUserAlreadyVotedObj ]);
 
   return (
     <Card className={Styles.pollComponentCard}>
