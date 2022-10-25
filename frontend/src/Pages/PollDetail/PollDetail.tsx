@@ -13,7 +13,6 @@ import VoteOption from "../../Components/PollComponent/VoteOption/VoteOption";
 import VoteButton from "../../Components/VoteButton/VoteButton";
 import { adminProcessedProposalResponseI } from "../../types/responseTypes";
 import { indexOfMax } from "../../utils/indexOfMax";
-// import Arrow from "../../assets/images/icons/backArrow.svg";
 import useAdminPanelRefreshStore from "../../store/adminPanelRefresh_store";
 import useNdauConnectStore from "../../store/ndauConnect_store";
 
@@ -44,7 +43,7 @@ const PollDetail = () => {
   let votingOptionsIdArray: string[] = [];
   let votingPercentagesArray: number[] = [];
   let votingOptionIdsArray: number[] | string[] = [];
-  const [votesCastArray, setVotesCastArry] = useState<number[]>([]);
+  let votesCastArray: number[] = [];
   // let mostVotesIndex: number | undefined;
 
   let hasVoted =
@@ -60,7 +59,7 @@ const PollDetail = () => {
 
     console.log(votingOptionsIdArray, "votingOptionsIdArray");
 
-    setVotesCastArry(Object.values(pollDetailState.votes_cast_agg));
+    votesCastArray = Object.values(pollDetailState.votes_cast_agg);
     votingOptionIdsArray = Object.keys(pollDetailState.voting_options_headings);
 
     votesCastArray.forEach((item, index) => {
@@ -91,8 +90,7 @@ const PollDetail = () => {
       );
 
       const userVotedForOptionId =
-        pollDetailResponse.data.proposalDetails[0].hasUserAlreadyVotedObj
-          .voting_option_id;
+        pollDetailResponse.data.proposalDetails[0].hasUserAlreadyVotedObj?.voting_option_id;
 
       console.log(userVotedForOptionId, "userVotedForOptionId");
 
@@ -115,18 +113,18 @@ const PollDetail = () => {
         !pollDetailResponse.data.proposalDetails[0].is_active;
 
       if (isProposalCompleted) {
-        setVotesCastArry(Object.values(
+        votesCastArray = Object.values(
           pollDetailResponse.data.proposalDetails[0].votes_cast_agg
-        ));
+        );
         const mostVotesIndex = indexOfMax(votesCastArray);
         setSelectedVoteOptionIndexState(mostVotesIndex);
       }
     }
 
-    setRefreshProposalDetailFunc(getPollDetails);
+    // setRefreshProposalDetailFunc(getPollDetails);
 
     getPollDetails();
-  }, [walletAddress, proposalId, setRefreshProposalDetailFunc, votesCastArray]);
+  }, [walletAddress]);
 
   const navigate = useNavigate();
   let selectedVoteOptionId;
