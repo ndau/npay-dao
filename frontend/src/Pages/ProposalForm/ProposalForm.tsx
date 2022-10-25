@@ -139,7 +139,7 @@ const ProposalForm = () => {
                         1-59m)
                       </p>
                       <p style={helperTextClass}>y=Year from 1-9</p>
-                      <p style={helperTextClass}> month/s=month from 1-11</p>
+                      <p style={helperTextClass}> months=month from 1-11</p>
                       <p style={helperTextClass}> w=weeks from 1-3</p>
                       <p style={helperTextClass}>d= days from 1-31</p>
                       <p style={helperTextClass}>h=hours from 1-23</p>

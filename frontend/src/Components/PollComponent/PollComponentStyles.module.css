@@ -1,5 +1,4 @@
 .pollComponentCard {
-
   background-color: #1a3356;
 }
 .pollComponentCardBody {
@@ -122,6 +121,10 @@
   height: 70%;
   padding: 5px;
   font-size: x-small;
+}
+
+.voteButtonsContainer.flex-end {
+  justify-content: flex-end;
 }
 
 .timeRemainingIcon {

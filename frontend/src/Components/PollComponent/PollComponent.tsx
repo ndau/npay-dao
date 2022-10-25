@@ -54,6 +54,9 @@ const PollComponent = (pollComponentPropsObj: pollComponentProps) => {
   let status = `concluded`;
   let statusText = "Concluded";
   let size = "";
+  let flexEndClass = "";
+  if (isHideVoteButton) flexEndClass = "flex-end";
+
   if (isActive) {
     statusText = "Active";
     status = `active`;
@@ -166,7 +169,10 @@ const PollComponent = (pollComponentPropsObj: pollComponentProps) => {
           <p style={{ textAlign: "center" }}>{totalVotes}</p>
         </div>
         <div
-          className={getModulesClasses(["voteButtonsContainer", size], Styles)}
+          className={getModulesClasses(
+            ["voteButtonsContainer", flexEndClass, size],
+            Styles
+          )}
         >
           <Button
             onClick={() => navigate(`/poll-detail/${proposalId}`)}
