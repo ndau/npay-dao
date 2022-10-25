@@ -25,10 +25,6 @@ const PollComponent = (pollComponentPropsObj: pollComponentProps) => {
     pollComponentPropsObj.votingOptionsHeadings
   );
 
-  const votingOptionsVotesCast = Object.values(
-    pollComponentPropsObj.votingOptionsVotesCast
-  );
-
   const votingOptionsIdArray = Object.keys(
     pollComponentPropsObj.votingOptionsHeadings
   );
@@ -39,6 +35,7 @@ const PollComponent = (pollComponentPropsObj: pollComponentProps) => {
     proposalId,
     isActive,
     totalVotes,
+    isHideVoteButton,
   }: destructuredPollComponentValuesI = pollComponentPropsObj;
 
   const addedOn: Date = new Date(pollComponentPropsObj.addedOn);
@@ -176,7 +173,7 @@ const PollComponent = (pollComponentPropsObj: pollComponentProps) => {
             className={getModulesClasses([size, status], Styles)}
             variant="secondary"
           >
-            View Results
+            View
           </Button>
           {isActive &&
             // Need to ensure selectedVoteOptionIdState is not undefined, as index 0 is valid, but is a falsy value
@@ -192,10 +189,12 @@ const PollComponent = (pollComponentPropsObj: pollComponentProps) => {
                 Voted
               </Button>
             ) : (
-              <VoteButton
-                selectedVoteOptionId={selectedVoteOptionId}
-                dynamicClassName={getModulesClasses([size], Styles)}
-              />
+              !isHideVoteButton && (
+                <VoteButton
+                  selectedVoteOptionId={selectedVoteOptionId}
+                  dynamicClassName={getModulesClasses([size], Styles)}
+                />
+              )
             ))}
         </div>
       </Card.Footer>

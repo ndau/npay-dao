@@ -6,7 +6,7 @@ import AllAdminTable from "./AdminTable/AllAdminTable";
 import Placeholder from "react-bootstrap/Placeholder";
 import useAdminPanelRefreshStore from "../../../../store/adminPanelRefresh_store";
 
-const admin = "admin";
+const adminUrl = "admin";
 const itemsPerPage = 5;
 
 interface apiProps {
@@ -23,7 +23,7 @@ const AllAdmin = (props: apiProps) => {
 
   async function refreshAllAdminState(_offset?: number) {
     try {
-      const response = await axiosRequest("get", admin, undefined, {
+      const response = await axiosRequest("get", adminUrl, undefined, {
         limit: itemsPerPage,
         offset: _offset,
       });

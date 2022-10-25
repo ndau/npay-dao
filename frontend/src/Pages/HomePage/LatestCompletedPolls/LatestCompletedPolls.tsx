@@ -49,6 +49,7 @@ function LatestCompletedPolls() {
                 totalVotes={val.total_votes}
                 isActive={val.is_active}
                 hasUserAlreadyVotedObj={hasUserAlreadyVotedObj}
+                isHideVoteButton={true}
               />
             </div>
           );

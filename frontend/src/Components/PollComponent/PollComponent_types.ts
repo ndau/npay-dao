@@ -17,6 +17,7 @@ export interface pollComponentProps {
     index: number;
     voting_option_id: number;
   };
+  isHideVoteButton?: boolean;
 }
 
 export interface destructuredPollComponentValuesI {
@@ -25,4 +26,5 @@ export interface destructuredPollComponentValuesI {
   proposalId: number;
   isActive: boolean;
   totalVotes: number;
+  isHideVoteButton?: boolean
 }
