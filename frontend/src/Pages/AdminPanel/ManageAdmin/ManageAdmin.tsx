@@ -3,7 +3,7 @@ import { Button, Container, Tabs, Tab } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import AddAdmin from "./AddAdmin/AddAdmin";
 import AllAdmin from "./AllAdmin/AllAdmin";
-import Arrow from "../../../assets/images/icons/backArrow.svg";
+// import Arrow from "../../../assets/images/icons/backArrow.svg";
 
 const ManageAdmin = () => {
   const [triggerUseEffectCounterState, setTriggerUseEffectCounterState] =
@@ -40,8 +40,9 @@ const ManageAdmin = () => {
               onClick={navigateFunc}
             >
               <img
-                src={Arrow}
+                src="assets/images/icons/backArrow.svg"
                 style={{ height: "20px", marginRight: "10px" }}
+                alt=""
               />
               {"    Back"}
             </Button>

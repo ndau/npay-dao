@@ -3,11 +3,10 @@ import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import { Link, useNavigate } from "react-router-dom";
-import ImageHeader from "../../assets/images/download.png";
+// import ImageHeader from "../../assets/images/download.png";
 import NdauConnect from "./NdauConnect/NdauConnect";
 import useNdauConnectStore from "../../store/ndauConnect_store";
 import Dropdown from "react-bootstrap/Dropdown";
-import { useState } from "react";
 
 const Header = () => {
   const isAdmin = useNdauConnectStore((state) => state.isAdmin);
@@ -71,7 +70,7 @@ const Header = () => {
                   to="/"
                   style={{ width: "12%", marginBottom: "10px" }}
                 >
-                  <img src={ImageHeader} style={{ width: "100%" }} />
+                  <img src="assets/images/download.png" style={{ width: "100%" }}  alt=""/>
                 </Nav.Link>
                 <div>
                   {(isAdmin || isSuperAdmin) && (

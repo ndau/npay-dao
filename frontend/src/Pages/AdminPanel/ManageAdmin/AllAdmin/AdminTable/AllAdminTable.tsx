@@ -1,12 +1,12 @@
 import { Button } from "react-bootstrap";
 import Table from "react-bootstrap/Table";
 import Modal from "react-bootstrap/Modal";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "react-toastify";
 
 import useNdauConnectStore from "../../../../../store/ndauConnect_store";
 
-const admin = "admin";
+// const admin = "admin";
 interface AllAdminProps {
   allAdminData: Array<any>;
   CallAllAdminApi: Function;

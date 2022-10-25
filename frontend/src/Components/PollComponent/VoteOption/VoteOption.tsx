@@ -15,11 +15,11 @@ const VoteOption = ({
 
   if (smMarginTop)
     voteOptionContainerClassName =
-      voteOptionContainerClassName + " " + `${VoteOptionStyles.smMarginTop}`;
+      `${voteOptionContainerClassName} ${VoteOptionStyles.smMarginTop}`;
 
   if (selected) {
     voteOptionContainerClassName =
-      voteOptionContainerClassName + " " + `${VoteOptionStyles.selected}`;
+      `${voteOptionContainerClassName} ${VoteOptionStyles.selected}`;
   }
   return (
     <div className={voteOptionContainerClassName}>{voteOptionSummary}</div>

@@ -13,7 +13,7 @@ import VoteOption from "../../Components/PollComponent/VoteOption/VoteOption";
 import VoteButton from "../../Components/VoteButton/VoteButton";
 import { adminProcessedProposalResponseI } from "../../types/responseTypes";
 import { indexOfMax } from "../../utils/indexOfMax";
-import Arrow from "../../assets/images/icons/backArrow.svg";
+// import Arrow from "../../assets/images/icons/backArrow.svg";
 import useAdminPanelRefreshStore from "../../store/adminPanelRefresh_store";
 import useNdauConnectStore from "../../store/ndauConnect_store";
 
@@ -44,8 +44,8 @@ const PollDetail = () => {
   let votingOptionsIdArray: string[] = [];
   let votingPercentagesArray: number[] = [];
   let votingOptionIdsArray: number[] | string[] = [];
-  let votesCastArray: number[] = [];
-  let mostVotesIndex: number | undefined;
+  const [votesCastArray, setVotesCastArry] = useState<number[]>([]);
+  // let mostVotesIndex: number | undefined;
 
   let hasVoted =
     pollDetailState &&
@@ -60,7 +60,7 @@ const PollDetail = () => {
 
     console.log(votingOptionsIdArray, "votingOptionsIdArray");
 
-    votesCastArray = Object.values(pollDetailState.votes_cast_agg);
+    setVotesCastArry(Object.values(pollDetailState.votes_cast_agg));
     votingOptionIdsArray = Object.keys(pollDetailState.voting_options_headings);
 
     votesCastArray.forEach((item, index) => {
@@ -115,10 +115,10 @@ const PollDetail = () => {
         !pollDetailResponse.data.proposalDetails[0].is_active;
 
       if (isProposalCompleted) {
-        votesCastArray = Object.values(
+        setVotesCastArry(Object.values(
           pollDetailResponse.data.proposalDetails[0].votes_cast_agg
-        );
-        mostVotesIndex = indexOfMax(votesCastArray);
+        ));
+        const mostVotesIndex = indexOfMax(votesCastArray);
         setSelectedVoteOptionIndexState(mostVotesIndex);
       }
     }
@@ -126,7 +126,7 @@ const PollDetail = () => {
     setRefreshProposalDetailFunc(getPollDetails);
 
     getPollDetails();
-  }, [walletAddress]);
+  }, [walletAddress, proposalId, setRefreshProposalDetailFunc, votesCastArray]);
 
   const navigate = useNavigate();
   let selectedVoteOptionId;
@@ -157,8 +157,9 @@ const PollDetail = () => {
               onClick={goBack}
             >
               <img
-                src={Arrow}
+                src="assets/images/icons/backArrow.svg"
                 style={{ height: "20px", marginRight: "10px" }}
+                alt=""
               />
               {"    Back"}
             </Button>

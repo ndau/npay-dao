@@ -6,7 +6,7 @@ import useNdauConnectStore from "../../../store/ndauConnect_store";
 import "./modal.css";
 import { io } from "socket.io-client";
 import { toast } from "react-toastify";
-import WalletIcon from "../../../assets/images/icons/iconsWallet.png";
+// import WalletIcon from "../../../assets/images/icons/iconsWallet.png";
 import useAdminPanelRefreshStore from "../../../store/adminPanelRefresh_store";
 import { baseURL } from "../../../api/api";
 
@@ -236,7 +236,7 @@ function NdauConnect() {
         ) : (
           <>
             {" "}
-            <img src={WalletIcon} style={{ height: "25px", marginBottom: 2 }} />
+            <img src="assets/images/icons/iconsWallet.png" style={{ height: "25px", marginBottom: 2 }} />
             {" Connect Wallet"}
           </>
         )}
