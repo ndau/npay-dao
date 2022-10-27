@@ -425,6 +425,8 @@ module.exports = (_io) => {
     socket.on("disconnect", (reason) => {
       console.log(socket.id + " disconnected for reason: " + reason);
     });
+
+    socket.emit("connect");
   });
 };
 
