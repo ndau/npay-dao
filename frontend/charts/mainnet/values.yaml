@@ -51,8 +51,6 @@ ingress:
   enabled: true
   annotations:
     kubernetes.io/ingress.class: "nginx"
-    # certmanager.k8s.io/issuer-kind: Issuer
-    # cert-manager.io/issuer: "letsencrypt-prod"
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
     nginx.ingress.kubernetes.io/limit-rpm: "600"
     nginx.ingress.kubernetes.io/proxy-body-size: "64m"
@@ -67,12 +65,12 @@ ingress:
       more_set_headers "Referrer-Policy: origin";
       more_set_headers "X-Content-Type-Options: nosniff";
   hosts:
-    - host: explorer.ndau.io
+    - host: bpcdao.ndau.tech
       paths: ["/"]
   tls:
-    - secretName: explorer-ndau-tls
+    - secretName: bpc-dao-ndau-tls
       hosts:
-        - explorer.ndau.io
+        - bpcdao.ndau.tech
 
 resources:
   limits:

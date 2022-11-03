@@ -44,6 +44,7 @@ securityContext: {}
 service:
   type: ClusterIP
   port: 80
+  securePort: 443
   targetPort: 3001
 
 ingress:
@@ -51,6 +52,7 @@ ingress:
   annotations:
     kubernetes.io/ingress.class: nginx
     ingress.kubernetes.io/ssl-redirect: "false"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
     nginx.ingress.kubernetes.io/limit-rpm: "600"
     nginx.ingress.kubernetes.io/proxy-body-size: "20m"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
@@ -58,8 +60,12 @@ ingress:
     nginx.ingress.kubernetes.io/proxy-send-timeout: "7200"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "7200"
   hosts:
-    - host: dev.bpc-dao-backend.ndau.io
+    - host: dev.backend.bpcdao.ndau.tech
       paths: ["/"]
+  tls:
+    - secretName: bpc-dao-backend-dev-tls
+      hosts:
+        - dev.backend.bpcdao.ndau.tech
 
 resources:
   limits:
