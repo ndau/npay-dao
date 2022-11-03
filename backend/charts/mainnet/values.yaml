@@ -48,7 +48,7 @@ service:
   targetPort: 3001
 
 ingress:
-  enabled: false
+  enabled: true
   annotations:
     kubernetes.io/ingress.class: nginx
     ingress.kubernetes.io/ssl-redirect: "false"
@@ -61,6 +61,11 @@ ingress:
     nginx.ingress.kubernetes.io/proxy-read-timeout: "7200"
   hosts:
     - host: backend.bpcdao.ndau.tech
+      paths: ["/"]
+  tls:
+    - secretName: bpc-dao-backend-ndau-tls
+      hosts:
+        - backend.bpcdao.ndau.tech
 
 resources:
   limits:
