@@ -13,7 +13,6 @@ import VoteOption from "../../Components/PollComponent/VoteOption/VoteOption";
 import VoteButton from "../../Components/VoteButton/VoteButton";
 import { adminProcessedProposalResponseI } from "../../types/responseTypes";
 import { indexOfMax } from "../../utils/indexOfMax";
-import Arrow from "../../assets/images/icons/backArrow.svg";
 import useAdminPanelRefreshStore from "../../store/adminPanelRefresh_store";
 import useNdauConnectStore from "../../store/ndauConnect_store";
 
@@ -45,7 +44,7 @@ const PollDetail = () => {
   let votingPercentagesArray: number[] = [];
   let votingOptionIdsArray: number[] | string[] = [];
   let votesCastArray: number[] = [];
-  let mostVotesIndex: number | undefined;
+  // let mostVotesIndex: number | undefined;
 
   let hasVoted =
     pollDetailState &&
@@ -91,8 +90,7 @@ const PollDetail = () => {
       );
 
       const userVotedForOptionId =
-        pollDetailResponse.data.proposalDetails[0].hasUserAlreadyVotedObj
-          .voting_option_id;
+        pollDetailResponse.data.proposalDetails[0].hasUserAlreadyVotedObj?.voting_option_id;
 
       console.log(userVotedForOptionId, "userVotedForOptionId");
 
@@ -118,12 +116,12 @@ const PollDetail = () => {
         votesCastArray = Object.values(
           pollDetailResponse.data.proposalDetails[0].votes_cast_agg
         );
-        mostVotesIndex = indexOfMax(votesCastArray);
+        const mostVotesIndex = indexOfMax(votesCastArray);
         setSelectedVoteOptionIndexState(mostVotesIndex);
       }
     }
 
-    setRefreshProposalDetailFunc(getPollDetails);
+    // setRefreshProposalDetailFunc(getPollDetails);
 
     getPollDetails();
   }, [walletAddress]);
@@ -157,8 +155,9 @@ const PollDetail = () => {
               onClick={goBack}
             >
               <img
-                src={Arrow}
+                src="assets/images/icons/backArrow.svg"
                 style={{ height: "20px", marginRight: "10px" }}
+                alt=""
               />
               {"    Back"}
             </Button>

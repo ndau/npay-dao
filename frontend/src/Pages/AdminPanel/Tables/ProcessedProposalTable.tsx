@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import ProposalRowUnprocessed from "./ProposalRow/ProposalRowUnprocessed";
 import ResponsiveRowProcessed from "./ProposalRow/MobileRowProcessed";
 import Table from "react-bootstrap/Table";
-import Placeholder from "react-bootstrap/Placeholder";
 import "./Pagination.css";
 
 import useMediaQuery from "../../../utils/hooks/useMediaQuery";
@@ -15,7 +14,7 @@ const ProcessedProposalsTable = (props: TableProps) => {
   const MobileBreakPoint = useMediaQuery("(min-width: 576px)");
   const itemsPerPage = 5;
   const [currentItems, setCurrentItems] = useState<any[]>([]);
-  const [pageCount, setPageCount] = useState(0);
+  //const [pageCount, setPageCount] = useState(0);
 
   // We start with an empty list of items.
 
@@ -29,7 +28,7 @@ const ProcessedProposalsTable = (props: TableProps) => {
 
     if (props.apiData) {
       setCurrentItems(props.apiData.slice(itemOffset, endOffset));
-      setPageCount(Math.ceil(props.apiData.length / itemsPerPage));
+      //setPageCount(Math.ceil(props.apiData.length / itemsPerPage));
     }
   }, [itemOffset, itemsPerPage, props.apiData]);
 

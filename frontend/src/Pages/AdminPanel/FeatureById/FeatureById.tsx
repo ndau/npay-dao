@@ -1,5 +1,3 @@
-import { useState, useEffect } from "react";
-import { axiosRequest } from "../../../api/api";
 import { toast } from "react-toastify";
 import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";

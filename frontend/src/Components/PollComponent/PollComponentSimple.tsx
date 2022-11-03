@@ -2,7 +2,7 @@ import Card from "react-bootstrap/Card";
 import Badge from "react-bootstrap/Badge";
 import Styles from "./PollComponentStyles.module.css";
 import { getHoursAndDaysFromMilliSeconds } from "../../utils/convertMilliSecondsToDays";
-import ClockImg from "../../assets/images/icons/clock.png";
+// import ClockImg from "../../assets/images/icons/clock.png";
 import useMediaQuery from "../../utils/hooks/useMediaQuery";
 import { getModulesClasses } from "../../utils/getModulesClasses";
 
@@ -30,12 +30,12 @@ const PollComponentSimple = (props: pollComponentPropsI) => {
   const pollComponentPropsObj = props.pollComponentPropsObj;
   const children = props.children;
 
-  let votingOptionsArray = [];
-  if (Array.isArray(pollComponentPropsObj.votingOptions)) {
-    votingOptionsArray = pollComponentPropsObj.votingOptions;
-  } else {
-    votingOptionsArray = Object.values(pollComponentPropsObj.votingOptions);
-  }
+  // let votingOptionsArray = [];
+  // if (Array.isArray(pollComponentPropsObj.votingOptions)) {
+  //   votingOptionsArray = pollComponentPropsObj.votingOptions;
+  // } else {
+  //   votingOptionsArray = Object.values(pollComponentPropsObj.votingOptions);
+  // }
 
   const addedOn: Date = new Date(pollComponentPropsObj.addedOn);
   const closingOn: Date = new Date(pollComponentPropsObj.closingOn);
@@ -94,7 +94,7 @@ const PollComponentSimple = (props: pollComponentPropsI) => {
 
         {isActive && (
           <p className={Styles.remaining}>
-            <img src={ClockImg} className={Styles.timeRemainingIcon} />
+            <img src="assets/images/icons/clock.png" className={Styles.timeRemainingIcon} alt=""/>
             {`${timeRemaining} REMAINING`}
           </p>
         )}

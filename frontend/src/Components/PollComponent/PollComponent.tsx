@@ -5,7 +5,7 @@ import Styles from "./PollComponentStyles.module.css";
 import { getHoursAndDaysFromMilliSeconds } from "../../utils/convertMilliSecondsToDays";
 import { getModulesClasses } from "../../utils/getModulesClasses";
 import VoteOption from "./VoteOption/VoteOption";
-import ClockImg from "../../assets/images/icons/clock.png";
+// import ClockImg from "./assets/images/icons/clock.png";
 import { useEffect, useState } from "react";
 import useMediaQuery from "../../utils/hooks/useMediaQuery";
 import { useNavigate } from "react-router-dom";
@@ -15,7 +15,6 @@ import {
   pollComponentProps,
 } from "./PollComponent_types";
 import { indexOfMax } from "../../utils/indexOfMax";
-import useNdauConnectStore from "../../store/ndauConnect_store";
 
 const PollComponent = (pollComponentPropsObj: pollComponentProps) => {
   const [selectedVoteOptionIndexState, setSelectedVoteOptionIndexState] =
@@ -99,7 +98,7 @@ const PollComponent = (pollComponentPropsObj: pollComponentProps) => {
         setSelectedVoteOptionIndexState(voteCastIndex);
       }
     }
-  }, [pollComponentPropsObj.hasUserAlreadyVotedObj]);
+  }, [pollComponentPropsObj.hasUserAlreadyVotedObj ]);
 
   return (
     <Card className={Styles.pollComponentCard}>
@@ -140,7 +139,7 @@ const PollComponent = (pollComponentPropsObj: pollComponentProps) => {
 
         {isActive && (
           <p className={Styles.remaining}>
-            <img src={ClockImg} className={Styles.timeRemainingIcon} />
+            <img src="/assets/images/icons/clock.png" className={Styles.timeRemainingIcon} alt=""/>
             {`${timeRemaining} REMAINING`}
           </p>
         )}

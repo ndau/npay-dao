@@ -57,7 +57,7 @@ const AdminPanel = () => {
           fluid="lg"
           style={{ padding: "10px", paddingTop: "20px", minHeight: "80vh" }}
         >
-          {checkTab != "Feature" ? (
+          {checkTab !== "Feature" ? (
             <>
               <Row>
                 <Col lg={2} md={3}>

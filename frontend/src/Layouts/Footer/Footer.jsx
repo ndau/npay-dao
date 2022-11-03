@@ -1,11 +1,11 @@
 import React from "react";
 import { Col, Row, Container } from "react-bootstrap";
-import { Link, NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Nav from "react-bootstrap/Nav";
 import useMediaQuery from "../../utils/hooks/useMediaQuery";
-import ImageHeader from "../../assets/images/download.png";
-import TelegramIcon from "../../assets/images/icons/bxl-telegram.svg";
-import GitHubIcon from "../../assets/images/icons/logo-github.svg";
+// import ImageHeader from "../../assets/images/download.png";
+// import TelegramIcon from "../../assets/images/icons/bxl-telegram.svg";
+// import GitHubIcon from "../../assets/images/icons/logo-github.svg";
 
 const logoStyleBigScreen = {
   paddingBottom: "12px",
@@ -46,7 +46,7 @@ const Footer = () => {
                 style={!checkMobile ? logoStyleBigScreen : logoStyleSmallScreen}
               >
                 {" "}
-                <img src={ImageHeader} style={{ width: "100%" }} />
+                <img src="assets/images/download.png" style={{ width: "100%" }} alt=""/>
               </div>
               <div
                 style={{ color: "white", width: "80%" }}
@@ -59,7 +59,7 @@ const Footer = () => {
                       target={"_blanK"}
                       style={{ margin: 0, marginLeft: 0, marginTop: -10 }}
                     >
-                      <img src="../icon1.svg" className="p-3" />
+                      <img src="../icon1.svg" className="p-3"  alt=""/>
                     </Nav.Link>
                   </Col>
                   <Col lg={3} style={{ margin: 0, marginLeft: 0 }}>
@@ -68,7 +68,7 @@ const Footer = () => {
                       target={"_blanK"}
                       style={{ margin: 0, marginLeft: 0, marginTop: -10 }}
                     >
-                      <img src="../bxl-telegram.svg" className="p-3" />
+                      <img src="../bxl-telegram.svg" className="p-3"  alt=""/>
                     </Nav.Link>
                   </Col>
                   <Col lg={3} style={{ margin: 0, marginLeft: 0 }}>
@@ -77,7 +77,7 @@ const Footer = () => {
                       target={"_blanK"}
                       style={{ margin: 0, marginLeft: 0, marginTop: -10 }}
                     >
-                      <img src={GitHubIcon} className="p-3" />
+                      <img src="assets/images/icons/logo-github.svg" className="p-3"  alt=""/>
                     </Nav.Link>
                   </Col>
                   <Col lg={3}></Col>

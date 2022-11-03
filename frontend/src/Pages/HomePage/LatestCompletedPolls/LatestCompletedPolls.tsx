@@ -37,7 +37,7 @@ function LatestCompletedPolls() {
             };
           }
           return (
-            <div className="py-2">
+            <div className="py-2" key={val.proposal_id}>
               <PollComponent
                 proposalId={val.proposal_id}
                 addedOn={val.approved_on}
