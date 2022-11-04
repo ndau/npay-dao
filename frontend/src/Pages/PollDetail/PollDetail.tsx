@@ -33,6 +33,8 @@ const PollDetail = () => {
     | {
         user_address: string;
         summary: string;
+        ballot: string;
+        signature: string;
       }[]
     | undefined
   >();
@@ -294,7 +296,7 @@ const PollDetail = () => {
                           <th>OPTION</th>
                           <th>
                             {" "}
-                            <div style={{ minWidth: 150 }}>VOTING POWER</div>
+                            <div style={{ minWidth: 100 }}>VOTING POWER</div>
                           </th>
                         </tr>
                       </thead>
@@ -304,7 +306,13 @@ const PollDetail = () => {
                         {proposalVotesState?.map((item) => {
                           return (
                             <tr key={item.user_address}>
-                              <td>{item.user_address}</td>
+                              <td style={{ maxWidth: 360 }}>
+                                {item.user_address}
+                                <br/>
+                                <div style={{color: 'darkgrey',fontStyle: 'italic',fontSize: 'small'}}>
+                                  signature: {item.signature}
+                                </div>
+                              </td>
                               <td>{item.summary}</td>
                               <td>N/A</td>
                             </tr>

@@ -3,6 +3,7 @@ const checkIsBodyIncomplete = require("../utils/checkIsBodyIncomplete");
 const { createVotesTableIfNotExists } = require("./votes_controller");
 
 const { pg } = require("../pg");
+import repository from '../repository';
 
 const createVotingOptionsTableIfNotExists = async () => {
   const createVotingOptionsTableQuery = pg`
@@ -922,7 +923,7 @@ exports.getFeaturedProposals = async (req, res, next) => {
         is_active
           `;
 
-      featuredProposal = await getFeaturedProposalQuery;
+      const featuredProposal = await getFeaturedProposalQuery;
 
       console.log(featuredProposal, "featuredProposal");
 
@@ -957,27 +958,26 @@ exports.getFeaturedProposals = async (req, res, next) => {
   }
 };
 
-const getProposalVotesDetails = async (_proposalIdToGet) => {
-  const voteDetailsQuery = pg`
-  SELECT 
-    votes.user_address, voting_option_id,voting_options.summary
-  FROM
-      proposals 
-    INNER JOIN
-        voting_options USING (proposal_id)
-    INNER JOIN
-        votes USING (voting_option_id)
-    WHERE
-        proposal_id = ${_proposalIdToGet} 
-  `;
+// const getProposalVotesDetails = async (_proposalIdToGet) => {
+//   const voteDetailsQuery = pg`
+//   SELECT 
+//     votes.user_address, voting_option_id,voting_options.summary
+//   FROM
+//       proposals p
+//     INNER JOIN
+//         voting_options USING (proposal_id)
+//     INNER JOIN
+//         votes USING (voting_option_id)
+//     WHERE
+//         p.proposal_id = ${_proposalIdToGet} 
+//   `;
 
-  const voteDetails = await voteDetailsQuery;
-  return voteDetails;
-};
+//   const voteDetails = await voteDetailsQuery;
+//   return voteDetails;
+// };
 
 exports.getProposalDetails = async (req, res, next) => {
-  let proposalIdToGet;
-  if (req.query.proposal_Id) proposalIdToGet = req.query.proposal_Id;
+  const proposalIdToGet = req.query.proposal_Id;
   if (!proposalIdToGet) {
     res.status(400).json({
       status: false,
@@ -996,7 +996,7 @@ exports.getProposalDetails = async (req, res, next) => {
 
   console.log(proposalIdToGet, "proposalIdToGet");
   try {
-    const proposalVotesDetails = await getProposalVotesDetails(proposalIdToGet);
+    const proposalVotesDetails = await repository.getProposalVotesDetails(proposalIdToGet);
 
     const proposalDetailsQuery = pg`
     SELECT
@@ -1028,7 +1028,7 @@ exports.getProposalDetails = async (req, res, next) => {
     LEFT JOIN
         votes USING (voting_option_id)
     WHERE
-        proposal_id = ${proposalIdToGet} AND is_approved
+    proposals.proposal_id = ${proposalIdToGet} AND is_approved
     GROUP BY
       proposals.proposal_id,
       voting_option_id,

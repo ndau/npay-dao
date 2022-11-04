@@ -11,6 +11,7 @@ function LatestRunningPolls() {
   React.useEffect(() => {
     axiosRequest("get", "proposal/latest-running?limit=3").then((val) => {
       setLatestRunningProposalState(val.data.proposals);
+      console.log(val.data.proposals)
     });
   }, []);
 

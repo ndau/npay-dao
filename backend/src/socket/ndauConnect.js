@@ -1,4 +1,6 @@
 //import from vote_controller
+import repository from '../repository';
+
 const { getVoteObjectForConfirmation, createVote } = require('../controllers/votes_controller');
 
 const { approveProposal, rejectProposal, featureProposal } = require('../controllers/proposals_controller');
@@ -127,14 +129,15 @@ module.exports = (_io) => {
       //need to change it's name to app-create_vote-fulfilled-server, but isn't working correctly.
       //recheck at end
       'appCreateVoteConfirmedServer',
-      async ({ voting_option_id, proposal_heading, voting_option_heading, wallet_address, app_socket_id }) => {
+      async ({ proposal_id, voting_option_id, proposal_heading, voting_option_heading, wallet_address, ballot, signature, app_socket_id, tracking_number = '' }) => {
         console.log('app-create_vote-confirmed-server');
-
         const websiteSocketId = appSocket_To_WebSocket_Map.get(app_socket_id);
 
-        const createVoteStatus = await createVote(voting_option_id, wallet_address);
-
-        if (createVoteStatus.status) {
+        const res = await repository.addVote(proposal_id, voting_option_id, wallet_address, ballot, signature, {
+          tracking_number,
+        });
+        // const createVoteStatus = await createVote(voting_option_id, wallet_address);
+        if (res && res.vote_id) {
           socket.to(websiteSocketId).emit('server-vote_create-fulfilled-website', {
             walletAddress: wallet_address,
             proposal_heading,
@@ -300,8 +303,6 @@ module.exports = (_io) => {
     socket.on('disconnect', (reason) => {
       console.log(socket.id + ' disconnected for reason: ' + reason);
     });
-
-    socket.emit("connect");
   });
 };
 

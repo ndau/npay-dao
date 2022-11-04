@@ -1,5 +1,5 @@
-const { pg } = require("../pg");
-const checkIsBodyIncomplete = require("../utils/checkIsBodyIncomplete");
+const { pg } = require('../pg');
+const checkIsBodyIncomplete = require('../utils/checkIsBodyIncomplete');
 
 const createAdminsTableIfNotExists = async () => {
   const createAdminsTableQuery = pg`
@@ -20,7 +20,7 @@ exports.createAdmin = async ({ adminAddress }) => {
     if (isAnyValUndefined) {
       return {
         status: false,
-        message: "All Inputs are Required..!",
+        message: 'All Inputs are Required..!',
       };
     } else {
       await createAdminsTableIfNotExists();
@@ -39,20 +39,20 @@ exports.createAdmin = async ({ adminAddress }) => {
 
       return {
         status: true,
-        message: "Admin created",
+        message: 'Admin created',
       };
     }
   } catch (e) {
-    console.log(e, " create admin error");
-    if (e.message.includes("duplicate key value violates unique constraint")) {
+    console.log(e, ' create admin error');
+    if (e.message.includes('duplicate key value violates unique constraint')) {
       return {
         status: false,
-        message: "Duplicate address not allowed",
+        message: 'Duplicate address not allowed',
       };
     } else {
       return {
         status: false,
-        message: "Server error",
+        message: 'Server error',
       };
     }
   }
@@ -61,7 +61,7 @@ exports.createAdmin = async ({ adminAddress }) => {
 exports.getAdmins = async (req, res, next) => {
   try {
     let limit = null;
-    let offset = "0";
+    let offset = '0';
     if (req.query.limit) limit = req.query.limit;
     if (req.query.offset) offset = req.query.offset;
 
@@ -92,10 +92,10 @@ exports.getAdmins = async (req, res, next) => {
       total: adminsCount[0].admin_count,
     });
   } catch (e) {
-    console.log(e, " get admins error");
+    console.log(e, ' get admins error');
     res.status(500).json({
       status: false,
-      msg: "server error",
+      msg: 'server error',
     });
   }
 };
@@ -107,7 +107,7 @@ exports.deleteAdmin = async ({ adminId }) => {
     if (isAnyValUndefined) {
       return {
         status: false,
-        message: "All Inputs are Required..!",
+        message: 'All Inputs are Required..!',
       };
     } else {
       try {
@@ -124,26 +124,26 @@ exports.deleteAdmin = async ({ adminId }) => {
         if (deletedAdmin.length > 0) {
           return {
             status: true,
-            message: "admin deleted",
+            message: 'admin deleted',
           };
         } else {
           return {
             status: false,
-            message: "admin not found",
+            message: 'admin not found',
           };
         }
       } catch (e) {
-        console.log(e, "delete admin error");
+        console.log(e, 'delete admin error');
         return {
-          status: "false",
-          message: "server error",
+          status: 'false',
+          message: 'server error',
         };
       }
     }
-  } catch {
+  } catch (e) {
     return {
-      status: "false",
-      message: "server error",
+      status: 'false',
+      message: 'server error',
     };
   }
 };
@@ -156,7 +156,7 @@ exports.getIsAdmin = async (req, res, next) => {
   if (isAnyValUndefined) {
     res.status(400).json({
       status: false,
-      message: "All Inputs are Required..!",
+      message: 'All Inputs are Required..!',
     });
     return;
   } else {
@@ -175,19 +175,19 @@ exports.getIsAdmin = async (req, res, next) => {
       if (foundAdmin.length > 0) {
         res.status(200).json({
           isAdmin: true,
-          message: "wallet address is admin",
+          message: 'wallet address is admin',
         });
       } else {
         res.status(200).json({
           isAdmin: false,
-          message: "admin not found",
+          message: 'admin not found',
         });
       }
     } catch (e) {
-      console.log(e, "get isadmin error");
+      console.log(e, 'get isadmin error');
       res.status(500).json({
-        status: "false",
-        message: "server error",
+        status: 'false',
+        message: 'server error',
       });
     }
   }

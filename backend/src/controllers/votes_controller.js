@@ -46,7 +46,7 @@ const getIsVotingOpenForProposal = async (_proposalId) => {
 const getUserVotesForThisProposal = async (userAddress, votingOptionId) => {
   const userVotesForThisProposalQuery = pg`
   SELECT
-    voting_option_id, proposal_id, voting_option_proposal_id
+    voting_option_id, t.proposal_id, voting_option_proposal_id
   FROM
   (
     SELECT
@@ -58,12 +58,11 @@ const getUserVotesForThisProposal = async (userAddress, votingOptionId) => {
   WHERE
     voting_option_id = ${votingOptionId}
   LIMIT 1
-  )
-    getVotingOptionProposalQuery
+  ) t
   INNER JOIN voting_options USING(proposal_id)
   INNER JOIN votes USING(voting_option_id)
   WHERE
-    user_address = ${userAddress} AND proposal_id = voting_option_proposal_id
+    user_address = ${userAddress} AND t.proposal_id = voting_option_proposal_id
   `;
 
   const userVotesForThisProposal = await userVotesForThisProposalQuery;

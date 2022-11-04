@@ -1,6 +1,5 @@
 import React from "react";
 import { Placeholder } from "react-bootstrap";
-import { ValidationError } from "yup";
 import { axiosRequest } from "../../../api/api";
 import PollComponent from "../../../Components/PollComponent/PollComponent";
 import { adminProcessedProposalResponseI } from "../../../types/responseTypes";
