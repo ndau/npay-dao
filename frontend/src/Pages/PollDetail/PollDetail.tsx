@@ -35,6 +35,7 @@ const PollDetail = () => {
         summary: string;
         ballot: string;
         signature: string;
+        voting_power: number;
       }[]
     | undefined
   >();
@@ -314,7 +315,7 @@ const PollDetail = () => {
                                 </div>
                               </td>
                               <td>{item.summary}</td>
-                              <td>N/A</td>
+                              <td>{item.voting_power || '0'}</td>
                             </tr>
                           );
                         })}

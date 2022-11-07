@@ -27,10 +27,11 @@ const repository = {
   },
 
   getProposalVotesDetails: async (proposal_id, { isTx = false, errMsg = '', tracking_number = '' } = {}) => {
-    const sql = `SELECT v.user_address, v.ballot, v.signature, v.voting_option_id, vo.summary
+    const sql = `SELECT v.user_address, v.ballot, v.signature, v.voting_option_id, vo.summary, a.votes voting_power
 									 FROM proposals p
 									 JOIN voting_options vo on p.proposal_id = vo.proposal_id
 									 JOIN votes v on v.voting_option_id = vo.voting_option_id
+                   LEFT JOIN accounts a on v.user_address = a.address
 									WHERE p.proposal_id = $1`;
 
     return db_query(QUERY.any, sql, [proposal_id], isTx, errMsg || `${tracking_number} Error getting proposal vote details for proposal id ${proposal_id}`);
