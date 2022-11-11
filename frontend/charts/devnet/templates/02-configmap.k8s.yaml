@@ -55,6 +55,26 @@ data:
           send_timeout 7200;
         }
         
+        location /poll-detail/ {
+          rewrite  ^/poll-detail/(?!api)(.*)$ /$2 last;
+        }
+
+        location /all-polls {
+          rewrite  ^/all-polls(.*)$ /$1 last;
+        }
+
+        location /admin {
+          rewrite  ^/admin(.*)$ /$1 last;
+        }
+
+        location /proposal-form {
+          rewrite  ^/proposal-form(.*)$ /$1 last;
+        }
+
+        location /manage-admin {
+          rewrite  ^/manage-admin(.*)$ /$1 last;
+        }
+        
         location /api/ {
           proxy_pass http://bpc-dao-backend.dev.svc.cluster.local/api/;
 

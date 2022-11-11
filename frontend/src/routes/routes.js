@@ -1,38 +1,61 @@
-import { Routes, Route } from "react-router-dom";
-import HomePage from "../Pages/HomePage/HomePage";
-import AdminPanel from "../Pages/AdminPanel/AdminPanel";
-import ManageAdmin from "../Pages/AdminPanel/ManageAdmin/ManageAdmin";
-import AllPolls from "../Pages/AllPolls/AllPolls";
-import PollDetail from "../Pages/PollDetail/PollDetail";
-import ProposalForm from "../Pages/ProposalForm/ProposalForm";
-import NoMatch from "../Pages/NoMatch/NoMatch";
-import useNdauConnectStore from "../store/ndauConnect_store";
+import React from 'react';
+import { createBrowserRouter , Outlet} from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-const AllRoutes = () => {
-  const isAdmin = useNdauConnectStore((state) => state.isAdmin);
-  let isSuperAdmin = useNdauConnectStore((state) => state.isSuperAdmin);
+import Header from '../Layouts/Header/Header';
+import Footer from '../Layouts/Footer/Footer';
+import HomePage from '../Pages/HomePage/HomePage';
+import AdminPanel from '../Pages/AdminPanel/AdminPanel';
+import ManageAdmin from '../Pages/AdminPanel/ManageAdmin/ManageAdmin';
+import AllPolls from '../Pages/AllPolls/AllPolls';
+import PollDetail from '../Pages/PollDetail/PollDetail';
+import ProposalForm from '../Pages/ProposalForm/ProposalForm';
+import NoMatch from '../Pages/NoMatch/NoMatch';
 
-  // isSuperAdmin = 1;
-
-  console.log(isSuperAdmin, "isSuperAdmin");
-
-  // const isAdmin = 1;
-  // console.log(isAdmin,"isAdmin")
-
+const Root = () => {
   return (
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/poll-detail/:proposalId" element={<PollDetail />} />
-      <Route path="/all-polls" element={<AllPolls />} />
-      {(isSuperAdmin || isAdmin) && (
-        <Route path="/admin" element={<AdminPanel />} />
-       )} 
-      <Route path="/proposal-form" element={<ProposalForm />} />
-      {isSuperAdmin && 
-      <Route path="/manage-admin" element={<ManageAdmin />} />
-      }
-      <Route path="*" element={<NoMatch />} />
-    </Routes>
+    <>
+      <ToastContainer />
+      <Header />
+      <Outlet />
+      <Footer />
+    </>
   );
 };
-export default AllRoutes;
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <Root />,
+    errorElement: <NoMatch />,
+    children: [
+      {
+        path: '/',
+        element: <HomePage />,
+      },
+      {
+        path: '/poll-detail/:proposalId',
+        element: <PollDetail />,
+      },
+      {
+        path: '/all-polls',
+        element: <AllPolls />,
+      },
+      {
+        path: '/admin',
+        element: <AdminPanel />,
+      },
+      {
+        path: '/proposal-form',
+        element: <ProposalForm />,
+      },
+      {
+        path: '/manage-admin',
+        element: <ManageAdmin />,
+      },
+    ],
+  },
+]);
+
+export default router;

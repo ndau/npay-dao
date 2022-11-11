@@ -84,8 +84,6 @@ const AllPolls = (props: Props) => {
     walletAddress,
   ]);
 
-  console.log(filteredProposalsTableState, "All Polls");
-
   return (
     <div>
       <div style={{ backgroundColor: "#0B2140" }}>
@@ -104,7 +102,7 @@ const AllPolls = (props: Props) => {
                   fontSize: "30px",
                 }}
               >
-                {"All Polls"}
+                {"All Proposals"}
               </div>
             </Col>
             <Col lg={6} />
@@ -123,7 +121,7 @@ const AllPolls = (props: Props) => {
                     className="px-2"
                     style={{ marginTop: -5 }}
                   />{" "}
-                  Add New Poll
+                  Add New Proposal
                 </Button>{" "}
               </div>
             </Col>

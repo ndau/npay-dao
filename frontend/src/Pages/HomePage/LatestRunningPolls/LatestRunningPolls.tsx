@@ -17,7 +17,7 @@ function LatestRunningPolls() {
 
   return (
     <div className="col-md-6">
-      <h3 className="text-white pt-5">Latest Polls</h3>
+      <h3 className="text-white pt-5">Latest Proposals</h3>
       {latestRunningProposalState.length > 0 ? (
         latestRunningProposalState.map((val) => {
           let hasUserAlreadyVotedObj;

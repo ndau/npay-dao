@@ -22,7 +22,7 @@ const HomePage = () => {
               style={{ color: "white", textAlign: "left", fontSize: "30px" }}
               className="py-2"
             >
-              Featured Polls
+              Featured Proposals
             </div>
             <div
               style={{

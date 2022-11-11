@@ -140,6 +140,7 @@ module.exports = (_io) => {
         if (res && res.vote_id) {
           socket.to(websiteSocketId).emit('server-vote_create-fulfilled-website', {
             walletAddress: wallet_address,
+            proposal_id,
             proposal_heading,
             voting_option_heading,
           });

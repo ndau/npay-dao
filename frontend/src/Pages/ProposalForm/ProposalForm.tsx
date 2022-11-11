@@ -93,7 +93,7 @@ const ProposalForm = () => {
           style={{ padding: "10px", paddingTop: "20px", minHeight: "80vh" }}
         >
           <form onSubmit={handleSubmit(onSubmitFunc)}>
-            <h4 style={{ color: "#ffff" }}>Add New Polls</h4>
+            <h4 style={{ color: "#ffff" }}>Add New Proposal</h4>
             <Card
               style={{
                 background: "#1A3356",
