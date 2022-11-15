@@ -110,7 +110,7 @@ exports.createProposal = async (req, res, next) => {
         };
       });
 
-      createProposalVotingOptionsQuery = pg`INSERT INTO voting_options ${pg(
+      const createProposalVotingOptionsQuery = pg`INSERT INTO voting_options ${pg(
         votingOptionsRows
       )} returning *`;
 
