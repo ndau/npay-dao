@@ -1,6 +1,7 @@
 function convertSecondsToVotingPeriod(_seconds) {
   let seconds = Number(_seconds).toFixed(2);
   let minutes = seconds / 60;
+  let votingPeriod;
   if (minutes < 1) {
     let secondsText;
     if (seconds === 1) secondsText = `${seconds} second`;
