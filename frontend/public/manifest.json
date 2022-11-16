@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "BPC DAO Voting Portal",
+  "name": "Voting portal for ndau BPC DAO proposals",
   "icons": [
     {
       "src": "favicon.ico",
