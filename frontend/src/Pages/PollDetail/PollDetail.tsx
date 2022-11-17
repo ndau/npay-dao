@@ -10,6 +10,16 @@ import { indexOfMax } from '../../utils/indexOfMax';
 import useAdminPanelRefreshStore from '../../store/adminPanelRefresh_store';
 import useNdauConnectStore from '../../store/ndauConnect_store';
 
+interface ProposalVotesState {
+  user_address: string;
+  summary: string;
+  ballot: string;
+  signature: string;
+  voting_option_id: number;
+  voting_power: string;
+  createdon: string;
+}
+
 const PollDetail = () => {
   const setRefreshProposalDetailFunc = useAdminPanelRefreshStore((state) => state.setRefreshProposalDetailFunc);
   const { proposalId = '' } = useParams();
@@ -20,17 +30,7 @@ const PollDetail = () => {
   const goBack = () => navigate(-1);
   const [selectedVoteOptionIndexState, setSelectedVoteOptionIndexState] = useState<number | undefined>();
   const [pollDetailState, setPollDetailState] = useState<adminProcessedProposalResponseI | undefined>();
-  const [proposalVotesState, setProposalVotesState] = useState<
-    | {
-        user_address: string;
-        summary: string;
-        ballot: string;
-        signature: string;
-        voting_power: number;
-        createdon: string;
-      }[]
-    | undefined
-  >();
+  const [proposalVotesState, setProposalVotesState] = useState<ProposalVotesState[]>();
 
   let votingOptionsArray: string[] = [];
   let votingOptionsIdArray: string[] = [];
@@ -43,8 +43,6 @@ const PollDetail = () => {
     votingOptionsArray = Object.values(pollDetailState.voting_options_headings);
     votingOptionsIdArray = Object.keys(pollDetailState.voting_options_headings);
 
-    console.log(votingOptionsIdArray, 'votingOptionsIdArray');
-
     votesCastArray = Object.values(pollDetailState.votes_cast_agg);
     votingOptionIdsArray = Object.keys(pollDetailState.voting_options_headings);
 
@@ -52,7 +50,25 @@ const PollDetail = () => {
       votingPercentagesArray[index] = (item / pollDetailState.total_votes) * 100;
     });
   }
-  console.log('voted.................', voted, proposalId);
+  const tally = proposalVotesState?.reduce((acc: ProposalVotesState | any, v) => {
+    if (acc[v.summary]) {
+      acc[v.summary] += v.voting_power ? parseFloat(v.voting_power) : 0;
+      console.log(acc[acc.max], acc[v.summary]);
+      if (acc[acc.max] < acc[v.summary]) {
+        acc.max = v.summary;
+      }
+    } else {
+      acc[v.summary] = v.voting_power ? parseFloat(v.voting_power) : 0;
+      if (!acc.max) {
+        acc.max = v.summary;
+      } else if (acc[acc.max] < acc[v.summary]) {
+        acc.max = v.summary;
+      }
+    }
+
+    return acc;
+  }, {});
+
   useEffect(() => {
     async function getPollDetails() {
       let pollDetailResponse = await axiosRequest('get', 'proposal', undefined, {
@@ -157,10 +173,24 @@ const PollDetail = () => {
                             justifyContent: 'space-between',
                           }}
                         >
-                          <div>{item}</div> <div>Votes Cast: {votesCastArray[index]}</div>
+                          <div>{item}</div>{' '}
+                          <div>
+                            Votes Cast:{' '}
+                            {isNaN(tally[item])
+                              ? '0'
+                              : new Intl.NumberFormat('en-IN', { maximumSignificantDigits: 15 }).format(tally[item])}
+                          </div>
                         </div>
-
-                        <ProgressBar variant="warning" now={votingPercentagesArray[index]} />
+                        <div
+                          style={{
+                            border: `6px solid ${
+                              pollDetailState.is_active || item != tally.max ? 'transparent' : '#198754'
+                            }`,
+                            borderRadius: 8,
+                          }}
+                        >
+                          <ProgressBar variant="warning" now={votingPercentagesArray[index]} />
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -253,7 +283,7 @@ const PollDetail = () => {
                           <th>OPTION</th>
                           <th>
                             {' '}
-                            <div style={{ minWidth: 100 }}>VOTING POWER</div>
+                            <div style={{ minWidth: 100 }}>{pollDetailState.is_active ? 'VOTES' : 'FINAL VOTES'}</div>
                           </th>
                         </tr>
                       </thead>

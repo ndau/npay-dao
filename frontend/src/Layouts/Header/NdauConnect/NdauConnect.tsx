@@ -195,7 +195,7 @@ function NdauConnect() {
         </Modal.Header>
         <Modal.Body>
           <div className="qrcode-box">
-            <QRCodeSVG value={qrCodeValue} size={256} />
+            <QRCodeSVG value={qrCodeValue} size={218} includeMargin/>
           </div>
         </Modal.Body>
         <Modal.Footer>
