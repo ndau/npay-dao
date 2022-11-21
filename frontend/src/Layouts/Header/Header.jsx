@@ -52,6 +52,13 @@ const Header = () => {
                   Home
                 </Nav.Link>
                 <Nav.Link
+                  href="https://ndau.io/knowledge-base/bpc-dao/"
+                  target={'_blanK'}
+                  style={{ color: 'white', marginBottom: '10px' }}
+                >
+                  Help
+                </Nav.Link>
+                <Nav.Link
                   href="http://explorer1.ndau.tech/"
                   target={'_blanK'}
                   style={{ color: 'white', marginBottom: '10px' }}
