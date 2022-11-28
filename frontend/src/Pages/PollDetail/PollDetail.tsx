@@ -34,26 +34,17 @@ const PollDetail = () => {
 
   let votingOptionsArray: string[] = [];
   let votingOptionsIdArray: string[] = [];
-  let votingPercentagesArray: number[] = [];
   let votingOptionIdsArray: number[] | string[] = [];
-  let votesCastArray: number[] = [];
-  // let mostVotesIndex: number | undefined;
 
   if (pollDetailState) {
     votingOptionsArray = Object.values(pollDetailState.voting_options_headings);
     votingOptionsIdArray = Object.keys(pollDetailState.voting_options_headings);
-
-    votesCastArray = Object.values(pollDetailState.votes_cast_agg);
     votingOptionIdsArray = Object.keys(pollDetailState.voting_options_headings);
-
-    votesCastArray.forEach((item, index) => {
-      votingPercentagesArray[index] = (item / pollDetailState.total_votes) * 100;
-    });
   }
+  let totalVotes = 0;
   const tally = proposalVotesState?.reduce((acc: ProposalVotesState | any, v) => {
     if (acc[v.summary]) {
       acc[v.summary] += v.voting_power ? parseFloat(v.voting_power) : 0;
-      console.log(acc[acc.max], acc[v.summary]);
       if (acc[acc.max] < acc[v.summary]) {
         acc.max = v.summary;
       }
@@ -65,6 +56,7 @@ const PollDetail = () => {
         acc.max = v.summary;
       }
     }
+    totalVotes = totalVotes + acc[v.summary];
 
     return acc;
   }, {});
@@ -103,7 +95,7 @@ const PollDetail = () => {
       }
 
       if (!proposalCompleted) {
-        votesCastArray = Object.values(votes_cast_agg);
+        const votesCastArray : number[] = Object.values(votes_cast_agg);
         const mostVotesIndex = indexOfMax(votesCastArray);
         setSelectedVoteOptionIndexState(mostVotesIndex);
       }
@@ -189,7 +181,10 @@ const PollDetail = () => {
                             borderRadius: 8,
                           }}
                         >
-                          <ProgressBar variant="warning" now={votingPercentagesArray[index]} />
+                          <ProgressBar
+                            variant="warning"
+                            now={isNaN(tally[item]) ? 0 : (tally[item] / totalVotes) * 100}
+                          />
                         </div>
                       </div>
                     ))}

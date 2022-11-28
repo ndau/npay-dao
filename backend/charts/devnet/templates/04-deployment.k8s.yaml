@@ -41,27 +41,27 @@ spec:
             - name: DB_HOST
               valueFrom:
                 secretKeyRef:
-                  name: explorer-db
+                  name: explorer
                   key: DB_HOST
             - name: DB_PORT
               valueFrom:
                 secretKeyRef:
-                  name: explorer-db
+                  name: explorer
                   key: DB_PORT
             - name: DB_DATABASE
               valueFrom:
                 secretKeyRef:
-                  name: explorer-db
+                  name: explorer
                   key: DB_DATABASE
             - name: DB_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: explorer-db
+                  name: explorer
                   key: DB_USERNAME
             - name: DB_PASSWORD     
               valueFrom:
                 secretKeyRef:
-                  name: explorer-db
+                  name: explorer
                   key: DB_PASSWORD    
 {{- if hasKey .Values "livenessProbe" }}
           livenessProbe:
