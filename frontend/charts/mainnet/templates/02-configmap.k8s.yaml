@@ -35,16 +35,17 @@ data:
 
       gzip  on;
 
+      upstream bpc-dao-backend {
+        server bpc-dao-backend.main.svc.cluster.local;
+      }
+
       server {
         listen       80;
         server_name  explorer.ndau.io;
 
         client_max_body_size 64M;
 
-        location / {
-          root   /usr/share/nginx/html;
-          index  index.html index.htm;
-        }
+        
         
         location /poll-detail/api/ {
           proxy_pass http://bpc-dao-backend.main.svc.cluster.local/api/;
@@ -86,6 +87,12 @@ data:
 
         location /socket.io/ {
           proxy_pass http://bpc-dao-backend.main.svc.cluster.local/socket.io/;
+        }
+
+        location / {
+          root   /usr/share/nginx/html;
+          index  index.html index.htm;
+          try_files $uri $uri/ /index.html;
         }
 
         # redirect server error pages to the static page /50x.html

@@ -5,7 +5,6 @@ import Styles from "./PollComponentStyles.module.css";
 import { getHoursAndDaysFromMilliSeconds } from "../../utils/convertMilliSecondsToDays";
 import { getModulesClasses } from "../../utils/getModulesClasses";
 import VoteOption from "./VoteOption/VoteOption";
-// import ClockImg from "./assets/images/icons/clock.png";
 import { useEffect, useState } from "react";
 import useMediaQuery from "../../utils/hooks/useMediaQuery";
 import { useNavigate } from "react-router-dom";
@@ -53,8 +52,6 @@ const PollComponent = (pollComponentPropsObj: pollComponentProps) => {
   let status = `concluded`;
   let statusText = "Concluded";
   let size = "";
-  let flexEndClass = "";
-  if (isHideVoteButton) flexEndClass = "flex-end";
 
   if (isActive) {
     statusText = "Active";
@@ -169,7 +166,7 @@ const PollComponent = (pollComponentPropsObj: pollComponentProps) => {
         </div>
         <div
           className={getModulesClasses(
-            ["voteButtonsContainer", flexEndClass, size],
+            ["voteButtonsContainer", "flex-end", size],
             Styles
           )}
         >
@@ -180,27 +177,6 @@ const PollComponent = (pollComponentPropsObj: pollComponentProps) => {
           >
             View
           </Button>
-          {isActive &&
-            // Need to ensure selectedVoteOptionIdState is not undefined, as index 0 is valid, but is a falsy value
-            (hasVoted ? (
-              <Button
-                style={{
-                  marginTop: 0,
-                  backgroundColor: "#F89D1C",
-                  border: "#0A1D35",
-                }}
-                disabled
-              >
-                Voted
-              </Button>
-            ) : (
-              !isHideVoteButton && (
-                <VoteButton
-                  selectedVoteOptionId={selectedVoteOptionId}
-                  dynamicClassName={getModulesClasses([size], Styles)}
-                />
-              )
-            ))}
         </div>
       </Card.Footer>
     </Card>

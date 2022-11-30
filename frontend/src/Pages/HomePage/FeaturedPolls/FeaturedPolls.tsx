@@ -13,7 +13,8 @@ function FeaturedPolls({}: Props) {
 
   React.useEffect(() => {
     axiosRequest("get", "proposal/featured").then((val) => {
-      if (val.data.proposals[0].voting_options_headings)
+      const proposal = val.data.proposals[0];
+      if (proposal && proposal.voting_options_headings)
         setFeaturedPollState(val.data.proposals);
     });
   }, []);

@@ -34,12 +34,11 @@ const PollDetail = () => {
 
   let votingOptionsArray: string[] = [];
   let votingOptionsIdArray: string[] = [];
-  let votingOptionIdsArray: number[] | string[] = [];
 
   if (pollDetailState) {
+    console.log('pollDetailState.voting_options_headings', pollDetailState.voting_options_headings);
     votingOptionsArray = Object.values(pollDetailState.voting_options_headings);
     votingOptionsIdArray = Object.keys(pollDetailState.voting_options_headings);
-    votingOptionIdsArray = Object.keys(pollDetailState.voting_options_headings);
   }
   let totalVotes = 0;
   const tally = proposalVotesState?.reduce((acc: ProposalVotesState | any, v) => {
@@ -82,8 +81,10 @@ const PollDetail = () => {
       setProposalVotesState(pollDetailResponse.data.proposalVotesDetails);
 
       const userVotedForOptionId = hasUserAlreadyVotedObj?.voting_option_id;
+      console.log('hasUserAlreadyVotedObj......', hasUserAlreadyVotedObj);
 
       let votingOptionsIdArray = Object.keys(voting_options_headings);
+      console.log('votingOptionsIdArray......', votingOptionsIdArray);
 
       if (userVotedForOptionId) {
         let voteCastIndex = votingOptionsIdArray.findIndex((item) => Number(item) === userVotedForOptionId);
@@ -94,11 +95,11 @@ const PollDetail = () => {
         }
       }
 
-      if (!proposalCompleted) {
-        const votesCastArray : number[] = Object.values(votes_cast_agg);
-        const mostVotesIndex = indexOfMax(votesCastArray);
-        setSelectedVoteOptionIndexState(mostVotesIndex);
-      }
+      // if (!proposalCompleted) {
+      //   const votesCastArray : number[] = Object.values(votes_cast_agg);
+      //   const mostVotesIndex = indexOfMax(votesCastArray);
+      //   setSelectedVoteOptionIndexState(mostVotesIndex);
+      // }
     }
 
     // setRefreshProposalDetailFunc(getPollDetails);
@@ -109,7 +110,7 @@ const PollDetail = () => {
   const navigate = useNavigate();
   let selectedVoteOptionId;
   if (selectedVoteOptionIndexState !== undefined)
-    selectedVoteOptionId = Number(votingOptionIdsArray[selectedVoteOptionIndexState]);
+    selectedVoteOptionId = Number(votingOptionsIdArray[selectedVoteOptionIndexState]);
 
   return (
     <>
@@ -202,7 +203,7 @@ const PollDetail = () => {
                         <h6 className="text-white fw-bold">Voting Options</h6>
                         {votingOptionsArray.map((item, index) => (
                           <div
-                            key={votingOptionIdsArray[index]}
+                            key={votingOptionsIdArray[index]}
                             onClick={
                               pollDetailState.is_active
                                 ? !voted
