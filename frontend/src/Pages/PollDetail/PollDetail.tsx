@@ -5,7 +5,7 @@ import { axiosRequest } from '../../api/api';
 import PollComponentSimple from '../../Components/PollComponent/PollComponentSimple';
 import VoteOption from '../../Components/PollComponent/VoteOption/VoteOption';
 import VoteButton from '../../Components/VoteButton/VoteButton';
-import { adminProcessedProposalResponseI } from '../../types/responseTypes';
+import { adminProcessedProposalResponseI, pollResponseBaseObjI } from '../../types/responseTypes';
 import { indexOfMax } from '../../utils/indexOfMax';
 import useAdminPanelRefreshStore from '../../store/adminPanelRefresh_store';
 import useNdauConnectStore from '../../store/ndauConnect_store';
@@ -19,6 +19,7 @@ interface ProposalVotesState {
   voting_power: string;
   createdon: string;
 }
+//interface T extends adminProcessedProposalResponseI, pollResponseBaseObjI{};
 
 const PollDetail = () => {
   const setRefreshProposalDetailFunc = useAdminPanelRefreshStore((state) => state.setRefreshProposalDetailFunc);
@@ -29,17 +30,33 @@ const PollDetail = () => {
 
   const goBack = () => navigate(-1);
   const [selectedVoteOptionIndexState, setSelectedVoteOptionIndexState] = useState<number | undefined>();
-  const [pollDetailState, setPollDetailState] = useState<adminProcessedProposalResponseI | undefined>();
+
+  const [pollDetailState, setPollDetailState] = useState({
+    approved_on: '',
+    proposal_heading: '',
+    summary: '',
+    closing_date: '',
+    total_votes: 0,
+    is_active: false,
+    proposal_id: 0,
+    voting_options_headings: [],
+  });
+  const {
+    approved_on,
+    proposal_heading,
+    proposal_id,
+    summary,
+    closing_date,
+    voting_options_headings,
+    total_votes,
+    is_active,
+  } = pollDetailState || {};
+
+  console.log('voting_options_headings', voting_options_headings);
+  const votingOptionsArray: string[] = voting_options_headings ? Object.values(voting_options_headings) : [];
+  const votingOptionsIdArray: string[] = voting_options_headings ? Object.keys(voting_options_headings) : [];
+
   const [proposalVotesState, setProposalVotesState] = useState<ProposalVotesState[]>();
-
-  let votingOptionsArray: string[] = [];
-  let votingOptionsIdArray: string[] = [];
-
-  if (pollDetailState) {
-    console.log('pollDetailState.voting_options_headings', pollDetailState.voting_options_headings);
-    votingOptionsArray = Object.values(pollDetailState.voting_options_headings);
-    votingOptionsIdArray = Object.keys(pollDetailState.voting_options_headings);
-  }
   let totalVotes = 0;
   const tally = proposalVotesState?.reduce((acc: ProposalVotesState | any, v) => {
     if (acc[v.summary]) {
@@ -109,8 +126,9 @@ const PollDetail = () => {
 
   const navigate = useNavigate();
   let selectedVoteOptionId;
-  if (selectedVoteOptionIndexState !== undefined)
+  if (selectedVoteOptionIndexState !== undefined) {
     selectedVoteOptionId = Number(votingOptionsIdArray[selectedVoteOptionIndexState]);
+  }
 
   return (
     <>
@@ -140,14 +158,14 @@ const PollDetail = () => {
             {pollDetailState ? (
               <PollComponentSimple
                 pollComponentPropsObj={{
-                  addedOn: pollDetailState.approved_on,
-                  proposal: pollDetailState.proposal_heading,
-                  proposalId: pollDetailState.proposal_id,
-                  summary: pollDetailState.summary,
-                  closingOn: pollDetailState.closing_date,
-                  votingOptions: pollDetailState.voting_options_headings,
-                  totalVotes: pollDetailState.total_votes,
-                  isActive: pollDetailState.is_active,
+                  addedOn: approved_on,
+                  proposal: proposal_heading,
+                  proposalId: proposal_id,
+                  summary,
+                  closingOn: closing_date,
+                  votingOptions: voting_options_headings,
+                  totalVotes: total_votes,
+                  isActive: is_active,
                 }}
               >
                 <>
@@ -176,9 +194,7 @@ const PollDetail = () => {
                         </div>
                         <div
                           style={{
-                            border: `6px solid ${
-                              pollDetailState.is_active || item != tally.max ? 'transparent' : '#198754'
-                            }`,
+                            border: `6px solid ${is_active || item != tally.max ? 'transparent' : '#198754'}`,
                             borderRadius: 8,
                           }}
                         >
@@ -205,7 +221,7 @@ const PollDetail = () => {
                           <div
                             key={votingOptionsIdArray[index]}
                             onClick={
-                              pollDetailState.is_active
+                              is_active
                                 ? !voted
                                   ? () => setSelectedVoteOptionIndexState(index)
                                   : undefined
@@ -216,12 +232,12 @@ const PollDetail = () => {
                             {`Option ${index + 1}`}
                             <VoteOption
                               voteOptionSummary={item}
-                              selected={walletAddress ? index === selectedVoteOptionIndexState : false}
+                              selected={index === selectedVoteOptionIndexState}
                               smMarginTop
                             />
                           </div>
                         ))}
-                        {pollDetailState.is_active &&
+                        {is_active &&
                           // Need to ensure selectedVoteOptionIdState is not undefined, as index 0 is valid, but is a falsy value
                           (voted ? (
                             <Button
@@ -235,7 +251,14 @@ const PollDetail = () => {
                               Voted
                             </Button>
                           ) : (
-                            <VoteButton selectedVoteOptionId={selectedVoteOptionId} />
+                            <VoteButton
+                              selectedVoteOption={{
+                                proposal_id,
+                                proposal_heading,
+                                voting_option_id: selectedVoteOptionId || -1,
+                                voting_option_heading: votingOptionsArray[selectedVoteOptionId || -1],
+                              }}
+                            />
                           ))}
                       </div>
                     </div>
@@ -256,7 +279,7 @@ const PollDetail = () => {
                         }}
                       >
                         <div>Total Votes</div>
-                        <div>{pollDetailState.total_votes}</div>
+                        <div>{total_votes}</div>
                       </div>
                     </div>
                   </div>
@@ -279,7 +302,9 @@ const PollDetail = () => {
                           <th>OPTION</th>
                           <th>
                             {' '}
-                            <div style={{ minWidth: 100 }}>{pollDetailState.is_active ? 'VOTES' : 'FINAL VOTES'}</div>
+                            <div style={{ minWidth: 100, textAlign: 'right' }}>
+                              {is_active ? 'VOTES' : 'FINAL VOTES'}
+                            </div>
                           </th>
                         </tr>
                       </thead>
@@ -296,7 +321,13 @@ const PollDetail = () => {
                                 </div>
                               </td>
                               <td>{item.summary}</td>
-                              <td>{item.voting_power || '0'}</td>
+                              <td>
+                                <div style={{ textAlign: 'right' }}>
+                                  {new Intl.NumberFormat('en-IN', { maximumSignificantDigits: 15 }).format(
+                                    parseFloat(item.voting_power)
+                                  )}
+                                </div>
+                              </td>
                             </tr>
                           );
                         })}

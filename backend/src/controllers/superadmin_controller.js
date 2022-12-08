@@ -1,17 +1,17 @@
 const { pg } = require("../pg");
 const checkIsBodyIncomplete = require("../utils/checkIsBodyIncomplete");
 
-const createSuperAdminsTableIfNotExists = async () => {
-  const createSuperAdminsTableQuery = pg`
-    CREATE TABLE IF NOT EXISTS superadmins (
-        superadmin_id SERIAL PRIMARY KEY,
-        wallet_address TEXT UNIQUE
-    )
-    `;
+// const createSuperAdminsTableIfNotExists = async () => {
+//   const createSuperAdminsTableQuery = pg`
+//     CREATE TABLE IF NOT EXISTS superadmins (
+//         superadmin_id SERIAL PRIMARY KEY,
+//         wallet_address TEXT UNIQUE
+//     )
+//     `;
 
-  const superAdminsTable = await createSuperAdminsTableQuery;
-  return superAdminsTable;
-};
+//   const superAdminsTable = await createSuperAdminsTableQuery;
+//   return superAdminsTable;
+// };
 
 exports.createSuperAdmin = async (req, res, next) => {
   try {
@@ -28,7 +28,7 @@ exports.createSuperAdmin = async (req, res, next) => {
       });
       return;
     } else {
-      await createSuperAdminsTableIfNotExists();
+      // await createSuperAdminsTableIfNotExists();
 
       if (password === process.env.SUPERADMIN_PASSWORD) {
         console.log("is authorized");
