@@ -5,6 +5,7 @@ import { UnmarshalText, unpack } from './keybase';
 
 const PublicKeyPrefix = 'npub';
 
+
 export function ndauPubkeyToBytes(ndauPubkey) {
   const lep = PublicKeyPrefix.length;
   const prefix = ndauPubkey.substring(0, lep);
@@ -51,10 +52,8 @@ export function ndauPubkeyToHex(ndauPubkey) {
     return [null, err];
   }
 
-  const hexKey = key.key
-    .split('')
-    .map((d) => d.charCodeAt(0).toString(16))
-    .join('');
+  const hexKey = Buffer.from(key.key).toString('hex');
+
   console.log(typeof key.key, hexKey);
 
   return hexKey;
@@ -62,18 +61,18 @@ export function ndauPubkeyToHex(ndauPubkey) {
 
 // Unmarshal unmarshals the serialized binary data into the supplied key instance
 export function Unmarshal(serialized) {
-  console.log('serialized:', Array.from(serialized));
+  console.log('serialized:', serialized);
   const [al, data, err] = unmarshal(serialized);
   if (err != null) {
     console.log('errr:', err);
     return [null, err];
   }
   console.log('algorithm:', al);
-  console.log('data:', typeof data, Array.from(data));
+  console.log('data:', typeof data, data);
 
   const [key, ok] = unpack(data);
   console.log(key);
-  console.log('key.key:', typeof key, Array.from(key.key));
+  console.log('key.key:', typeof key, key.key);
   key.algorithm = al;
 
   return [key, ok];

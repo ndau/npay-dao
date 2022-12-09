@@ -2,7 +2,7 @@ import { Buffer } from 'node:buffer';
 const crypto = require('node:crypto');
 import { sha256, sha224 } from 'js-sha256';
 const b32 = require('./b32');
-import { Algorithm } from './algorithm';
+import { IsValidKind } from './address';
 import { UnmarshalText } from './keybase';
 /*
 
@@ -34,31 +34,11 @@ func Generate(kind byte, data []byte) (Address, error) {
 
 */
 
+
+
 // All addresses start with this 2-byte prefix, followed by a kind byte.
 const addrPrefix = 'nd';
 const kindOffset = addrPrefix.length;
-
-// predefined address kinds
-export const KindUser = 'a';
-export const KindNdau = 'n';
-export const KindEndowment = 'e';
-export const KindExchange = 'x';
-export const KindBPC = 'b';
-export const KindMarketMaker = 'm';
-
-// IsValidKind returns true if the last letter of a is one of the currently-valid kinds
-function IsValidKind(k) {
-  switch (k) {
-    case KindUser:
-    case KindNdau:
-    case KindEndowment:
-    case KindExchange:
-    case KindBPC:
-    case KindMarketMaker:
-      return true;
-  }
-  return false;
-}
 
 // HashTrim is the number of bytes that we trim the input hash to.
 //
@@ -95,16 +75,16 @@ export function Generate(kind, data) {
   if (data.length < MinDataLength) {
     return [null, new Error('insufficient quantity of data')];
   }
-
-  // the hash contains the last HashTrim bytes of the sha256 of the data
-  const hash = crypto.createHash('sha256').update(Buffer.from(data)).digest('hex');
-  let h = '';
-  for (let c = 0; c < hash.length; c += 2) h += String.fromCharCode(parseInt(hash.substring(c, c + 2), 16));
-
-  console.log('h......', typeof h, Array.from(h));
-
-  const h1 = h.substring(h.length - HashTrim); // h1 := h[len(h)-HashTrim:]
   console.log('data:.........', data);
+  // the hash contains the last HashTrim bytes of the sha256 of the data
+  const h = crypto.createHash('sha256').update(data).digest();
+  // let h = '';
+  // for (let c = 0; c < hash.length; c += 2) h += String.fromCharCode(parseInt(hash.substring(c, c + 2), 16));
+
+  console.log('h......', typeof h, h);
+
+  const h1 = new Uint8Array(h).slice(h.byteLength - HashTrim); // h1 := h[len(h)-HashTrim:]
+
   console.log('h.....', h);
   console.log('h1.....', h1);
 
@@ -118,13 +98,15 @@ export function Generate(kind, data) {
   const prefix = (p0 << 11) + (p1 << 6) + (k << 1);
   console.log('prefix.....', prefix);
 
-  const hdr = String.fromCharCode((prefix >> 8) & 0xff) + String.fromCharCode(prefix & 0xff);
-  console.log('hdr.....', Array.from(hdr));
-  const h2 = hdr + h1;
-  console.log('h2.....', Array.from(h2));
+  const hdr = new Uint8Array([(prefix >> 8) & 0xff,prefix & 0xff]);
+  console.log('hdr.....', hdr);
+  const h2 = Buffer.concat([hdr, h1]);
+  console.log('h2.....', h2);
   // then we checksum that result and append the checksum
-  const h3 = h2 + b32.Checksum16(h2);
-  console.log('h3.....', Array.from(h3));
+  const ck = b32.Checksum16(h2);
+  console.log('ck.....', ck);
+  const h3 = Buffer.concat([h2, ck]);
+  console.log('h3.....', h3);
   const r = b32.Encode(h3);
   return [{ addr: r }, null];
 }

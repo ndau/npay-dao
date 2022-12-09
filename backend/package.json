@@ -28,7 +28,8 @@
     "pg-promise": "^10.12.1",
     "postgres": "^3.2.4",
     "secp256k1": "^4.0.3",
-    "socket.io": "^4.5.2"
+    "socket.io": "^4.5.2",
+    "uint8arrays": "^4.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.19.6",

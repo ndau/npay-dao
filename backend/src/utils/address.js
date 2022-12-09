@@ -1,6 +1,15 @@
 import { Algorithm } from './algorithm';
 
 /********** signature/address.go */
+
+// predefined address kinds
+export const KindUser = 'a';
+export const KindNdau = 'n';
+export const KindEndowment = 'e';
+export const KindExchange = 'x';
+export const KindBPC = 'b';
+export const KindMarketMaker = 'm';
+
 const ErrShortBytes = 'too few bytes';
 
 const mfixint = 0x00; // 0XXXXXXX
@@ -40,6 +49,20 @@ const marray32 = 0xdd;
 const mmap16 = 0xde;
 const mmap32 = 0xdf;
 
+// IsValidKind returns true if the last letter of a is one of the currently-valid kinds
+export function IsValidKind(k) {
+  switch (k) {
+    case KindUser:
+    case KindNdau:
+    case KindEndowment:
+    case KindExchange:
+    case KindBPC:
+    case KindMarketMaker:
+      return true;
+  }
+  return false;
+}
+
 // UnmarshalMsg implements msgp.Unmarshaler
 export function UnmarshalMsg(bts) {
   console.log('UnmarshalMsg: ', bts);
@@ -48,19 +71,19 @@ export function UnmarshalMsg(bts) {
   }
 
   let zb0001;
-  let lead = bts.charCodeAt(0);
+  let lead = bts[0];
   console.log('lead', lead);
   if ((lead & 0xf0) === 0x90) {
     zb0001 = lead & 0x0f;
-    bts = bts.substring(1);
+    bts = bts.slice(1);
   }
   console.log('zb0001', zb0001);
   if (zb0001 != 2) {
     return [null, null, null, new Error(`Wanted: 2, Got: ${zb0001}`)];
   }
-  console.log('bts......', Array.from(bts));
+  console.log('bts......', bts);
   let zb0002;
-  lead = bts.charCodeAt(0);
+  lead = bts[0];
   if (lead > Math.MaxUint8) {
     // Need to review again
     return [null, null, null, 'value too large for uint8'];
@@ -69,7 +92,7 @@ export function UnmarshalMsg(bts) {
   console.log('zb0002......', typeof zb0002, zb0002);
   const algorithm = Algorithm.AlgorithmID[zb0002];
   console.log('algorithm', algorithm);
-  bts = bts.substring(1);
+  bts = bts.slice(1);
 
   const [data, o, err] = ReadBytesBytes(bts);
   if (err != null) {
@@ -80,13 +103,13 @@ export function UnmarshalMsg(bts) {
 }
 
 export function ReadBytesBytes(b, zc = false) {
-  console.log('b......', typeof b, Array.from(b));
+  console.log('b......', typeof b, b);
   const l = b.length;
   if (l < 1) {
     return [null, null, ErrShortBytes];
   }
 
-  const lead = b.charCodeAt(0);
+  const lead = b[0];
   console.log('lead', lead);
   let read;
   let err = null;
@@ -97,10 +120,10 @@ export function ReadBytesBytes(b, zc = false) {
         return [null, null, err];
       }
 
-      read = b.charCodeAt(1);
+      read = b[1];
       console.log('read', read);
-      b = b.substring(2);
-      console.log('b......', typeof b, Array.from(b));
+      b = b.slice(2);
+      console.log('b......', typeof b, b);
       break;
 
     // case mbin16:
@@ -129,7 +152,7 @@ export function ReadBytesBytes(b, zc = false) {
     return [null, null, err];
   }
 
-  const v = b.substring(0, read);
-  const o = b.substring(read);
+  const v = b.slice(0, read);
+  const o = b.slice(read);
   return [v, o, null];
 }

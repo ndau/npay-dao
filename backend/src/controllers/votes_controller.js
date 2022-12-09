@@ -3,20 +3,15 @@ const secp256k1 = require('secp256k1');
 const ed = require('@noble/ed25519');
 const { pg } = require('../pg');
 const checkIsBodyIncomplete = require('../utils/checkIsBodyIncomplete');
-import { Generate, KindUser, ndauPubkeyToHex } from '../utils/js-ndau';
+import { Generate, KindUser } from '../utils/js-ndau';
 import { ndauSignatureToBytes } from '../utils/signature';
-import { ndauPubkeyToBytes } from '../utils/public_key';
+import { ndauPubkeyToBytes, ndauPubkeyToHex } from '../utils/public_key';
 console.log('testing generate....');
 //const [pk, _] = ndauPubkeyToBytes('npuba4jaftckeebccsnesydawnbjfp4kq35zdqvte2wpap5kzv8kes9sahv2cigyf2sg9yac4aaaaaa5f9y8n76iwbzc4w6r2u5kf8rznqr38s3e8gjzgibanq28vwbrir3fc3mh25r2');
-// const [pk, _] = ndauPubkeyToBytes('npuba8jadtbbebkhxhaegq2pywt8k5v5wfwv8v6q5rkz95gk43ea7sfg4zn2wepzjczzfaxhmgpx');
+
+const [pk, _] = ndauPubkeyToBytes('npuba8jadtbbebkhxhaegq2pywt8k5v5wfwv8v6q5rkz95gk43ea7sfg4zn2wepzjczzfaxhmgpx');
 // console.log(_);
 
-// console.log(
-//   Generate(
-//     KindUser,
-//     pk.key
-//   )
-// );
 
 const testPayload =
   'eyJ2b3RlIjoieWVzIiwicHJvcG9zYWwiOnsicHJvcG9zYWxfaWQiOjEyLCJwcm9wb3NhbF9oZWFkaW5nIjoidGVzdGVyMSIsInZvdGluZ19vcHRpb25faWQiOjI2fSwicHVia2V5IjoibnB1YmE4amFkdGJiZWJraHhoYWVncTJweXd0OGs1djV3Znd2OHY2cTVya3o5NWdrNDNlYTdzZmc0em4yd2VwempjenpmYXhobWdweCJ9';
@@ -24,12 +19,35 @@ const testPubkey = 'npuba8jadtbbebkhxhaegq2pywt8k5v5wfwv8v6q5rkz95gk43ea7sfg4zn2
 const testSign =
   'a4jadtcavk64pvs7uc6aawtikevu7jzzvhtu6vfjqt2tsq7vbci2myzm3wrntb8cz3v6gv4ag3khazhhibqqh3t4kk7wueyxkesr6xeuaper8ce686ny7hqv';
 
-const testPub = ndauPubkeyToBytes(testPubkey);
-const sign = ndauSignatureToBytes(testSign);
-(async function(){
-  const isValid = await ed.verify(sign, testPayload, testPub);
-  console.log(isValid);
-})();
+// const testPub = ndauPubkeyToHex(testPubkey);
+// console.log('tesetPub', testPub);
+
+// const hexPayload = testPayload
+//   .split('')
+//   .map((d) => d.charCodeAt(0).toString(16))
+//   .join('');
+// console.log('hexPayload:', hexPayload);
+
+// const [sign, al] = ndauSignatureToBytes(testSign);
+
+
+console.log(
+  Generate(
+    'a',
+    pk.key
+  )
+);
+
+// (async function () {
+//   console.log(
+//     'sign.data...........',
+//     sign.data
+//   );
+//   const isValid = await ed.verify(sign.data, hexPayload, ndauPubkeyToBytes(testPubkey));
+//   console.log(isValid);
+// })();
+
+
 // console.log('Parse pubkey....');
 // ndauPubkeyToHex(
 //   'npuba8jadtbbebkhxhaegq2pywt8k5v5wfwv8v6q5rkz95gk43ea7sfg4zn2wepzjczzfaxhmgpx',
