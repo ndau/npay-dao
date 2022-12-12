@@ -33,14 +33,12 @@ export const Algorithm = {
 export function unmarshal(serialized) {
   const [al, data, leftovers, err] = UnmarshalMsg(serialized);
 
-  console.log('data......', typeof data, Array.from(data));
   if (err != null) {
     return [null, null, err];
   }
-  console.log('leftovers......', typeof leftovers, Array.from(leftovers));
+  console.log('leftovers:', Array.from(leftovers));
   if (leftovers.length > 0) {
     return null, null, new Error('Leftovers present after deserialization');
   }
   return [al, data, null];
-  // return cloneAl(idMap[container.Algorithm]), container.Data, nil;
 }

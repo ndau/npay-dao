@@ -1,5 +1,3 @@
-// const equals = require('uint8arrays/equals');
-
 /********** signature/checksum.go */
 const crypto = require('node:crypto');
 
@@ -32,27 +30,15 @@ export function CheckChecksum(checked) {
     return [null, false];
   }
   const n = checked[0];
-  console.log('n:', typeof n, n);
   const last = checked.length - n;
-  console.log('last:', last);
   if (last < 1) {
     return [null, false];
   }
 
-  console.log('checked:', typeof checked, checked);
-
   const message = checked.slice(1, last);
-  console.log('message:', typeof message, message);
-
   const sumActual = checked.slice(last);
-  console.log('sumActual:', typeof sumActual, sumActual);
 
-  // const result = Uint8Array.from(sumActual);
-  // console.log('sumActual bufffer......', result);
-
-  // console.log('sumActual bufffer......', Buffer.from(sumActual));
   const sumExpect = cksumN(message, n);
-  console.log('sumExpect......', Array.from(sumExpect));
   const checksumOk = Buffer.compare(sumActual, sumExpect)
   console.log('checksumOk......', checksumOk);
   return [message, checksumOk === 0];
@@ -61,16 +47,7 @@ export function CheckChecksum(checked) {
 // return the trailing n bytes of the sha224 checksum of the input bytes
 // given that sha-224 is already a simple truncation of sha-256, this means
 // that the returned bytes are from the middle of a sha-256 checksum
-function cksumN(input, n) {
-  //const sum = sha224(input);
+export function cksumN(input, n) {
   const sum = crypto.createHash('sha224').update(input).digest();
-  // console.log('sum length:', sum.length, typeof sum);
-  // let bytes = '';
-  // for (let c = 0; c < sum.length; c += 2) bytes += String.fromCharCode(parseInt(sum.substring(c, c + 2), 16));
-
-  console.log('sum str......', typeof sum, Array.from(sum));
-
-  // sum = sha256.Sum224(input)
-  // return sum[sha256.Size224-int(n):]
   return new Uint8Array(sum).slice(Size224 - n);
 }

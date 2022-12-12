@@ -5,7 +5,6 @@ import { UnmarshalText, unpack } from './keybase';
 
 const PublicKeyPrefix = 'npub';
 
-
 export function ndauPubkeyToBytes(ndauPubkey) {
   const lep = PublicKeyPrefix.length;
   const prefix = ndauPubkey.substring(0, lep);
@@ -14,21 +13,6 @@ export function ndauPubkeyToBytes(ndauPubkey) {
   }
 
   const base32EncodedPubkey = ndauPubkey.substring(lep);
-  console.log('base32EncodedPubkey:', base32EncodedPubkey);
-
-  // const base32DecodedPubkey = b32.Decode(base32EncodedPubkey);
-  // console.log('base32DecodedPubkey:', base32DecodedPubkey);
-
-  // var result = [];
-
-  // for (var i = 0; i < base32DecodedPubkey.length; i += 2) {
-  //   result.push(parseInt(base32DecodedPubkey.substring(i, i + 2), 16));
-  // }
-  // result = Uint8Array.from(result);
-  // console.log('result:', result);
-
-  // const byteArrayPubkey = Buffer.from(base32DecodedPubkey);
-  // console.log('byteArrayPubkey:', byteArrayPubkey);
 
   const [key, err] = UnmarshalText(base32EncodedPubkey, Unmarshal);
   if (err && err.length > 0) {
@@ -61,18 +45,14 @@ export function ndauPubkeyToHex(ndauPubkey) {
 
 // Unmarshal unmarshals the serialized binary data into the supplied key instance
 export function Unmarshal(serialized) {
-  console.log('serialized:', serialized);
   const [al, data, err] = unmarshal(serialized);
   if (err != null) {
-    console.log('errr:', err);
     return [null, err];
   }
   console.log('algorithm:', al);
-  console.log('data:', typeof data, data);
+  console.log('public key data:', typeof data, data);
 
   const [key, ok] = unpack(data);
-  console.log(key);
-  console.log('key.key:', typeof key, key.key);
   key.algorithm = al;
 
   return [key, ok];

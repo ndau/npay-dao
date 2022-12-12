@@ -13,7 +13,6 @@ export function ndauSignatureToBytes(ndauSignature) {
 // Unmarshal unmarshals the serialized binary data into the supplied signature instance
 export function Unmarshal(serialized) {
   const signature = {};
-  console.log('serialized:', serialized);
   const [al, data, err] = unmarshal(serialized);
   const ss = Algorithm[al].SignatureSize;
   if (err === null && ss >= 0 && data.length != ss) {
@@ -24,8 +23,7 @@ export function Unmarshal(serialized) {
     return [null, err];
   }
 
-  console.log('algorithm:', al);
-  console.log('data:', typeof data, data);
+  console.log('singature algorithm:', al);
 
   signature.algorithm = al;
   signature.data = data;

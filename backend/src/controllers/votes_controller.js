@@ -1,59 +1,54 @@
-const crypto = require('crypto');
-const secp256k1 = require('secp256k1');
-const ed = require('@noble/ed25519');
-const { pg } = require('../pg');
-const checkIsBodyIncomplete = require('../utils/checkIsBodyIncomplete');
-import { Generate, KindUser } from '../utils/js-ndau';
 import { ndauSignatureToBytes } from '../utils/signature';
 import { ndauPubkeyToBytes, ndauPubkeyToHex } from '../utils/public_key';
-console.log('testing generate....');
-//const [pk, _] = ndauPubkeyToBytes('npuba4jaftckeebccsnesydawnbjfp4kq35zdqvte2wpap5kzv8kes9sahv2cigyf2sg9yac4aaaaaa5f9y8n76iwbzc4w6r2u5kf8rznqr38s3e8gjzgibanq28vwbrir3fc3mh25r2');
+import { Generate } from '../utils/address';
+import repository from '../repository';
+import { getAccount} from '../helpers/fetch';
 
-const [pk, _] = ndauPubkeyToBytes('npuba8jadtbbebkhxhaegq2pywt8k5v5wfwv8v6q5rkz95gk43ea7sfg4zn2wepzjczzfaxhmgpx');
-// console.log(_);
+const crypto = require('crypto');
+const secp256k1 = require('@noble/secp256k1');
+const ed = require('@noble/ed25519');
 
+const { pg } = require('../pg');
+const checkIsBodyIncomplete = require('../utils/checkIsBodyIncomplete');
 
-const testPayload =
-  'eyJ2b3RlIjoieWVzIiwicHJvcG9zYWwiOnsicHJvcG9zYWxfaWQiOjEyLCJwcm9wb3NhbF9oZWFkaW5nIjoidGVzdGVyMSIsInZvdGluZ19vcHRpb25faWQiOjI2fSwicHVia2V5IjoibnB1YmE4amFkdGJiZWJraHhoYWVncTJweXd0OGs1djV3Znd2OHY2cTVya3o5NWdrNDNlYTdzZmc0em4yd2VwempjenpmYXhobWdweCJ9';
-const testPubkey = 'npuba8jadtbbebkhxhaegq2pywt8k5v5wfwv8v6q5rkz95gk43ea7sfg4zn2wepzjczzfaxhmgpx';
-const testSign =
-  'a4jadtcavk64pvs7uc6aawtikevu7jzzvhtu6vfjqt2tsq7vbci2myzm3wrntb8cz3v6gv4ag3khazhhibqqh3t4kk7wueyxkesr6xeuaper8ce686ny7hqv';
+// console.log('testing generate....');
+// const testPayload =
+//   'eyJ2b3RlIjoieWVzIiwicHJvcG9zYWwiOnsicHJvcG9zYWxfaWQiOjEyLCJwcm9wb3NhbF9oZWFkaW5nIjoidGVzdGVyMSIsInZvdGluZ19vcHRpb25faWQiOjI2fSwicHVia2V5IjoibnB1YmE4amFkdGJiZWJraHhoYWVncTJweXd0OGs1djV3Znd2OHY2cTVya3o5NWdrNDNlYTdzZmc0em4yd2VwempjenpmYXhobWdweCJ9';
+
+// // ed25591
+// // const testPubkey = 'npuba8jadtbbebkhxhaegq2pywt8k5v5wfwv8v6q5rkz95gk43ea7sfg4zn2wepzjczzfaxhmgpx';
+// // const testSign = 'a4jadtcavk64pvs7uc6aawtikevu7jzzvhtu6vfjqt2tsq7vbci2myzm3wrntb8cz3v6gv4ag3khazhhibqqh3t4kk7wueyxkesr6xeuaper8ce686ny7hqv';
+// // const [pk, _] = ndauPubkeyToBytes(testPubkey);
+
+// // secp256k1
+// const testPubkey =
+//   'npuba4jaftckeebfpp3th3xixp2x3i6zq4zgekrugsp7zx7et7haeahky7vf36g25miaaaaaaaaaaaajtz94r9s6wdadvigzjwu28y45rf4xpm7sd583cmrrpb2uj9hb8vt6mmn2mtmz';
+// const testSign =
+//   'ayjaftcggbcaeid9rj2tfhxvykx7r9fzauqnjuknxx7b6eidr7bb52kuwymv62y6vwbcauxqg6sfxd3jydfzfven8k3n6mk7ne68rd7f5rmhdew28j5znsay362yif8w';
+// const [pk, _] = ndauPubkeyToBytes(testPubkey);
+
+// // wallet
+// // const [pk, _] = ndauPubkeyToBytes('npuba4jaftckeeb4wuqt578x5duj8zp4s3e9w2ngx89shf9gmrhk78k453ibing573sg36a3iaaaaaaujp29k993teer7ygkk2x2x5akwghv2m23yikxxghgujezsck5muascnn6rn6e');
 
 // const testPub = ndauPubkeyToHex(testPubkey);
 // console.log('tesetPub', testPub);
 
-// const hexPayload = testPayload
-//   .split('')
-//   .map((d) => d.charCodeAt(0).toString(16))
-//   .join('');
+// const hexPayload = Buffer.from(atob(testPayload)).toString('hex');
+// const bytePayload = new Uint8Array(Buffer.from(atob(testPayload)));
+// const hashPayload = crypto.createHash('sha256').update(bytePayload).digest();
 // console.log('hexPayload:', hexPayload);
 
 // const [sign, al] = ndauSignatureToBytes(testSign);
 
-
-console.log(
-  Generate(
-    'a',
-    pk.key
-  )
-);
+// console.log(Generate('a', pk.key));
 
 // (async function () {
-//   console.log(
-//     'sign.data...........',
-//     sign.data
-//   );
-//   const isValid = await ed.verify(sign.data, hexPayload, ndauPubkeyToBytes(testPubkey));
+//   console.log('sign.data...........', sign.data);
+//   // const isValid = await ed.verify(sign.data, hexPayload, pk.key);
+//   const isValid = await secp256k1.verify(sign.data, hashPayload, pk.key);
 //   console.log(isValid);
 // })();
 
-
-// console.log('Parse pubkey....');
-// ndauPubkeyToHex(
-//   'npuba8jadtbbebkhxhaegq2pywt8k5v5wfwv8v6q5rkz95gk43ea7sfg4zn2wepzjczzfaxhmgpx',
-// );
-
-//'npuba4jaftckeebccsnesydawnbjfp4kq35zdqvte2wpap5kzv8kes9sahv2cigyf2sg9yac4aaaaaa5f9y8n76iwbzc4w6r2u5kf8rznqr38s3e8gjzgibanq28vwbrir3fc3mh25r2'
 // exports.createVotesTableIfNotExists = async () => {
 //   const createVotesTableQuery = pg`
 //     CREATE TABLE IF NOT EXISTS votes (
@@ -191,49 +186,70 @@ exports.hasUserVoted = async (req, res, next) => {};
 
 exports.addVote = async (req, res, next) => {
   const { payload, signature } = req.body;
-
-  // const buff = Buffer.from(payload, 'base64');
-  const vote = JSON.parse(buff.toString('utf-8'));
-  const pubkey = vote.pubkey;
-
-  console.log('vote, pubkey, signature', vote, pubkey, signature);
-  console.log('legn........', pubkey.length);
-  const pubkeyHex = pubkey.substring(4);
-  console.log('pubkeyHex........', pubkey.pubkeyHex);
-  const pubkeyBytes = Uint8Array.from(pubkeyHex.match(/.{1,2}/g).map((byte) => parseInt(byte, 16)));
-  console.log('pubkeyBytes........', pubkeyBytes);
-  const signatureBytes = Uint8Array.from(signature);
-
-  console.log('signatureBytes........', signatureBytes);
   try {
-    //const sha256 = crypto.createHash('sha256');
-    // const msg = sha256.update(payload).digest();
-    // generate privKey
-    // let privKey = crypto.randomBytes(32);
-    // do {
-    //   privKey = crypto.randomBytes(32);
-    // } while (!secp256k1.privateKeyVerify(privKey));
+    b64DecodedMsg = atob(payload);
+    const ballot = JSON.parse(decodedMsg);
+    const { pubkey, proposal, wallet_address } = vote;
+    const { proposal_id, voting_option_id } = proposal;
 
-    // // get the public key in a compressed format
-    // const pubKey = secp256k1.publicKeyCreate(privKey);
+    console.log('ballot, pubkey, wallet_address, signature', ballot, pubkey, wallet_address, signature);
 
-    // // sign the message
-    // const sigObj = secp256k1.ecdsaSign(msg, privKey);
+    const account = await getAccount(address);
+    if (!account) {
+      res.status(400).json({
+        status: false,
+        message: "Wallet address not found or blank",
+      });
+    }
 
-    // // verify the signature
-    // console.log(secp256k1.ecdsaVerify(sigObj.signature, msg, pubKey));
-    // // => true
+    const { validationKeys } = account[address];
+    const ndauPubkey = validationKeys[0];
 
-    const privateKey = ed.utils.randomPrivateKey();
-    console.log('priv:', typeof privateKey, privateKey);
-    const msg = Uint8Array.from([0xab, 0xbc, 0xcd, 0xde]);
-    const publicKey = await ed.getPublicKey(privateKey);
-    console.log('publicKey:', typeof publicKey, publicKey);
-    const signature = await ed.sign(buff, privateKey);
-    console.log('signature:', typeof signature, signature);
-    const isValid = await ed.verify(signature, buff, pubkey);
+    const [sign, al] = ndauSignatureToBytes(signature);
+    const [pk, _] = ndauPubkeyToBytes(ndauPubkey);
+    // const wallet_address = Generate('a', pk.key);
 
-    console.log(isValid);
+    let hexPayload;
+    let bytePayload;
+    let hashPayload;
+    let isValid = false;
+    switch (al) {
+      case 'Ed25519':
+        hexPayload = Buffer.from(b64DecodedMsg).toString('hex');
+        isValid = await ed.verify(sign.data, hexPayload, pk.key);
+        break;
+      case 'Secp256k1':
+        bytePayload = new Uint8Array(Buffer.from(b64DecodedMsg));
+        hashPayload = crypto.createHash('sha256').update(bytePayload).digest();
+        isValid = await secp256k1.verify(sign.data, hashPayload, pk.key);
+        break;
+      default:
+    }
+
+    console.log('Signature verified: ', isValid);
+    if (isValid) {
+      // Save vote to database
+      const result = await repository.addVote(proposal_id, voting_option_id, wallet_address, ballot, signature, {
+        tracking_number,
+      });
+      if (result && result.vote_id) {
+        res.status(201).json({
+          status: true,
+          message: "Ballot added",
+        });
+      } else {
+        res.status(500).json({
+          status: "false",
+          message: "server error: failed to save ballot to database",
+        });
+       
+      }
+    } else {
+      res.status(400).json({
+        status: false,
+        message: "Failed in signature verification process",
+      });
+    }
   } catch (e) {
     console.log('error', e);
   }

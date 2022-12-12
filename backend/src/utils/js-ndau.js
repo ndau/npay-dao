@@ -1,39 +1,8 @@
 import { Buffer } from 'node:buffer';
-const crypto = require('node:crypto');
-import { sha256, sha224 } from 'js-sha256';
-const b32 = require('./b32');
 import { IsValidKind } from './address';
-import { UnmarshalText } from './keybase';
-/*
 
-func Generate(kind byte, data []byte) (Address, error) {
-	if !IsValidKind(kind) {
-		return emptyA(), newError(fmt.Sprintf("invalid kind: %x", kind))
-	}
-	if len(data) < MinDataLength {
-		return emptyA(), newError("insufficient quantity of data")
-	}
-	// the hash contains the last HashTrim bytes of the sha256 of the data
-	h := sha256.Sum256(data)
-	h1 := h[len(h)-HashTrim:]
-
-	// an ndau address always starts with nd and a "kind" character
-	// so we figure out what characters we want and build that into a header
-	prefix :=
-		b32.Index(addrPrefix[0:1])<<11 +
-			b32.Index(addrPrefix[1:2])<<6 +
-			b32.Index(string(kind))<<1
-	hdr := []byte{byte((prefix >> 8) & 0xFF), byte(prefix & 0xFF)}
-	h2 := append(hdr, h1...)
-	// then we checksum that result and append the checksum
-	h2 = append(h2, b32.Checksum16(h2)...)
-
-	r := b32.Encode(h2)
-	return Address{addr: r}, nil
-}
-
-*/
-
+const crypto = require('node:crypto');
+const b32 = require('./b32');
 
 
 // All addresses start with this 2-byte prefix, followed by a kind byte.
@@ -85,7 +54,6 @@ export function Generate(kind, data) {
 
   const h1 = new Uint8Array(h).slice(h.byteLength - HashTrim); // h1 := h[len(h)-HashTrim:]
 
-  console.log('h.....', h);
   console.log('h1.....', h1);
 
   // an ndau address always starts with nd and a "kind" character
@@ -100,12 +68,14 @@ export function Generate(kind, data) {
 
   const hdr = new Uint8Array([(prefix >> 8) & 0xff,prefix & 0xff]);
   console.log('hdr.....', hdr);
-  const h2 = Buffer.concat([hdr, h1]);
+  const h2 = new Uint8Array(Buffer.concat([hdr, h1]));
   console.log('h2.....', h2);
   // then we checksum that result and append the checksum
-  const ck = b32.Checksum16(h2);
-  console.log('ck.....', ck);
-  const h3 = Buffer.concat([h2, ck]);
+  let ck = b32.Checksum16(h2);
+  //  const ck = cksumN(h2, 2);
+  console.log('ck.....', ck); // 
+  // ck = new Uint8Array([222, 125]);
+  const h3 = new Uint8Array(Buffer.concat([h2, ck]));
   console.log('h3.....', h3);
   const r = b32.Encode(h3);
   return [{ addr: r }, null];
