@@ -1,4 +1,4 @@
-interface pollResponseBaseObjI {
+export interface pollResponseBaseObjI {
   approved_on: string;
   proposal_heading: string;
   summary: string;

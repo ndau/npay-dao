@@ -1,17 +1,17 @@
 const { pg } = require('../pg');
 const checkIsBodyIncomplete = require('../utils/checkIsBodyIncomplete');
 
-const createAdminsTableIfNotExists = async () => {
-  const createAdminsTableQuery = pg`
-    CREATE TABLE IF NOT EXISTS admins (
-        admin_ID SERIAL PRIMARY KEY,
-        wallet_address TEXT UNIQUE
-    )
-    `;
+// const createAdminsTableIfNotExists = async () => {
+//   const createAdminsTableQuery = pg`
+//     CREATE TABLE IF NOT EXISTS admins (
+//         admin_ID SERIAL PRIMARY KEY,
+//         wallet_address TEXT UNIQUE
+//     )
+//     `;
 
-  const adminsTable = await createAdminsTableQuery;
-  return adminsTable;
-};
+//   const adminsTable = await createAdminsTableQuery;
+//   return adminsTable;
+// };
 
 exports.createAdmin = async ({ adminAddress }) => {
   try {
@@ -23,7 +23,7 @@ exports.createAdmin = async ({ adminAddress }) => {
         message: 'All Inputs are Required..!',
       };
     } else {
-      await createAdminsTableIfNotExists();
+      // await createAdminsTableIfNotExists();
 
       const adminObject = {
         wallet_address: adminAddress,

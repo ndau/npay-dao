@@ -8,7 +8,6 @@ import VoteOption from "./VoteOption/VoteOption";
 import { useEffect, useState } from "react";
 import useMediaQuery from "../../utils/hooks/useMediaQuery";
 import { useNavigate } from "react-router-dom";
-import VoteButton from "../VoteButton/VoteButton";
 import {
   destructuredPollComponentValuesI,
   pollComponentProps,
