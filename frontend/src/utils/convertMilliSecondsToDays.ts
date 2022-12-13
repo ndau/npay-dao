@@ -1,5 +1,5 @@
 const convertMilliSecondsToDaysAndHours = (_milliseconds: number) => {
-  let days = undefined;
+  let days;
   let hours = _milliseconds / (1000 * 60 * 60);
   if (hours >= 24) {
     days = Math.floor(hours / 24);

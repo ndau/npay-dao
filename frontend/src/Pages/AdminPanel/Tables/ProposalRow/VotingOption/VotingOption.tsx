@@ -3,7 +3,7 @@ interface votingOptionsI {
 }
 
 const VotingOptions = (props: votingOptionsI) => {
-  let votingOptionsArray = [];
+  let votingOptionsArray;
   //checking if the props are from Unapproved api or approve/rejected api
   if (Array.isArray(props.voting_options)) {
     votingOptionsArray = props.voting_options;

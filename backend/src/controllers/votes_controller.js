@@ -189,10 +189,10 @@ exports.addVote = async (req, res, next) => {
   try {
     const b64DecodedMsg = atob(payload);
     const ballot = JSON.parse(b64DecodedMsg);
-    const { pubkey, proposal, wallet_address } = ballot;
+    const { validation_key, proposal, wallet_address } = ballot;
     const { proposal_id, voting_option_id } = proposal;
 
-    console.log('ballot, pubkey, wallet_address, signature', ballot, pubkey, wallet_address, signature);
+    console.log('ballot, validation_key, wallet_address, signature', ballot, validation_key, wallet_address, signature);
 
     const account = await getAccount(wallet_address);
     if (!account || !account[wallet_address]) {
@@ -205,7 +205,7 @@ exports.addVote = async (req, res, next) => {
     const { validationKeys } = account[wallet_address];
     const ndauPubkey = validationKeys[0];
     console.log('ndauPubkey.....', ndauPubkey);
-    if (pubkey !== ndauPubkey) {
+    if (validation_key !== ndauPubkey) {
       return res.status(400).json({
         status: false,
         message: 'The validation keys are mismatched. Please try again!',

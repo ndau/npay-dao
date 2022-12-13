@@ -221,7 +221,7 @@ const VoteButton = ({ dynamicClassName, allowVote, selectedVoteOption }: VoteBut
                     size="sm"
                     value={payload}
                     rows={4}
-                    placeholder="Your Sign Payload (Base64 Encoded)"
+                    placeholder="Your Sign Payload (Base64 Encoded). Click to copy to clipboard"
                     readOnly
                   />
                 </CopyToClipboard>
