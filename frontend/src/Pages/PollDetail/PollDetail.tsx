@@ -252,6 +252,7 @@ const PollDetail = () => {
                             </Button>
                           ) : (
                             <VoteButton
+                            allowVote={selectedVoteOptionIndexState !== undefined}
                               selectedVoteOption={{
                                 proposal_id,
                                 proposal_heading,

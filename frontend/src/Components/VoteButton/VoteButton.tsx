@@ -10,12 +10,15 @@ import * as yup from 'yup';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { axiosRequest } from '../../api/api';
 import { AxiosError } from 'axios';
+import { getAccount } from '../../helpers/fetch';
+import { useDebouncedCallback } from 'use-debounce';
 
 import { socketBase } from '../../types/socketTypes';
 import useNdauConnectStore from '../../store/ndauConnect_store';
 
 type VoteButtonPropsI = {
   dynamicClassName?: string;
+  allowVote?: boolean;
   selectedVoteOption: {
     proposal_id: number;
     proposal_heading: string;
@@ -23,26 +26,39 @@ type VoteButtonPropsI = {
     voting_option_heading: string;
   };
 };
-const helperTextClass = {
-  fontSize: 14,
-  color: 'grey',
-  margin: 0,
-};
 
 interface FormInputsI {
-  pubkey: string;
   payload: string;
   signature: string;
-  walletAddress?: string;
+  wallet_address: string;
+  connectedWallet?: string;
 }
 
 const schema = yup.object({
-  pubkey: yup.string().required('Heading is required'),
+  wallet_address: yup.string().required('Wallet address is required'),
   payload: yup.string(),
-  signature: yup.string().required('Voting period is required'),
+  signature: yup.string().required('Signature is required'),
 });
 
-const VoteButton = ({ dynamicClassName, selectedVoteOption }: VoteButtonPropsI) => {
+const asyncFetchPublicKey = async (address: string) => {
+  const account = await getAccount(address);
+  if (account === null) {
+    return null; // Address not valid
+  } else {
+    const details = account[address];
+    if (!details) {
+      return 'blank'; // Wallet is blank
+    }
+
+    if (!details.validationKeys || details.validationKeys.length === 0) {
+      return 'empty';
+    }
+
+    return details.validationKeys[0]; // Wallet may has no any validation keys
+  }
+};
+
+const VoteButton = ({ dynamicClassName, allowVote, selectedVoteOption }: VoteButtonPropsI) => {
   const {
     proposal_id,
     proposal_heading,
@@ -50,11 +66,37 @@ const VoteButton = ({ dynamicClassName, selectedVoteOption }: VoteButtonPropsI) 
     voting_option_heading,
   } = selectedVoteOption;
 
-  const walletAddress = useNdauConnectStore((state) => state.walletAddress);
+  const connectedWallet = useNdauConnectStore((state) => state.walletAddress);
   const socket = useNdauConnectStore((state) => state.socket);
   const [voteOffline, setVoteOffline] = useState(false);
-  const [pubkey, setPubkey] = useState('');
+  const [pubkey, setPubkey] = useState<any>();
   const [payload, setPayload] = useState<string>('');
+
+  const handleAddressChange = useDebouncedCallback(
+    async (value) => {
+      const validationKey = await asyncFetchPublicKey(value);
+      setPubkey(validationKey);
+      console.log('validationKey.....', validationKey);
+      if (validationKey !== null && validationKey !== 'blank' && validationKey !== 'empty') {
+        const payload = {
+          vote: 'yes',
+          proposal: {
+            proposal_id,
+            proposal_heading,
+            voting_option_id: selectedVoteOptionId,
+            voting_option_heading,
+          },
+          wallet_address: value,
+          validation_key: validationKey,
+        };
+
+        setPayload(btoa(JSON.stringify(payload)));
+      }
+    },
+    500,
+    { maxWait: 2000 }
+  );
+
   const {
     register,
     handleSubmit,
@@ -93,33 +135,12 @@ const VoteButton = ({ dynamicClassName, selectedVoteOption }: VoteButtonPropsI) 
     }
   };
 
-  const handlePubkeyChange = (e: any) => {
-    const pubkey = e.target.value;
-    setPubkey(pubkey);
-
-    const payload = {
-      vote: 'yes',
-      proposal: {
-        proposal_id,
-        proposal_heading,
-        voting_option_id: selectedVoteOptionId,
-        voting_option_heading,
-      },
-      pubkey,
-    };
-
-    setPayload(btoa(JSON.stringify(payload)));
-  };
-
-  const signManually = async ({ pubkey, signature }: FormInputsI) => {
-    console.log('pubkey, payload, signature', pubkey, payload, signature);
+  const signManually = async ({ signature }: FormInputsI) => {
+    console.log('payload, signature', payload, signature);
     try {
       const resp = await axiosRequest('post', 'vote', {
-        pubkey: 'npuba4jaftckeeb4wuqt578x5duj8zp4s3e9w2ngx89shf9gmrhk78k453ibing573sg36a3iaaaaaaujp29k993teer7ygkk2x2x5akwghv2m23yikxxghgujezsck5muascnn6rn6e',
-        payload: btoa(
-          '{"vote":"yes","proposal":{"proposal_id":1,"proposal_heading":"Demo Proposal","voting_option_id":1,"voting_option_heading":"Test Vote Option 1"},"pubkey":"npuba4jaftckeeb4wuqt578x5duj8zp4s3e9w2ngx89shf9gmrhk78k453ibing573sg36a3iaaaaaaujp29k993teer7ygkk2x2x5akwghv2m23yikxxghgujezsck5muascnn6rn6e"}'
-        ),
-        signature: 'aujaftchgbcseiia6c8cvercf5zi3zmz7bpid6nf3qi799348z9hma5c8rm427ahg6tseicqd65y62c5wtaze9ic5sm5hk7z9gjue3kcrgzj6tt2jrycunbdicikdx46',
+        payload,
+        signature,
       });
 
       toast.success(resp.data.message);
@@ -135,12 +156,14 @@ const VoteButton = ({ dynamicClassName, selectedVoteOption }: VoteButtonPropsI) 
   const onCopy = () => {
     toast.info('Sign Payload Coppied');
   };
+
   return (
     <>
       <div>
         {!voteOffline && (
           <Button
-            onClick={() => submitVote(socket, selectedVoteOptionId, walletAddress, true)}
+            disabled={!allowVote}
+            onClick={() => submitVote(socket, selectedVoteOptionId, connectedWallet, true)}
             className={dynamicClassName}
             variant="success"
           >
@@ -148,8 +171,8 @@ const VoteButton = ({ dynamicClassName, selectedVoteOption }: VoteButtonPropsI) 
           </Button>
         )}{' '}
         <Button
-          disabled={!!walletAddress}
-          onClick={() => submitVote(socket, selectedVoteOptionId, walletAddress, false)}
+          disabled={!!connectedWallet || !allowVote}
+          onClick={() => submitVote(socket, selectedVoteOptionId, connectedWallet, false)}
           variant="primary"
         >
           {!voteOffline ? 'Sign Manually' : 'Hide'}
@@ -172,11 +195,20 @@ const VoteButton = ({ dynamicClassName, selectedVoteOption }: VoteButtonPropsI) 
                     borderColor: '#70707059',
                   }}
                   size="sm"
-                  placeholder="Paste your Account Address Public Key. Ex: npuba4jaf..."
-                  {...register('pubkey')}
+                  placeholder="Paste your ndau wallet address"
+                  {...register('wallet_address')}
                   isInvalid={!!errors}
-                  onChange={handlePubkeyChange}
+                  onChange={(e) => handleAddressChange(e.target.value)}
                 />
+                {(pubkey === null || pubkey === 'blank' || pubkey === 'empty') && (
+                  <Form.Control.Feedback type="invalid">
+                    {pubkey === null
+                      ? 'Wallet address is INVALID'
+                      : pubkey === 'blank'
+                      ? 'Wallet address is BLANK'
+                      : 'Wallet address is EMPTY'}
+                  </Form.Control.Feedback>
+                )}
               </Row>
               <Row>
                 <CopyToClipboard text={payload} onCopy={onCopy}>
@@ -208,7 +240,12 @@ const VoteButton = ({ dynamicClassName, selectedVoteOption }: VoteButtonPropsI) 
               </Row>
 
               <Row>
-                <Button style={{ marginTop: 6 }} disabled={!!walletAddress} type="submit" variant="primary">
+                <Button
+                  style={{ marginTop: 6 }}
+                  disabled={!!connectedWallet || pubkey === null || pubkey === 'blank' || pubkey === 'empty'}
+                  type="submit"
+                  variant="primary"
+                >
                   Vote
                 </Button>
               </Row>

@@ -2,7 +2,7 @@ import { ndauSignatureToBytes } from '../utils/signature';
 import { ndauPubkeyToBytes, ndauPubkeyToHex } from '../utils/public_key';
 import { Generate } from '../utils/address';
 import repository from '../repository';
-import { getAccount} from '../helpers/fetch';
+import { getAccount } from '../helpers/fetch';
 
 const crypto = require('crypto');
 const secp256k1 = require('@noble/secp256k1');
@@ -187,24 +187,32 @@ exports.hasUserVoted = async (req, res, next) => {};
 exports.addVote = async (req, res, next) => {
   const { payload, signature } = req.body;
   try {
-    b64DecodedMsg = atob(payload);
-    const ballot = JSON.parse(decodedMsg);
-    const { pubkey, proposal, wallet_address } = vote;
+    const b64DecodedMsg = atob(payload);
+    const ballot = JSON.parse(b64DecodedMsg);
+    const { pubkey, proposal, wallet_address } = ballot;
     const { proposal_id, voting_option_id } = proposal;
 
     console.log('ballot, pubkey, wallet_address, signature', ballot, pubkey, wallet_address, signature);
 
-    const account = await getAccount(address);
-    if (!account) {
-      res.status(400).json({
+    const account = await getAccount(wallet_address);
+    if (!account || !account[wallet_address]) {
+      return res.status(400).json({
         status: false,
-        message: "Wallet address not found or blank",
+        message: 'Wallet address not found or blank',
       });
     }
 
-    const { validationKeys } = account[address];
+    const { validationKeys } = account[wallet_address];
     const ndauPubkey = validationKeys[0];
+    console.log('ndauPubkey.....', ndauPubkey);
+    if (pubkey !== ndauPubkey) {
+      return res.status(400).json({
+        status: false,
+        message: 'The validation keys are mismatched. Please try again!',
+      });
+    }
 
+    console.log('Extracting signature...');
     const [sign, al] = ndauSignatureToBytes(signature);
     const [pk, _] = ndauPubkeyToBytes(ndauPubkey);
     // const wallet_address = Generate('a', pk.key);
@@ -227,27 +235,25 @@ exports.addVote = async (req, res, next) => {
     }
 
     console.log('Signature verified: ', isValid);
-    if (isValid) {
-      // Save vote to database
-      const result = await repository.addVote(proposal_id, voting_option_id, wallet_address, ballot, signature, {
-        tracking_number,
-      });
-      if (result && result.vote_id) {
-        res.status(201).json({
-          status: true,
-          message: "Ballot added",
-        });
-      } else {
-        res.status(500).json({
-          status: "false",
-          message: "server error: failed to save ballot to database",
-        });
-       
-      }
-    } else {
-      res.status(400).json({
+    if (!isValid) {
+      return res.status(400).json({
         status: false,
-        message: "Failed in signature verification process",
+        message: 'Failed in signature verification process',
+      });
+    }
+    // Save vote to database
+    const result = await repository.addVote(proposal_id, voting_option_id, wallet_address, ballot, signature, {
+      tracking_number,
+    });
+    if (result && result.vote_id) {
+      res.status(201).json({
+        status: true,
+        message: 'Ballot added',
+      });
+    } else {
+      res.status(500).json({
+        status: 'false',
+        message: 'server error: failed to save ballot to database',
       });
     }
   } catch (e) {
