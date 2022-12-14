@@ -20,12 +20,22 @@ const checkIsBodyIncomplete = require('../utils/checkIsBodyIncomplete');
 // // const testSign = 'a4jadtcavk64pvs7uc6aawtikevu7jzzvhtu6vfjqt2tsq7vbci2myzm3wrntb8cz3v6gv4ag3khazhhibqqh3t4kk7wueyxkesr6xeuaper8ce686ny7hqv';
 // // const [pk, _] = ndauPubkeyToBytes(testPubkey);
 
-// // secp256k1
+// secp256k1
 // const testPubkey =
 //   'npuba4jaftckeebfpp3th3xixp2x3i6zq4zgekrugsp7zx7et7haeahky7vf36g25miaaaaaaaaaaaajtz94r9s6wdadvigzjwu28y45rf4xpm7sd583cmrrpb2uj9hb8vt6mmn2mtmz';
 // const testSign =
 //   'ayjaftcggbcaeid9rj2tfhxvykx7r9fzauqnjuknxx7b6eidr7bb52kuwymv62y6vwbcauxqg6sfxd3jydfzfven8k3n6mk7ne68rd7f5rmhdew28j5znsay362yif8w';
 // const [pk, _] = ndauPubkeyToBytes(testPubkey);
+
+/**************** test case 1 : Secp256k1 */
+// const testPayload =
+//   'eyJ2b3RlIjoieWVzIiwicHJvcG9zYWwiOnsicHJvcG9zYWxfaWQiOjEsInByb3Bvc2FsX2hlYWRpbmciOiJEZW1vIFByb3Bvc2FsIiwidm90aW5nX29wdGlvbl9pZCI6Miwidm90aW5nX29wdGlvbl9oZWFkaW5nIjoiVGVzdCBWb3RlIE9wdGlvbiAzIn0sIndhbGxldF9hZGRyZXNzIjoibmRhZjlnOTJxeXJuZzM5eXc1Y242NWNlcWh3aWFzeGVxeHhjZTM1dmU4enNwbWtmIiwidmFsaWRhdGlvbl9rZXkiOiJucHViYTRqYWZ0Y2tlZWI3bmFoNmF5NnFhaDk5bXBzc2t3YzJ2YnUyaWd6dGo2M3U1azVtMmN5d3lneWhxZGJxeXIyZ21zbmhpYWFhYWFhdDhpMjhxbnM3Mmt3aHE2M3AyM2FpaHcyaHQ0NGJicnBiNTZneDYzYnd3ZmtkZ2F4cmFqZGFuejZpM3AzNiJ9';
+// const testPubkey =
+//   'npuba4jaftckeeb7nah6ay6qah99mpsskwc2vbu2igztj63u5k5m2cywygyhqdbqyr2gmsnhiaaaaaat8i28qns72kwhq63p23aihw2ht44bbrpb56gx63bwwfkdgaxrajdanz6i3p36';
+// const testSign =
+//   'aujaftchgbcseiia4a5bui3j22khc9nrqt8fkbpm7aa4u9gw3m5itsqczchpjfd74rnseia6nwr9asq9hsuvitdvzxtu25kpcw352m5ag692e4v23vmbb9w78v6yiapn';
+// const [pk, _] = ndauPubkeyToBytes(testPubkey);
+/**************** end test case 1 : Secp256k1 */
 
 // // wallet
 // // const [pk, _] = ndauPubkeyToBytes('npuba4jaftckeeb4wuqt578x5duj8zp4s3e9w2ngx89shf9gmrhk78k453ibing573sg36a3iaaaaaaujp29k993teer7ygkk2x2x5akwghv2m23yikxxghgujezsck5muascnn6rn6e');
@@ -36,11 +46,13 @@ const checkIsBodyIncomplete = require('../utils/checkIsBodyIncomplete');
 // const hexPayload = Buffer.from(atob(testPayload)).toString('hex');
 // const bytePayload = new Uint8Array(Buffer.from(atob(testPayload)));
 // const hashPayload = crypto.createHash('sha256').update(bytePayload).digest();
+// console.log('testPayload:', testPayload.length, testPayload);
 // console.log('hexPayload:', hexPayload);
+// console.log('hashPayload:', hashPayload);
 
 // const [sign, al] = ndauSignatureToBytes(testSign);
 
-// console.log(Generate('a', pk.key));
+// // console.log(Generate('a', pk.key));
 
 // (async function () {
 //   console.log('sign.data...........', sign.data);
@@ -213,7 +225,13 @@ exports.addVote = async (req, res, next) => {
     }
 
     console.log('Extracting signature...');
-    const [sign, al] = ndauSignatureToBytes(signature);
+    const [sign, err] = ndauSignatureToBytes(signature);
+    if (err !== null) {
+      return res.status(400).json({
+        status: false,
+        message: 'Bad signature',
+      });
+    }
     const [pk, _] = ndauPubkeyToBytes(ndauPubkey);
     // const wallet_address = Generate('a', pk.key);
 
@@ -221,7 +239,7 @@ exports.addVote = async (req, res, next) => {
     let bytePayload;
     let hashPayload;
     let isValid = false;
-    switch (al) {
+    switch (sign.algorithm) {
       case 'Ed25519':
         hexPayload = Buffer.from(b64DecodedMsg).toString('hex');
         isValid = await ed.verify(sign.data, hexPayload, pk.key);
@@ -232,6 +250,10 @@ exports.addVote = async (req, res, next) => {
         isValid = await secp256k1.verify(sign.data, hashPayload, pk.key);
         break;
       default:
+        return res.status(400).json({
+          status: false,
+          message: 'Unsupported signature algorithm',
+        });
     }
 
     console.log('Signature verified: ', isValid);

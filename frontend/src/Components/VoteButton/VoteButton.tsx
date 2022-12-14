@@ -205,8 +205,8 @@ const VoteButton = ({ dynamicClassName, allowVote, selectedVoteOption }: VoteBut
                     {pubkey === null
                       ? 'Wallet address is INVALID'
                       : pubkey === 'blank'
-                      ? 'Wallet address is BLANK'
-                      : 'Wallet address is EMPTY'}
+                      ? 'This address has no validation keys'
+                      : 'Cannot find a validation key'}
                   </Form.Control.Feedback>
                 )}
               </Row>

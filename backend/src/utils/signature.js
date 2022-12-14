@@ -2,12 +2,16 @@ import { Algorithm, unmarshal } from './algorithm';
 import { UnmarshalText } from './keybase';
 
 export function ndauSignatureToBytes(ndauSignature) {
-  const [signature, err] = UnmarshalText(ndauSignature, Unmarshal);
-  if (err && err.length > 0) {
-    console.log(err);
-    return [null, err];
+  try {
+    const [signature, err] = UnmarshalText(ndauSignature, Unmarshal);
+    if (err && err.length > 0) {
+      console.log(err);
+      return [null, err];
+    }
+    return [signature, null];
+  } catch (e) {
+    return [null, e];
   }
-  return [signature, null];
 }
 
 // Unmarshal unmarshals the serialized binary data into the supplied signature instance
