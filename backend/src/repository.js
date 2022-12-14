@@ -23,6 +23,23 @@ const repository = {
     return db_query(QUERY.any, sql, [], isTx, errMsg || `${tracking_number} Error reading data from the table votes`);
   },
 
+  countVoteByAddress: async (
+    proposal_id,
+    user_address,
+    { isTx = false, errMsg = '', tracking_number = '' } = {}
+  ) => {
+    const sql = `SELECT COUNT(*) from votes WHERE user_address = $1 and proposal_id = $2`;
+
+    return db_query(
+      QUERY.one,
+      sql,
+      [user_address, proposal_id],
+      isTx,
+      errMsg ||
+        `${tracking_number} Error counting votes of address ${user_address} for the proposal ${proposal_id} from the votes table`
+    );
+  },
+
   addVote: async (
     proposal_id,
     voting_option_id,

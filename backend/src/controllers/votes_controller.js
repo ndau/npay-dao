@@ -263,9 +263,19 @@ exports.addVote = async (req, res, next) => {
         message: 'Failed in signature verification process',
       });
     }
+
+    const alreadyVoted = await repository.countVoteByAddress(proposal_id, wallet_address);
+    console.log('alreadyVoted:',alreadyVoted)
+    if (alreadyVoted && alreadyVoted.count > 0) {
+      return res.status(400).json({
+        status: false,
+        message: 'This wallet address voted already',
+      });
+    }
+
     // Save vote to database
     const result = await repository.addVote(proposal_id, voting_option_id, wallet_address, ballot, signature, {
-      tracking_number,
+      tracking_number: '',
     });
     if (result && result.vote_id) {
       res.status(201).json({
