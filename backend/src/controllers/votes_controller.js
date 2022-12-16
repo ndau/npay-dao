@@ -3,6 +3,7 @@ import { ndauPubkeyToBytes, ndauPubkeyToHex } from '../utils/public_key';
 import { Generate } from '../utils/address';
 import repository from '../repository';
 import { getAccount } from '../helpers/fetch';
+import yaml from 'yaml';
 
 const crypto = require('crypto');
 const secp256k1 = require('@noble/secp256k1');
@@ -207,7 +208,7 @@ exports.addVote = async (req, res, next) => {
   const { payload, signature } = req.body;
   try {
     const b64DecodedMsg = atob(payload);
-    const ballot = JSON.parse(b64DecodedMsg);
+    const ballot = yaml.parse(b64DecodedMsg);
     const { validation_key, proposal, wallet_address } = ballot;
     const { proposal_id, voting_option_id } = proposal;
 
