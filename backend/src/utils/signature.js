@@ -5,7 +5,6 @@ export function ndauSignatureToBytes(ndauSignature) {
   try {
     const [signature, err] = UnmarshalText(ndauSignature, Unmarshal);
     if (err && err.length > 0) {
-      console.log(err);
       return [null, err];
     }
     return [signature, null];

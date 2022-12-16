@@ -7,6 +7,7 @@ import Button from 'react-bootstrap/Button';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import yaml from 'yaml';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { axiosRequest } from '../../api/api';
 import { AxiosError } from 'axios';
@@ -90,7 +91,7 @@ const VoteButton = ({ dynamicClassName, allowVote, selectedVoteOption }: VoteBut
           validation_key: validationKey,
         };
 
-        setPayload(btoa(JSON.stringify(payload)));
+        setPayload(btoa(yaml.stringify(payload)));
       }
     },
     500,

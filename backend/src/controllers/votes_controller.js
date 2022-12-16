@@ -37,41 +37,48 @@ const checkIsBodyIncomplete = require('../utils/checkIsBodyIncomplete');
 // const [pk, _] = ndauPubkeyToBytes(testPubkey);
 /**************** end test case 1 : Secp256k1 */
 
-// // wallet
-// // const [pk, _] = ndauPubkeyToBytes('npuba4jaftckeeb4wuqt578x5duj8zp4s3e9w2ngx89shf9gmrhk78k453ibing573sg36a3iaaaaaaujp29k993teer7ygkk2x2x5akwghv2m23yikxxghgujezsck5muascnn6rn6e');
+/**************** test case 2 : Secp256k1 - wallet app with plain text payload*/
+// let testPayload =
+//   '{"vote":"yes","proposal":{"proposal_id":1,"proposal_heading":"Demo Proposal","voting_option_id":1,"voting_option_heading":"Test Vote Option 1"},"pubkey":"npuba4jaftckeeb4wuqt578x5duj8zp4s3e9w2ngx89shf9gmrhk78k453ibing573sg36a3iaaaaaaujp29k993teer7ygkk2x2x5akwghv2m23yikxxghgujezsck5muascnn6rn6e"}';
+// const testPubkey =
+//   'npuba4jaftckeeb4wuqt578x5duj8zp4s3e9w2ngx89shf9gmrhk78k453ibing573sg36a3iaaaaaaujp29k993teer7ygkk2x2x5akwghv2m23yikxxghgujezsck5muascnn6rn6e';
+// const testSign =
+//   'aujaftchgbcseiia6c8cvercf5zi3zmz7bpid6nf3qi799348z9hma5c8rm427ahg6tseicqd65y62c5wtaze9ic5sm5hk7z9gjue3kcrgzj6tt2jrycunbdicikdx46';
+// const [pk, _] = ndauPubkeyToBytes(testPubkey);
+/**************** end test case 2 : Secp256k1 */
+
+/**************** test case 3 : Secp256k1 - wallet app with base64 encoded payload*/
+/* IMPORTANT: The command line echo .... | base64 DO NOT produce a correct encoded 
+const testPayload =
+  'eyJ2b3RlIjoieWVzIiwicHJvcG9zYWwiOnsicHJvcG9zYWxfaWQiOjEsInByb3Bvc2FsX2hlYWRpbmciOiJEZW1vIFByb3Bvc2FsIiwidm90aW5nX29wdGlvbl9pZCI6MSwidm90aW5nX29wdGlvbl9oZWFkaW5nIjoiVGVzdCBWb3RlIE9wdGlvbiAxIn0sInB1YmtleSI6Im5wdWJhNGphZnRja2VlYjR3dXF0NTc4eDVkdWo4enA0czNlOXcybmd4ODlzaGY5Z21yaGs3OGs0NTNpYmluZzU3M3NnMzZhM2lhYWFhYWF1anAyOWs5OTN0ZWVyN3lna2syeDJ4NWFrd2dodjJtMjN5aWt4eGdoZ3VqZXpzY2s1bXVhc2NubjZybjZlIn0=';
+const testPubkey =
+  'npuba4jaftckeeb4wuqt578x5duj8zp4s3e9w2ngx89shf9gmrhk78k453ibing573sg36a3iaaaaaaujp29k993teer7ygkk2x2x5akwghv2m23yikxxghgujezsck5muascnn6rn6e';
+const testSign =
+  'aujaftchgbcseiia6c8cvercf5zi3zmz7bpid6nf3qi799348z9hma5c8rm427ahg6tseicqd65y62c5wtaze9ic5sm5hk7z9gjue3kcrgzj6tt2jrycunbdicikdx46';
+const [pk, _] = ndauPubkeyToBytes(testPubkey);
+/**************** end test case 3 : Secp256k1 */
 
 // const testPub = ndauPubkeyToHex(testPubkey);
 // console.log('tesetPub', testPub);
 
-// const hexPayload = Buffer.from(atob(testPayload)).toString('hex');
-// const bytePayload = new Uint8Array(Buffer.from(atob(testPayload)));
+// //const bytePayload = new Uint8Array(Buffer.from(testPayload));
+// const bytePayload = new Uint8Array(Buffer.from(testPayload, 'base64'));
 // const hashPayload = crypto.createHash('sha256').update(bytePayload).digest();
+// const hexPayload = Buffer.from(atob(testPayload)).toString('hex');
 // console.log('testPayload:', testPayload.length, testPayload);
 // console.log('hexPayload:', hexPayload);
 // console.log('hashPayload:', hashPayload);
 
+// console.log('testSign:', testSign);
 // const [sign, al] = ndauSignatureToBytes(testSign);
 
 // // console.log(Generate('a', pk.key));
 
 // (async function () {
-//   console.log('sign.data...........', sign.data);
 //   // const isValid = await ed.verify(sign.data, hexPayload, pk.key);
 //   const isValid = await secp256k1.verify(sign.data, hashPayload, pk.key);
-//   console.log(isValid);
+//   console.log('Valid sig: ', isValid);
 // })();
-
-// exports.createVotesTableIfNotExists = async () => {
-//   const createVotesTableQuery = pg`
-//     CREATE TABLE IF NOT EXISTS votes (
-//           vote_id SERIAL PRIMARY KEY,
-//           voting_option_id integer references voting_options(voting_option_id),
-//           user_address TEXT
-//       )`;
-
-//   const voteTable = await createVotesTableQuery;
-//   return voteTable;
-// };
 
 const getProposalDetailsForVotingOption = async (_votingOptionId) => {
   const getProposalIdForVotingOptionQuery = pg`
@@ -265,7 +272,7 @@ exports.addVote = async (req, res, next) => {
     }
 
     const alreadyVoted = await repository.countVoteByAddress(proposal_id, wallet_address);
-    console.log('alreadyVoted:',alreadyVoted)
+    console.log('alreadyVoted:', alreadyVoted);
     if (alreadyVoted && alreadyVoted.count > 0) {
       return res.status(400).json({
         status: false,
@@ -292,33 +299,3 @@ exports.addVote = async (req, res, next) => {
     console.log('error', e);
   }
 };
-
-// exports.createVote = async (votingOptionId, userAddress) => {
-//   const voteObject = {
-//     voting_option_id: votingOptionId,
-//     user_address: userAddress,
-//   };
-
-//   console.log(voteObject, "voteObject");
-
-//   try {
-//     const createVoteQuery = pg`
-//       INSERT INTO
-//         votes ${pg(voteObject)}
-//       returning *
-// `;
-
-//     const createdVote = await createVoteQuery;
-//     console.log(createdVote, "createdVote");
-
-//     return {
-//       status: true,
-//       message: "Vote Created",
-//     };
-//   } catch (e) {
-//     console.log(e, "error creating vote");
-//     return {
-//       status: false,
-//     };
-//   }
-// };

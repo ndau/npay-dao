@@ -49,8 +49,8 @@ export function Unmarshal(serialized) {
   if (err != null) {
     return [null, err];
   }
-  console.log('algorithm:', al);
-  console.log('public key data:', typeof data, data);
+  console.log('public key algorithm:', al);
+  console.log('public key length:', data.length);
 
   const [key, ok] = unpack(data);
   key.algorithm = al;
