@@ -64,7 +64,7 @@ const repository = {
   },
 
   getProposalVotesDetails: async (proposal_id, { isTx = false, errMsg = '', tracking_number = '' } = {}) => {
-    const sql = `SELECT v.createdon, v.user_address, v.ballot, v.signature, v.voting_option_id, vo.summary, a.votes voting_power
+    const sql = `SELECT v.createdon, v.user_address, v.ballot, v.signature, v.voting_option_id, vo.summary, COALESCE(v.concluded_votes, a.votes) voting_power
 									 FROM proposals p
 									 JOIN voting_options vo on p.proposal_id = vo.proposal_id
 									 JOIN votes v on v.voting_option_id = vo.voting_option_id
