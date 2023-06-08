@@ -1,8 +1,8 @@
-const convertSecondsToVotingPeriod = require('../utils/convertSecondsToVotingPeriod');
-const checkIsBodyIncomplete = require('../utils/checkIsBodyIncomplete');
+const convertSecondsToVotingPeriod = require("../utils/convertSecondsToVotingPeriod");
+const checkIsBodyIncomplete = require("../utils/checkIsBodyIncomplete");
 
-const { pg } = require('../pg');
-import repository from '../repository';
+const { pg } = require("../pg");
+import repository from "../repository";
 
 // const createVotingOptionsTableIfNotExists = async () => {
 //   const createVotingOptionsTableQuery = pg`
@@ -41,7 +41,8 @@ import repository from '../repository';
 
 exports.createProposal = async (req, res, next) => {
   try {
-    const { heading, summary, votingPeriod, votingOptions, walletAddress } = req.body;
+    const { heading, summary, votingPeriod, votingOptions, walletAddress } =
+      req.body;
 
     const isAnyValUndefined = checkIsBodyIncomplete({
       heading,
@@ -52,16 +53,16 @@ exports.createProposal = async (req, res, next) => {
 
     if (!walletAddress) {
       res.status(400).json({
-        status: 'false',
-        message: 'Wallet Not Available',
+        status: "false",
+        message: "Wallet Not Available",
       });
       return;
     }
     const firstTwoLettersOfAddress = walletAddress.slice(0, 2);
-    if (walletAddress.length != 48 || firstTwoLettersOfAddress !== 'nd') {
+    if (walletAddress.length != 48 || firstTwoLettersOfAddress !== "nd") {
       res.status(400).json({
-        status: 'false',
-        message: 'wallet-address does not belong to the ndau chain',
+        status: "false",
+        message: "wallet-address does not belong to the ndau chain",
       });
       return;
     }
@@ -69,7 +70,7 @@ exports.createProposal = async (req, res, next) => {
     if (isAnyValUndefined) {
       res.status(400).json({
         status: false,
-        message: 'All Inputs are Required..!',
+        message: "All Inputs are Required..!",
       });
       return;
     } else {
@@ -107,20 +108,22 @@ exports.createProposal = async (req, res, next) => {
         };
       });
 
-      const createProposalVotingOptionsQuery = pg`INSERT INTO voting_options ${pg(votingOptionsRows)} returning *`;
+      const createProposalVotingOptionsQuery = pg`INSERT INTO voting_options ${pg(
+        votingOptionsRows
+      )} returning *`;
 
       await createProposalVotingOptionsQuery;
 
       res.status(201).json({
         status: true,
-        message: 'Proposal submitted',
+        message: "Proposal submitted",
       });
     }
   } catch (e) {
-    console.log(e, 'error');
+    console.log(e, "error");
     res.status(500).json({
       status: false,
-      message: 'Server Error',
+      message: "Server Error",
     });
   }
 };
@@ -128,7 +131,7 @@ exports.createProposal = async (req, res, next) => {
 exports.getAllProposals = async (req, res, next) => {
   try {
     let limit = null;
-    let offset = '0';
+    let offset = "0";
     if (req.query.limit) limit = req.query.limit;
     if (req.query.offset) offset = req.query.offset;
 
@@ -185,17 +188,17 @@ LIMIT ${limit} OFFSET ${offset}
 `;
 
     const allProposals = await getAllProposalQuery;
-    console.log(allProposals, 'allProposals');
+    console.log(allProposals, "allProposals");
 
     res.status(200).json({
       status: true,
       proposals: allProposals,
     });
   } catch (e) {
-    console.log(e, 'error');
+    console.log(e, "error");
     res.status(500).json({
       status: false,
-      message: 'Server Error',
+      message: "Server Error",
     });
   }
 };
@@ -203,7 +206,7 @@ LIMIT ${limit} OFFSET ${offset}
 exports.getUnapprovedProposals = async (req, res, next) => {
   try {
     let limit = null;
-    let offset = '0';
+    let offset = "0";
     let isDesc = false;
     let search_term;
     let before;
@@ -211,10 +214,10 @@ exports.getUnapprovedProposals = async (req, res, next) => {
 
     if (req.query.limit) limit = req.query.limit;
     if (req.query.offset) offset = req.query.offset;
-    if (req.query.order === 'desc') isDesc = true;
+    if (req.query.order === "desc") isDesc = true;
     if (req.query.search_term) {
       search_term = req.query.search_term;
-      console.log(search_term, 'search_term');
+      console.log(search_term, "search_term");
     }
 
     if (req.query.after) {
@@ -233,7 +236,11 @@ exports.getUnapprovedProposals = async (req, res, next) => {
       proposals
     WHERE
       is_approved IS NULL
-      ${search_term ? pg`AND to_tsvector(heading) @@ websearch_to_tsquery(${search_term})` : pg``}
+      ${
+        search_term
+          ? pg`AND to_tsvector(heading) @@ websearch_to_tsquery(${search_term})`
+          : pg``
+      }
     `;
     const getUnapprovedProposalsCount = await getUnapprovedProposalsCountQuery;
 
@@ -246,7 +253,11 @@ INNER JOIN
   voting_options USING(proposal_id)
 WHERE
   is_approved IS NULL
-  ${search_term ? pg`AND to_tsvector(heading) @@ websearch_to_tsquery(${search_term})` : pg``}
+  ${
+    search_term
+      ? pg`AND to_tsvector(heading) @@ websearch_to_tsquery(${search_term})`
+      : pg``
+  }
   ${after ? pg`AND approved_on >= ${after}` : pg``}
   ${before ? pg`AND approved_on <= ${before}` : pg``}
 GROUP BY
@@ -268,10 +279,10 @@ LIMIT ${limit} OFFSET ${offset}
       total: getUnapprovedProposalsCount[0].unapproved_proposals_count,
     });
   } catch (e) {
-    console.log(e, 'error');
+    console.log(e, "error");
     res.status(500).json({
       status: false,
-      message: 'Server Error',
+      message: "Server Error",
     });
   }
 };
@@ -279,7 +290,7 @@ LIMIT ${limit} OFFSET ${offset}
 exports.getLatestRunningProposals = async (req, res, next) => {
   try {
     let limit = null;
-    let offset = '0';
+    let offset = "0";
     if (req.query.limit) limit = req.query.limit;
     if (req.query.offset) offset = req.query.offset;
 
@@ -344,10 +355,10 @@ exports.getLatestRunningProposals = async (req, res, next) => {
       proposals: latestRunningProposals,
     });
   } catch (e) {
-    console.log(e, 'error');
+    console.log(e, "error");
     res.status(500).json({
       status: false,
-      message: 'Server Error',
+      message: "Server Error",
     });
   }
 };
@@ -359,10 +370,11 @@ exports.getApprovedProposals = async (req, res, next) => {
     let isCompletedOnly = false;
     let before;
     let after;
-    let proposal_status = 'all';
+    let proposal_status = "all";
 
     let loggedInWalletAddress;
-    if (req.query.loggedInWalletAddress) loggedInWalletAddress = req.query.loggedInWalletAddress;
+    if (req.query.loggedInWalletAddress)
+      loggedInWalletAddress = req.query.loggedInWalletAddress;
 
     // loggedInWalletAddress = "ndaeachf4ct2gkq5gtfxjkz25g8hfx33d2mbp76q6mjxkfkv";
 
@@ -371,9 +383,9 @@ exports.getApprovedProposals = async (req, res, next) => {
     let limit = null;
     if (req.query.limit) limit = req.query.limit;
 
-    let offset = '0';
+    let offset = "0";
     if (req.query.offset) offset = req.query.offset;
-    if (req.query.order === 'desc') isDesc = true;
+    if (req.query.order === "desc") isDesc = true;
 
     if (req.query.after) {
       after = req.query.after;
@@ -385,9 +397,9 @@ exports.getApprovedProposals = async (req, res, next) => {
     }
 
     if (req.query.proposal_status) proposal_status = req.query.proposal_status;
-    if (proposal_status === 'Active') isActiveOnly = true;
+    if (proposal_status === "Active") isActiveOnly = true;
     else {
-      if (proposal_status === 'Concluded') isCompletedOnly = true;
+      if (proposal_status === "Concluded") isCompletedOnly = true;
     }
 
     const getApprovedProposalsCountQuery = pg`
@@ -397,7 +409,11 @@ exports.getApprovedProposals = async (req, res, next) => {
       proposals
     WHERE
       approved_on IS NOT NULL
-      ${search_term ? pg`AND to_tsvector(heading) @@ websearch_to_tsquery(${search_term})` : pg``}
+      ${
+        search_term
+          ? pg`AND to_tsvector(heading) @@ websearch_to_tsquery(${search_term})`
+          : pg``
+      }
     `;
     const approvedProposalsCount = await getApprovedProposalsCountQuery;
 
@@ -452,8 +468,18 @@ exports.getApprovedProposals = async (req, res, next) => {
         proposals
     WHERE
       is_active IS NOT NULL 
-      ${isActiveOnly ? pg`AND is_active IS TRUE` : isCompletedOnly ? pg`AND is_active IS FALSE` : pg``}
-      ${search_term ? pg`AND to_tsvector(proposal_heading) @@ websearch_to_tsquery(${search_term})` : pg``}
+      ${
+        isActiveOnly
+          ? pg`AND is_active IS TRUE`
+          : isCompletedOnly
+          ? pg`AND is_active IS FALSE`
+          : pg``
+      }
+      ${
+        search_term
+          ? pg`AND to_tsvector(proposal_heading) @@ websearch_to_tsquery(${search_term})`
+          : pg``
+      }
     GROUP BY
       proposals.proposal_id,
       proposals.approved_on,
@@ -471,7 +497,9 @@ LIMIT ${limit} OFFSET ${offset}
     if (loggedInWalletAddress) {
       approvedProposals.forEach((item) => {
         let hasUserAlreadyVotedObj = {};
-        let userVoteIndex = item.voters_arr.findIndex((el) => el === loggedInWalletAddress);
+        let userVoteIndex = item.voters_arr.findIndex(
+          (el) => el === loggedInWalletAddress
+        );
 
         if (userVoteIndex === -1) {
           hasUserAlreadyVotedObj.status = false;
@@ -479,8 +507,9 @@ LIMIT ${limit} OFFSET ${offset}
         } else {
           hasUserAlreadyVotedObj.status = true;
           hasUserAlreadyVotedObj.index = userVoteIndex;
-          hasUserAlreadyVotedObj.voting_option_id = item.voting_option_id_arr[userVoteIndex];
-          console.log(item.voters_arr[userVoteIndex], 'userVoteIndex');
+          hasUserAlreadyVotedObj.voting_option_id =
+            item.voting_option_id_arr[userVoteIndex];
+          console.log(item.voters_arr[userVoteIndex], "userVoteIndex");
           item.hasUserAlreadyVotedObj = hasUserAlreadyVotedObj;
         }
       });
@@ -497,10 +526,10 @@ LIMIT ${limit} OFFSET ${offset}
       total: approvedProposalsCount[0].approved_proposals_count,
     });
   } catch (e) {
-    console.log(e, 'error');
+    console.log(e, "error");
     res.status(500).json({
       status: false,
-      message: 'Server Error',
+      message: "Server Error",
     });
   }
 };
@@ -508,11 +537,11 @@ LIMIT ${limit} OFFSET ${offset}
 exports.getRejectedProposals = async (req, res, next) => {
   try {
     let limit = null;
-    let offset = '0';
+    let offset = "0";
     let isDesc = false;
     if (req.query.limit) limit = req.query.limit;
     if (req.query.offset) offset = req.query.offset;
-    if (req.query.order === 'desc') isDesc = true;
+    if (req.query.order === "desc") isDesc = true;
     let search_term = undefined;
     if (req.query.search_term) search_term = req.query.search_term;
 
@@ -523,7 +552,11 @@ exports.getRejectedProposals = async (req, res, next) => {
       proposals
     WHERE
       is_approved = false
-      ${search_term ? pg`AND to_tsvector(heading) @@ websearch_to_tsquery(${search_term})` : pg``}
+      ${
+        search_term
+          ? pg`AND to_tsvector(heading) @@ websearch_to_tsquery(${search_term})`
+          : pg``
+      }
     `;
     const rejectedProposalsCount = await getRejectedProposalsCountQuery;
 
@@ -550,7 +583,11 @@ exports.getRejectedProposals = async (req, res, next) => {
     LEFT JOIN
         votes USING (voting_option_id)
     WHERE is_approved = false
-    ${search_term ? pg`AND to_tsvector(heading) @@ websearch_to_tsquery(${search_term})` : pg``}
+    ${
+      search_term
+        ? pg`AND to_tsvector(heading) @@ websearch_to_tsquery(${search_term})`
+        : pg``
+    }
     GROUP BY
       proposals.proposal_id,
       voting_option_id,
@@ -581,10 +618,10 @@ LIMIT ${limit} OFFSET ${offset}
       total: rejectedProposalsCount[0].rejected_proposals_count,
     });
   } catch (e) {
-    console.log(e, 'error');
+    console.log(e, "error");
     res.status(500).json({
       status: false,
-      message: 'Server Error',
+      message: "Server Error",
     });
   }
 };
@@ -592,7 +629,7 @@ LIMIT ${limit} OFFSET ${offset}
 exports.getLatestCompletedProposals = async (req, res, next) => {
   try {
     let limit = null;
-    let offset = '0';
+    let offset = "0";
     if (req.query.limit) limit = req.query.limit;
     if (req.query.offset) offset = req.query.offset;
 
@@ -655,10 +692,10 @@ LIMIT ${limit} OFFSET ${offset}
       proposals: latestCompletedProposals,
     });
   } catch (e) {
-    console.log(e, 'error');
+    console.log(e, "error");
     res.status(500).json({
       status: false,
-      message: 'Server Error',
+      message: "Server Error",
     });
   }
 };
@@ -670,7 +707,7 @@ exports.approveProposal = async ({ proposalIDToApprove }) => {
     if (isAnyValUndefined) {
       return {
         status: false,
-        message: 'All Inputs are Required..!',
+        message: "All Inputs are Required..!",
       };
     } else {
       const approveProposalQuery = pg`
@@ -683,25 +720,26 @@ RETURNING proposal_id
 
       const approvedProposal = await approveProposalQuery;
 
-      console.log(approvedProposal, 'approvedProposal');
+      console.log(approvedProposal, "approvedProposal");
 
       if (approvedProposal.length === 0) {
         return {
           status: false,
-          message: 'Error. Submitted Proposal-id is not found or already processed ',
+          message:
+            "Error. Submitted Proposal-id is not found or already processed ",
         };
       } else {
         return {
           status: true,
-          message: 'Approved Proposal',
+          message: "Approved Proposal",
         };
       }
     }
   } catch (e) {
-    console.log(e, 'error');
+    console.log(e, "error");
     return {
       status: false,
-      message: 'Server Error',
+      message: "Server Error",
     };
   }
 };
@@ -713,7 +751,7 @@ exports.rejectProposal = async ({ proposalIDToReject }) => {
     if (isAnyValUndefined) {
       return {
         status: false,
-        message: 'All Inputs are Required..!',
+        message: "All Inputs are Required..!",
       };
     } else {
       const rejectProposalQuery = pg`
@@ -726,25 +764,26 @@ RETURNING proposal_id
 
       const rejectProposal = await rejectProposalQuery;
 
-      console.log(rejectProposal, 'rejectedProposal');
+      console.log(rejectProposal, "rejectedProposal");
 
       if (rejectProposal.length === 0) {
         return {
           status: false,
-          message: 'Error. Submitted Proposal-id is not found or already processed ',
+          message:
+            "Error. Submitted Proposal-id is not found or already processed ",
         };
       } else {
         return {
           status: true,
-          message: 'Rejected Proposal',
+          message: "Rejected Proposal",
         };
       }
     }
   } catch (e) {
-    console.log(e, 'error');
+    console.log(e, "error");
     return {
       status: false,
-      message: 'Server Error',
+      message: "Server Error",
     };
   }
 };
@@ -756,7 +795,7 @@ exports.featureProposal = async ({ proposalIDToFeature }) => {
     if (isAnyValUndefined) {
       return {
         status: false,
-        message: 'All Inputs are Required..!',
+        message: "All Inputs are Required..!",
       };
     } else {
       const isApprovedProposalQuery = pg`
@@ -770,7 +809,7 @@ exports.featureProposal = async ({ proposalIDToFeature }) => {
       if (!(isApprovedProposal.length > 0)) {
         return {
           status: false,
-          message: 'proposal not approved',
+          message: "proposal not approved",
         };
       }
 
@@ -793,25 +832,25 @@ exports.featureProposal = async ({ proposalIDToFeature }) => {
 
       const featuredProposal = await featureProposalQuery;
 
-      console.log(featuredProposal, 'featuredProposal');
+      console.log(featuredProposal, "featuredProposal");
 
       if (featuredProposal.length === 0) {
         return {
           status: false,
-          message: 'Error. Featured Proposal-id is not found or not approved ',
+          message: "Error. Featured Proposal-id is not found or not approved ",
         };
       } else {
         return {
           status: true,
-          message: 'Approved Proposal',
+          message: "Approved Proposal",
         };
       }
     }
   } catch (e) {
-    console.log(e, 'error');
+    console.log(e, "error");
     return {
       status: false,
-      message: 'Server Error',
+      message: "Server Error",
     };
   }
 };
@@ -827,7 +866,7 @@ exports.getFeaturedProposals = async (req, res, next) => {
     if (isAnyValUndefined) {
       res.status(400).json({
         status: false,
-        message: 'All Inputs are Required..!',
+        message: "All Inputs are Required..!",
       });
       return;
     } else {
@@ -884,18 +923,21 @@ exports.getFeaturedProposals = async (req, res, next) => {
 
       const featuredProposal = await getFeaturedProposalQuery;
 
-      console.log(featuredProposal, 'featuredProposal');
+      console.log(featuredProposal, "featuredProposal");
 
       let hasUserAlreadyVotedObj = {};
 
       if (loggedInWalletAddress) {
-        let userVoteIndex = featuredProposal[0].voters_arr.findIndex((item) => item === loggedInWalletAddress);
+        let userVoteIndex = featuredProposal[0].voters_arr.findIndex(
+          (item) => item === loggedInWalletAddress
+        );
 
         if (userVoteIndex === -1) hasUserAlreadyVotedObj.status = false;
         else {
           hasUserAlreadyVotedObj.status = true;
           hasUserAlreadyVotedObj.index = userVoteIndex;
-          hasUserAlreadyVotedObj.voting_option_id = proposalVotesDetails[0].voting_option_id;
+          hasUserAlreadyVotedObj.voting_option_id =
+            proposalVotesDetails[0].voting_option_id;
           featuredProposal[0].hasUserAlreadyVotedObj = hasUserAlreadyVotedObj;
         }
       }
@@ -906,10 +948,10 @@ exports.getFeaturedProposals = async (req, res, next) => {
       });
     }
   } catch (e) {
-    console.log(e, 'error');
+    console.log(e, "error");
     res.status(500).json({
       status: false,
-      message: 'Server Error',
+      message: "Server Error",
     });
   }
 };
@@ -937,21 +979,24 @@ exports.getProposalDetails = async (req, res, next) => {
   if (!proposalIdToGet) {
     res.status(400).json({
       status: false,
-      message: 'All Inputs are Required..!',
+      message: "All Inputs are Required..!",
     });
     return;
   }
 
   let loggedInWalletAddress;
-  if (req.query.loggedInWalletAddress) loggedInWalletAddress = req.query.loggedInWalletAddress;
+  if (req.query.loggedInWalletAddress)
+    loggedInWalletAddress = req.query.loggedInWalletAddress;
 
   console.log(loggedInWalletAddress);
 
   // loggedInWalletAddress = "ndaeachf4ct2gkq5gtfxjkz25g8hfx33d2mbp76q6mjxkfkv";
 
-  console.log(proposalIdToGet, 'proposalIdToGet');
+  console.log(proposalIdToGet, "proposalIdToGet");
   try {
-    const proposalVotesDetails = await repository.getProposalVotesDetails(proposalIdToGet);
+    const proposalVotesDetails = await repository.getProposalVotesDetails(
+      proposalIdToGet
+    );
 
     const proposalDetailsQuery = pg`
     SELECT
@@ -1002,11 +1047,13 @@ exports.getProposalDetails = async (req, res, next) => {
 
     const proposalDetails = await proposalDetailsQuery;
 
-    console.log(proposalVotesDetails, 'proposalVotesDetails');
+    console.log(proposalVotesDetails, "proposalVotesDetails");
 
     if (loggedInWalletAddress) {
       let hasUserAlreadyVotedObj = {};
-      let userVoteIndex = proposalVotesDetails.findIndex((item) => item.user_address === loggedInWalletAddress);
+      let userVoteIndex = proposalVotesDetails.findIndex(
+        (item) => item.user_address === loggedInWalletAddress
+      );
 
       if (userVoteIndex === -1) {
         hasUserAlreadyVotedObj.status = false;
@@ -1014,12 +1061,13 @@ exports.getProposalDetails = async (req, res, next) => {
       } else {
         hasUserAlreadyVotedObj.status = true;
         hasUserAlreadyVotedObj.index = userVoteIndex;
-        hasUserAlreadyVotedObj.voting_option_id = proposalVotesDetails[userVoteIndex].voting_option_id;
+        hasUserAlreadyVotedObj.voting_option_id =
+          proposalVotesDetails[userVoteIndex].voting_option_id;
         proposalDetails[0].hasUserAlreadyVotedObj = hasUserAlreadyVotedObj;
       }
     }
 
-    console.log(proposalDetails, 'proposalDetails');
+    console.log(proposalDetails, "proposalDetails");
 
     res.status(200).json({
       status: true,
@@ -1027,10 +1075,19 @@ exports.getProposalDetails = async (req, res, next) => {
       proposalVotesDetails,
     });
   } catch (e) {
-    console.log(e, 'error');
+    console.log(e, "error");
     res.status(500).json({
       status: false,
-      message: 'Server Error',
+      message: "Server Error",
     });
   }
+};
+
+exports.test = async (req, res, next) => {
+  console.log(req.body);
+  console.log(res.params);
+  console.log(req.query);
+  res.status(200).json({
+    walletAddress: "9083201293",
+  });
 };

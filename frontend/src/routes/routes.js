@@ -1,24 +1,35 @@
-import React from 'react';
-import { createBrowserRouter , Outlet} from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import React from "react";
+import { createBrowserRouter, Outlet } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-import Header from '../Layouts/Header/Header';
-import Footer from '../Layouts/Footer/Footer';
-import HomePage from '../Pages/HomePage/HomePage';
-import AdminPanel from '../Pages/AdminPanel/AdminPanel';
-import ManageAdmin from '../Pages/AdminPanel/ManageAdmin/ManageAdmin';
-import AllPolls from '../Pages/AllPolls/AllPolls';
-import PollDetail from '../Pages/PollDetail/PollDetail';
-import ProposalForm from '../Pages/ProposalForm/ProposalForm';
-import NoMatch from '../Pages/NoMatch/NoMatch';
+import Header from "../Layouts/Header/Header";
+import Footer from "../Layouts/Footer/Footer";
+import HomePage from "../Pages/HomePage/HomePage";
+import AdminPanel from "../Pages/AdminPanel/AdminPanel";
+import ManageAdmin from "../Pages/AdminPanel/ManageAdmin/ManageAdmin";
+import AllPolls from "../Pages/AllPolls/AllPolls";
+import PollDetail from "../Pages/PollDetail/PollDetail";
+import ProposalForm from "../Pages/ProposalForm/ProposalForm";
+import NoMatch from "../Pages/NoMatch/NoMatch";
+import NPayConverter from "../Pages/Npay/NpayConverter";
 
 const Root = () => {
   return (
     <>
       <ToastContainer />
-      <Header />
+
       <Outlet />
+    </>
+  );
+};
+
+const BPCContainter = (props) => {
+  const Comp = props.component;
+  return (
+    <>
+      <Header />
+      <Comp />
       <Footer />
     </>
   );
@@ -26,33 +37,37 @@ const Root = () => {
 
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: "/",
     element: <Root />,
     errorElement: <NoMatch />,
     children: [
       {
-        path: '/',
-        element: <HomePage />,
+        path: "/",
+        element: <BPCContainter component={HomePage} />,
       },
       {
-        path: '/poll-detail/:proposalId',
-        element: <PollDetail />,
+        path: "/poll-detail/:proposalId",
+        element: <BPCContainter component={PollDetail} />,
       },
       {
-        path: '/all-polls',
-        element: <AllPolls />,
+        path: "/all-polls",
+        element: <BPCContainter component={AllPolls} />,
       },
       {
-        path: '/admin',
-        element: <AdminPanel />,
+        path: "/admin",
+        element: <BPCContainter component={AdminPanel} />,
       },
       {
-        path: '/proposal-form',
-        element: <ProposalForm />,
+        path: "/proposal-form",
+        element: <BPCContainter component={ProposalForm} />,
       },
       {
-        path: '/manage-admin',
-        element: <ManageAdmin />,
+        path: "/manage-admin",
+        element: <BPCContainter component={ManageAdmin} />,
+      },
+      {
+        path: "/npay",
+        element: <NPayConverter />,
       },
     ],
   },

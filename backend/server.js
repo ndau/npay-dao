@@ -117,6 +117,8 @@
 //******************************/
 
 const express = require('express');
+const parser = require("body-parser");
+const ndauConnect = require('./src/socket/ndauConnect');
 
 const { createServer } = require('http');
 require('dotenv').config();
@@ -137,6 +139,7 @@ let routes = {
   superAdminRouter: require('./src/routes/superadmins_route'),
 };
 
+app.use(parser.urlencoded({extended : true}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static('uploads'));
@@ -160,6 +163,6 @@ const io = new Server(httpServer, {
   allowEIO3: true,
 });
 
-require('./src/socket/ndauConnect')(io);
+ndauConnect(io);
 
 exports.httpServer = httpServer;
