@@ -21,8 +21,12 @@ const NPayConverter = () => {
     logoutFunction();
   };
 
- 
-
+  const handleClick = (props) => {
+    socket.emit("ndau_burn_request", {
+      walletAddress: "0909002904235",
+    });
+    console.log("ndau burn request successfully sent.");
+  };
   return (
     <Box
       container
@@ -99,29 +103,12 @@ const NPayConverter = () => {
           }}
         >
           {walletAddress ? (
-            <Dropdown onSelect={(e) => handleLogout(e)}>
-              <Dropdown.Toggle
-                style={{
-                  backgroundColor: "#F89D1C",
-                  borderColor: "#F89D1C",
-                  margin: 0,
-                }}
-                id="dropdown-basic"
-              >
-                {`${walletAddress.slice(0, 10)}...`}
-              </Dropdown.Toggle>
-
-              <Dropdown.Menu>
-                <Dropdown.Item eventKey={"Logout"}>Logout</Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
+            <Button onClick={handleClick}>Convert</Button>
           ) : (
-            <NdauConnect />
+            <NdauConnect action="burn" />
           )}
         </Box>
-        <Box>
-         
-        </Box>
+        <Box></Box>
       </Box>
     </Box>
   );

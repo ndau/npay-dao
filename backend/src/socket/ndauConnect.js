@@ -25,6 +25,16 @@ module.exports = (_io) => {
   _io.on("connection", (socket) => {
     console.log(socket.id);
     //event format: source-action-stage-target   = source_of_event-what_to_do-which_stage_we_are_at-target
+    socket.on("ndau_burn_wallet_connect", ({ website_socket_id }) => {
+      console.log(website_socket_id);
+      console.log("send wallet connect event");
+      socket
+        // .to(website_socket_id)
+        .emit("server-ndau_connection-established-website", {
+          walletAddress: "09103012931",
+        });
+    });
+
     socket.on(
       "ndau_burn_request",
       ({ npayWalletAddress, amount, website_socket_id }) => {
@@ -34,25 +44,16 @@ module.exports = (_io) => {
         console.log("send wallet connect event");
         socket
           // .to(website_socket_id)
-          .emit("server-ndau_connection-established-website", {
+          .emit("ndau_burn_reject", {
             walletAddress: "09103012931",
           });
+          // socket
+          // // .to(website_socket_id)
+          // .emit("ndau_burn_approve", {
+          //   walletAddress: "09103012931",
+          // });
       }
     );
-
-    socket.on("ndau_burn_reject", ({}) => {
-      console.log("request rejected");
-
-      socket
-        .emit("website-proposal_reject-request-server")
-    });
-
-    socket.on("ndau_burn_approve", ({}) => {
-      console.log("request approved")
-
-      socket
-        .emit("website-proposal_approve-request-server")
-    });
 
     socket.on(
       "app-ndau_connection-established-server",
@@ -61,6 +62,8 @@ module.exports = (_io) => {
         connection_type,
         wallet_address,
         app_socket_id,
+        // TODO: Ask Ed to send action props from Wallet App.
+        action,
       }) => {
         console.log("app-ndau_connection-established-server");
         if (connection_type === "wallet") {
@@ -68,6 +71,7 @@ module.exports = (_io) => {
             .to(website_socket_id)
             .emit("server-ndau_connection-established-website", {
               walletAddress: wallet_address,
+              action,
             });
 
           console.log(wallet_address, "wallet_address");
