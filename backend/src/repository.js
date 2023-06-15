@@ -72,12 +72,32 @@ const repository = {
 									WHERE p.proposal_id = $1
                   ORDER BY v.createdon desc`;
 
-    return db_query(
+    return (
       QUERY.any,
       sql,
       [proposal_id],
       isTx,
       errMsg || `${tracking_number} Error getting proposal vote details for proposal id ${proposal_id}`
+    );
+  },
+
+  addConversion: async (
+    ndau_address,
+    npay_address,
+    amount,
+    signature,
+    transaction_hash,
+    { isTx = false, errMsg = '', tracking_number = '' } = {}
+  ) => {
+    const sql = `
+			INSERT INTO ndau_conversion (ndau_address, npay_address, amount, signature, transaction_hash)
+			VALUES($1, $2, $3, $4, $5)`;
+
+    return db_query(
+      QUERY.any,
+      sql,
+      [ndau_address, npay_address, amount, signature, transaction_hash],
+      isTx,
     );
   },
 };

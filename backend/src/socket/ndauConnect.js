@@ -25,33 +25,57 @@ module.exports = (_io) => {
   _io.on("connection", (socket) => {
     console.log(socket.id);
     //event format: source-action-stage-target   = source_of_event-what_to_do-which_stage_we_are_at-target
-    socket.on("ndau_burn_wallet_connect", ({ website_socket_id }) => {
-      console.log(website_socket_id);
-      console.log("send wallet connect event");
+    socket.on("ndau_burn_wallet_connect", (payload) => {
+      const { website_socket_id, action, wallet_address, app_socket_id } =
+        payload;
+      console.log(website_socket_id, action, wallet_address, app_socket_id);
+      console.log("got wallet connect event");
       socket
         // .to(website_socket_id)
         .emit("server-ndau_connection-established-website", {
-          walletAddress: "09103012931",
+          walletAddress: wallet_address,
         });
     });
 
     socket.on(
       "ndau_burn_request",
-      ({ npayWalletAddress, amount, website_socket_id }) => {
-        console.log(npayWalletAddress);
-        console.log(amount);
-        console.log(website_socket_id);
-        console.log("send wallet connect event");
-        socket
-          // .to(website_socket_id)
-          .emit("ndau_burn_reject", {
-            walletAddress: "09103012931",
-          });
-          // socket
-          // // .to(website_socket_id)
-          // .emit("ndau_burn_approve", {
-          //   walletAddress: "09103012931",
-          // });
+      async ({ npayWalletAddress, amount, website_socket_id }) => {
+        console.log("npayWallet,", npayWalletAddress);
+        console.log("amount,", amount);
+        // console.log(website_socket_id);
+
+        // TODO: call API to burn ndau
+        // ...
+        // call to ndau blockchain to burn ndau
+        // ...
+        // for testing
+        const success = false;
+        const ndauAddress = "ndau_address";
+        const npaySignature = "signature";
+        const transactionHash = "transaction_hash";
+
+        // socket.emit("add_conversion_request", {
+        //   ndau_address: ndauAddress,
+        //   npay_address,
+        //   amount,
+        //   signature: npaySignature,
+        //   transaction_hash: transactionHash,
+        // })
+        // save signature to database
+        console.log("got ndau burn event");
+        if (success) {
+          
+        const res = await repository.addConversion(
+          ndauAddress,
+          npayWalletAddress,
+          amount,
+          npaySignature,
+          transactionHash
+        );
+          socket.emit("ndau_burn_approve");
+        } else {
+          socket.emit("ndau_burn_reject", {});
+        }
       }
     );
 

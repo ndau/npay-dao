@@ -43,8 +43,9 @@ function NdauConnect(props) {
   const handleClick = async () => {
     socketEmit("ndau_burn_wallet_connect", {
       website_socket_id: socket.id,
-      amount: "200",
-      npayWalletAddress: "09sdfsf0s90fsfd",
+      app_socket_id: "31231",
+      action: "burn",
+      wallet_address: "09sdfsf0s90fsfd",
     });
     // const resp = await axiosRequest(
     //   "get",
@@ -265,7 +266,7 @@ function NdauConnect(props) {
         }}
         onClick={handleShow}
       >
-        {walletAddress ? (
+        { walletAddress? (
           `${walletAddress.slice(0, 10)}...`
         ) : (
           <>
