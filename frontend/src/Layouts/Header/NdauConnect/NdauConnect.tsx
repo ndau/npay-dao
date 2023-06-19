@@ -260,9 +260,12 @@ function NdauConnect(props) {
       <Button
         onClick={handleShow}
         sx={{
-          backgroundColor: "#CFB6FC",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-around",
+          backgroundColor: "#F0EBFF",
           border: "1px solid",
-          borderColor: "#8F9CA3",
+          borderColor: "#ABA7B6",
         }}
       >
         {walletAddress ? (
@@ -271,7 +274,7 @@ function NdauConnect(props) {
           <>
             <img
               src="assets/images/icons/enter-svgrepo-com.svg"
-              style={{ height: "40px", width: "40vh", marginBottom: 2 }}
+              style={{ height: "40px", width: "40px", marginBottom: 2 }}
               alt=""
             />
             {" Connect To Wallet"}
