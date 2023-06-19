@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import Button from "react-bootstrap/Button";
+import Button from "@mui/material/Button";
 import Modal from "react-bootstrap/Modal";
 import { QRCodeSVG } from "qrcode.react";
 import "./modal.css";
@@ -258,25 +258,23 @@ function NdauConnect(props) {
   return (
     <>
       <Button
-        variant="primary"
-        style={{
-          background: "#F89D1C",
-          border: "#0A1D35",
-          marginBottom: "10px",
-        }}
         onClick={handleShow}
+        sx={{
+          backgroundColor: "#CFB6FC",
+          border: "1px solid",
+          borderColor: "#8F9CA3",
+        }}
       >
-        { walletAddress? (
+        {walletAddress ? (
           `${walletAddress.slice(0, 10)}...`
         ) : (
           <>
-            {" "}
             <img
-              src="assets/images/icons/iconsWallet.png"
-              style={{ height: "25px", marginBottom: 2 }}
+              src="assets/images/icons/enter-svgrepo-com.svg"
+              style={{ height: "40px", width: "40vh", marginBottom: 2 }}
               alt=""
             />
-            {" Connect Wallet"}
+            {" Connect To Wallet"}
           </>
         )}
       </Button>
@@ -299,9 +297,7 @@ function NdauConnect(props) {
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={handleClick}>Test</Button>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
+          <Button onClick={handleClose}>Close</Button>
         </Modal.Footer>
       </Modal>
     </>

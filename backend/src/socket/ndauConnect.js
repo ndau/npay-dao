@@ -64,14 +64,13 @@ module.exports = (_io) => {
         // save signature to database
         console.log("got ndau burn event");
         if (success) {
-          
-        const res = await repository.addConversion(
-          ndauAddress,
-          npayWalletAddress,
-          amount,
-          npaySignature,
-          transactionHash
-        );
+          const res = await repository.addConversion(
+            ndauAddress,
+            npayWalletAddress,
+            amount,
+            npaySignature,
+            transactionHash
+          );
           socket.emit("ndau_burn_approve");
         } else {
           socket.emit("ndau_burn_reject", {});

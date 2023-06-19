@@ -5,6 +5,7 @@ import { Typography } from "@mui/material";
 import Button from "@mui/material/Button";
 import NdauConnect from "../../Layouts/Header/NdauConnect/NdauConnect";
 import useNdauConnectStore from "../../store/ndauConnect_store";
+import PowerBy from "../../Layouts/Header/PowerBy";
 
 const NPayConverter = () => {
   const walletAddress = useNdauConnectStore((state) => state.walletAddress);
@@ -31,7 +32,7 @@ const NPayConverter = () => {
   return (
     <Box
       container
-      bgcolor="#FFFFFF"
+      bgcolor="#C7CED1 "
       sx={{
         display: "flex",
         flexDirection: "column",
@@ -40,6 +41,7 @@ const NPayConverter = () => {
         height: "100vh",
       }}
     >
+      <PowerBy header="true" />
       <Box
         sx={{
           display: "flex",
@@ -48,8 +50,8 @@ const NPayConverter = () => {
           alignItems: "center",
           width: "100vh",
           height: "90vh",
-          borderRadius: "20px",
-          backgroundColor: "#F8F8F8",
+          // borderRadius: "20px",
+          backgroundColor: "#C7CED1",
         }}
       >
         <Box
@@ -78,24 +80,27 @@ const NPayConverter = () => {
             container
             sx={{
               display: "flex",
+              flexDirection: "column",
               justifyContent: "space-evenly",
               alignItems: "center",
               paddingBottom: "30px",
             }}
           >
-            <Box container sx={{ paddingBottom: "30px", paddingRight: "15px" }}>
+            <Box container sx={{ paddingBottom: "30px" }}>
               <TextField
                 label="Enter your Npay Wallet: "
-                variant="standard"
+                variant="outlined"
                 title={npayWalletAddress}
+                sx={{ width: "80vh" }}
                 onChange={(e) => setnpayWalletAddresss(e.target.value)}
               ></TextField>
             </Box>
-            <Box container sx={{ paddingBottom: "30px", paddingLeft: "15px" }}>
+            <Box container sx={{ paddingBottom: "30px" }}>
               <TextField
                 label="Amount to convert: "
-                variant="standard"
+                variant="outlined"
                 title={amount}
+                sx={{ width: "50vh" }}
                 onChange={(e) => setAmount(e.target.value)}
               ></TextField>
             </Box>
@@ -115,8 +120,8 @@ const NPayConverter = () => {
             <NdauConnect action="burn" />
           )}
         </Box>
-        <Box></Box>
       </Box>
+      <PowerBy />
     </Box>
   );
 };
