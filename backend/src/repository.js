@@ -134,13 +134,18 @@ const repository = {
     );
   },
 
+  getConversion: async (ndau_address) => {
+    const sql = `
+			SELECT id, npay_address, amount, transaction_hash, createdon from ndau_conversion WHERE ndau_address='${ndau_address}' `;
+
+    console.log(sql);
+    return db_query(QUERY.any, sql);
+  },
+
   getFAQ: async () => {
     const sql = `SELECT id,questions,answers FROM faq`;
 
-    return db_query(
-      QUERY.any,
-      sql,
-    );
+    return db_query(QUERY.any, sql);
   },
 };
 

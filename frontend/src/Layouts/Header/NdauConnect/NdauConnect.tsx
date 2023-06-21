@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import useAdminPanelRefreshStore from "../../../store/adminPanelRefresh_store";
 import useNdauConnectStore from "../../../store/ndauConnect_store";
 import { baseURL } from "../../../api/api";
+import { axiosRequest } from "../../../api/api";
 
 const ndauConnectApi = baseURL.slice(0, -4);
 let socket: any;
@@ -28,7 +29,9 @@ function NdauConnect(props) {
     (state) => state.updateWalletAddress
   );
   const walletAddress = useNdauConnectStore((state) => state.walletAddress);
-
+  const updateTransactions = useNdauConnectStore(
+    (state) => state.updateTransactions
+  );
   const setVoted = useNdauConnectStore((state) => state.setVoted);
 
   const setSocket = useNdauConnectStore((state) => state.setSocket);
@@ -45,7 +48,7 @@ function NdauConnect(props) {
       website_socket_id: socket.id,
       app_socket_id: "31231",
       action: "burn",
-      wallet_address: "09sdfsf0s90fsfd",
+      wallet_address: "ndau2",
     });
     // const resp = await axiosRequest(
     //   "get",
@@ -68,12 +71,26 @@ function NdauConnect(props) {
       //even though socket is initialized here, it is not accessible via the global store until socket connection with wallet is established
       socket.on(
         "server-ndau_connection-established-website",
-        ({ walletAddress: _walletAddress, action }) => {
+        async ({ walletAddress: _walletAddress, action }) => {
           console.log("received wallet connect event");
           updateWalletAddress(_walletAddress);
           getAdmin();
           getSuperAdmin();
           toast.success("Wallet Connected", { position: "top-left" });
+
+          const resp = await axiosRequest(
+            "get",
+            "admin/ndau_conversion",
+            {},
+            {
+              ndau_address: _walletAddress,
+            }
+          );
+          updateTransactions(resp.data.result);
+          console.log("response", resp.data.result);
+          // setFAQ(resp.data.result);
+          // Call Http Request get Conversion.
+          // Update app state
         }
       );
       socket.on("ndau_burn_reject", ({}) => {

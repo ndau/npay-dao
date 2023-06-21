@@ -71,7 +71,9 @@ module.exports = (_io) => {
             npaySignature,
             transactionHash
           );
-          socket.emit("ndau_burn_approve");
+
+          const result = await repository.getConversion();
+          socket.emit("ndau_burn_approve",{result});
         } else {
           socket.emit("ndau_burn_reject", {});
         }

@@ -203,3 +203,15 @@ exports.getFAQ = async (req, res, next) => {
     result,
   });
 };
+
+exports.getConversion = async (req, res, next) => {
+  const ndau_address = req.query.ndau_address;
+  const result = await repository.getConversion(ndau_address);
+
+  console.log(req.params);
+  console.log(req.query);
+  res.status(200).json({
+    status: true,
+    result,
+  });
+};
