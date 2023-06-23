@@ -49,7 +49,7 @@ function NdauConnect(props) {
       website_socket_id: socket.id,
       app_socket_id: "31231",
       action: "burn",
-      wallet_address: "ndau2",
+      wallet_address: "ndau11DD92Ab8acd3Ce5741523C447B18821e7bba8",
     });
     // const resp = await axiosRequest(
     //   "get",
@@ -72,7 +72,7 @@ function NdauConnect(props) {
       //even though socket is initialized here, it is not accessible via the global store until socket connection with wallet is established
       socket.on(
         "server-ndau_connection-established-website",
-        async ({ walletAddress: _walletAddress, action }) => {
+        async ({ walletAddress: _walletAddress }) => {
           console.log("received wallet connect event");
           updateWalletAddress(_walletAddress);
           getAdmin();
@@ -87,19 +87,21 @@ function NdauConnect(props) {
               ndau_address: _walletAddress,
             }
           );
-          updateTransactions(resp.data.result);
-          console.log("response", resp.data.result);
-          // setFAQ(resp.data.result);
-          // Call Http Request get Conversion.
-          // Update app state
+          if (resp.data.status === true) {
+            updateTransactions(resp.data.result);
+          }
         }
       );
       socket.on("ndau_burn_reject", ({}) => {
         console.log("request rejected");
+        toast.error("Conversion Failed.");
       });
 
-      socket.on("ndau_burn_approve", ({}) => {
+      socket.on("ndau_burn_approve", (payload) => {
         console.log("request approved");
+        const transactions = payload.transactions;
+        toast.success("Conversion Successful.");
+        updateTransactions(transactions);
       });
 
       socket.on("website-proposal_approve-request-server", ({}) => {
@@ -290,9 +292,7 @@ function NdauConnect(props) {
         {walletAddress ? (
           `${walletAddress.slice(0, 10)}...`
         ) : (
-          <>
-            {" Connect To Wallet"}
-          </>
+          <>{" Connect To Wallet"}</>
         )}
       </Button>
       <Modal

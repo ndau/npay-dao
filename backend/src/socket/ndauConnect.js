@@ -44,15 +44,18 @@ module.exports = (_io) => {
         console.log("amount,", amount);
         // console.log(website_socket_id);
 
-        // TODO: call API to burn ndau
+        // ***************************
+        // TODO: call API to burn ndau (Ed)
         // ...
         // call to ndau blockchain to burn ndau
         // ...
+
         // for testing
-        const success = false;
-        const ndauAddress = "ndau_address";
+        const success = true;
+        const ndauAddress = "ndau11DD92Ab8acd3Ce5741523C447B18821e7bba8";
         const npaySignature = "signature";
-        const transactionHash = "transaction_hash";
+        const transactionHash =
+          "0xa2dfad9673ca4215cd79d2423f2964ec0d4c3c9bdaef808776b080725005f428";
 
         // socket.emit("add_conversion_request", {
         //   ndau_address: ndauAddress,
@@ -62,6 +65,7 @@ module.exports = (_io) => {
         //   transaction_hash: transactionHash,
         // })
         // save signature to database
+
         console.log("got ndau burn event");
         if (success) {
           const res = await repository.addConversion(
@@ -73,7 +77,7 @@ module.exports = (_io) => {
           );
 
           const result = await repository.getConversion();
-          socket.emit("ndau_burn_approve",{result});
+          socket.emit("ndau_burn_approve", { transactions: result });
         } else {
           socket.emit("ndau_burn_reject", {});
         }
@@ -87,8 +91,6 @@ module.exports = (_io) => {
         connection_type,
         wallet_address,
         app_socket_id,
-        // TODO: Ask Ed to send action props from Wallet App.
-        action,
       }) => {
         console.log("app-ndau_connection-established-server");
         if (connection_type === "wallet") {
@@ -96,7 +98,6 @@ module.exports = (_io) => {
             .to(website_socket_id)
             .emit("server-ndau_connection-established-website", {
               walletAddress: wallet_address,
-              action,
             });
 
           console.log(wallet_address, "wallet_address");

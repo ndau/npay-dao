@@ -2,6 +2,11 @@ img {
   width: 120px;
   height: 60px;
 }
+
+.topbar{
+  background-image:url("../../../public/assets/images/icons/lightpurple.png");
+
+}
 .container {
   display: flex;
   justify-content: space-evenly;

@@ -99,7 +99,7 @@ const NPayConverter = () => {
           height: "20%",
           borderRadius: "24px",
           backgroundColor: "#F0EBFF",
-          marginBottom: "30px",
+          marginBottom: "60px",
         }}
       >
         <form>
@@ -119,7 +119,7 @@ const NPayConverter = () => {
                 variant="standard"
                 title={npayWalletAddress}
                 sx={{
-                  width: "25vw",
+                  width: "30vw",
                   paddingRight: "20px",
                   "& .MuiInputBase-root": {
                     height: "30px",
@@ -153,15 +153,15 @@ const NPayConverter = () => {
           >
             {walletAddress ? (
               <Button
-                variant="contain"
+                variant="contained"
                 onClick={handleClick}
                 sx={{
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  "& .MuiButtonBase-root": {
-                    height: "20px",
-                  },
+                  backgroundColor: "#b6a6e6",
+                  height: "40px",
+                  width: "10vw",
                 }}
               >
                 <Typography sx={{ fontFamily: "Rubik" }}>Convert</Typography>
@@ -185,46 +185,65 @@ const NPayConverter = () => {
         >
           <TableContainer component={Paper}>
             <Table
-              sx={{ minWidth: 500, backgroundColor: "#F0EBFF", height: "80%" }}
+              sx={{
+                // display: "flex",
+                // flexDirection: "column",
+                // justifyContent: "center",
+                alignItems: "center",
+                minWidth: 600,
+                backgroundColor: "#F0EBFF",
+                height: "100%",
+              }}
               aria-label="simple table"
             >
               <TableHead
                 container
-                sx={{
-                  display: "flex",
-                  flexDirection: "row",
-                  paddingLeft:"30px",
-                  justifyContent: "space-evenly",
-                  alignItems: "center",
-                }}
+                // sx={{
+                //   display: "flex",
+                // }}
               >
                 <TableRow>
-                  <TableCell align="right" sx={{ fontFamily: "Rubik" }}>
+                  <TableCell align="left" sx={{ fontFamily: "Rubik" }}>
                     Your Transaction
                   </TableCell>
-                  <TableCell align="right" sx={{ fontFamily: "Rubik" }}>
+                  <TableCell align="left" sx={{ fontFamily: "Rubik" }}>
                     Npay Address
                   </TableCell>
                   <TableCell align="right" sx={{ fontFamily: "Rubik" }}>
                     Amount
                   </TableCell>
                   <TableCell align="right" sx={{ fontFamily: "Rubik" }}>
-                    Time{" "}
+                    Time
                   </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {transactions.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    <TableCell sx={{ paddingRight: "100px" }} align="right">
-                      {row.transactions_hash}
+                  <TableRow key={row.id}>
+                    <TableCell
+                      sx={{ fontFamily: "Rubik", fontSize: "10px" }}
+                      align="left"
+                    >
+                      {row.transaction_hash}
                     </TableCell>
-                    <TableCell align="right">{row.npay_address}</TableCell>
-                    <TableCell align="right">{row.amount}</TableCell>
-                    <TableCell align="right">{row.createdon}</TableCell>
+                    <TableCell
+                      align="left"
+                      sx={{ fontFamily: "Rubik", fontSize: "10px" }}
+                    >
+                      {row.npay_address}
+                    </TableCell>
+                    <TableCell
+                      align="right"
+                      sx={{ fontFamily: "Rubik", fontSize: "10px" }}
+                    >
+                      {row.amount}
+                    </TableCell>
+                    <TableCell
+                      align="right"
+                      sx={{ fontFamily: "Rubik", fontSize: "10px" }}
+                    >
+                      {new Date(row.createdon).toLocaleDateString('en-US')}
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -237,6 +256,7 @@ const NPayConverter = () => {
         elevation={4}
         sx={{
           display: "flex",
+          flexDirection: "column",
           width: "900px",
           height: "60%",
           borderRadius: "24px",
@@ -244,14 +264,37 @@ const NPayConverter = () => {
         }}
       >
         <Typography
-          sx={{ fontFamily: "Rubik", fontSize: "24px", paddingLeft: "40px",paddingTop:"40px" }}
+          sx={{
+            fontFamily: "Rubik",
+            fontSize: "24px",
+            paddingLeft: "40px",
+            paddingTop: "40px",
+          }}
         >
           FAQ
         </Typography>
         {FAQ.map((x) => (
           <Box key={x.id}>
-            <Typography sx={{ fontFamily: "Rubik" }}>{x.questions}</Typography>
-            <Typography>{x.answers}</Typography>
+            <Typography
+              sx={{
+                fontFamily: "Rubik",
+                fontSize: "24px",
+                paddingLeft: "40px",
+                paddingTop: "40px",
+              }}
+            >
+              {x.questions}
+            </Typography>
+            <Typography
+              sx={{
+                fontFamily: "Rubik",
+                fontSize: "18px",
+                paddingLeft: "40px",
+                paddingTop: "40px",
+              }}
+            >
+              {x.answers}
+            </Typography>
           </Box>
         ))}
       </Paper>

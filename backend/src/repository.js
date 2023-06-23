@@ -136,9 +136,10 @@ const repository = {
 
   getConversion: async (ndau_address) => {
     const sql = `
-			SELECT id, npay_address, amount, transaction_hash, createdon from ndau_conversion WHERE ndau_address='${ndau_address}' `;
-
-    console.log(sql);
+			SELECT id, npay_address, amount, transaction_hash, createdon 
+        FROM ndau_conversion 
+       WHERE ndau_address='${ndau_address}' `;
+       
     return db_query(QUERY.any, sql);
   },
 
