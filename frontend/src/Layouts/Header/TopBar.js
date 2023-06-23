@@ -9,6 +9,7 @@ const TopBar = (props) => {
       container
       sx={{
         display: "flex",
+        justifyContent: "flex-start",
         alignItems: "flex-start",
         width: "100%",
         height: "3%",
@@ -22,18 +23,18 @@ const TopBar = (props) => {
           backgroundColor: "#AF92FF",
           justifyContent: "space-around",
           alignItems: "center",
-          height: "100%",
           width: "100%",
         }}
       >
         <Typography sx={{ fontFamily: "Rubik" }}>
-          Powered By {""}
-          <img src="../../assets/images/icons/ndau.svg "></img> All rights
-          reserved.
+          <img
+            src="../../assets/images/icons/npayme_logo.svg "
+          ></img>
         </Typography>
         <Link to="/">
-          {" "}
-          <Typography sx={{fontFamily:"Rubik"}}>Return To BPC DAO</Typography>
+          <Typography sx={{ fontFamily: "Rubik" }}>
+            Return To BPC DAO
+          </Typography>
         </Link>
       </Box>
     </Box>

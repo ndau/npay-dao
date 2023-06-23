@@ -15,6 +15,7 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import "./NpayConverter.css";
 
 // const FAQ = [
 //   { q: "question 1", a: "answer 1" },
@@ -60,12 +61,14 @@ const NPayConverter = () => {
   return (
     <Box
       container
+      className="bg"
       sx={{
         display: "flex",
         flexDirection: "column",
-        justifyContent: "space-around",
+        // justifyContent: "space-around",
         alignItems: "center",
-        backgroundColor: "#CCCCFF",
+        height: "200vh",
+        widht: "100%",
       }}
     >
       <TopBar />
@@ -92,8 +95,9 @@ const NPayConverter = () => {
           flexDirection: "column",
           justifyContent: "space-evenly",
           alignItems: "center",
-          width: "80%",
-          borderRadius: "36px",
+          width: "900px",
+          height: "20%",
+          borderRadius: "24px",
           backgroundColor: "#F0EBFF",
           marginBottom: "30px",
         }}
@@ -106,42 +110,66 @@ const NPayConverter = () => {
               // flexDirection: "row",
               alignItems: "center",
               justifyContent: "space-around",
+              paddingBottom: "20px",
             }}
           >
             <Box container>
               <TextField
-                label="Enter your Npay Wallet: "
-                variant="outlined"
+                label="Enter Your Wallet Address."
+                variant="standard"
                 title={npayWalletAddress}
-                sx={{ width: "40vw" }}
+                sx={{
+                  width: "25vw",
+                  paddingRight: "20px",
+                  "& .MuiInputBase-root": {
+                    height: "30px",
+                  },
+                }}
                 onChange={(e) => setnpayWalletAddresss(e.target.value)}
               ></TextField>
             </Box>
             <Box container>
               <TextField
                 label="Amount to convert: "
-                variant="outlined"
+                variant="standard"
                 title={amount}
-                sx={{ width: "20vh" }}
+                sx={{
+                  width: "10vw",
+                  "& .MuiInputBase-root": {
+                    height: "30px",
+                  },
+                }}
                 onChange={(e) => setAmount(e.target.value)}
               ></TextField>
             </Box>
           </Box>
-          {walletAddress ? (
-            <Button
-              onClick={handleClick}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                width: "40%",
-              }}
-            >
-              <Typography sx={{ fontFamily: "Rubik" }}>Convert</Typography>
-            </Button>
-          ) : (
-            <NdauConnect action="burn" />
-          )}
+          <Box
+            container
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {walletAddress ? (
+              <Button
+                variant="contain"
+                onClick={handleClick}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  "& .MuiButtonBase-root": {
+                    height: "20px",
+                  },
+                }}
+              >
+                <Typography sx={{ fontFamily: "Rubik" }}>Convert</Typography>
+              </Button>
+            ) : (
+              <NdauConnect action="burn" />
+            )}
+          </Box>
         </form>
 
         <Box
@@ -157,15 +185,32 @@ const NPayConverter = () => {
         >
           <TableContainer component={Paper}>
             <Table
-              sx={{ minWidth: 650, backgroundColor: "#F0EBFF" }}
+              sx={{ minWidth: 500, backgroundColor: "#F0EBFF", height: "80%" }}
               aria-label="simple table"
             >
-              <TableHead>
+              <TableHead
+                container
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  paddingLeft:"30px",
+                  justifyContent: "space-evenly",
+                  alignItems: "center",
+                }}
+              >
                 <TableRow>
-                  <TableCell>Your Transaction</TableCell>
-                  <TableCell align="right">Npay Address</TableCell>
-                  <TableCell align="right">Amount</TableCell>
-                  <TableCell align="right">Time </TableCell>
+                  <TableCell align="right" sx={{ fontFamily: "Rubik" }}>
+                    Your Transaction
+                  </TableCell>
+                  <TableCell align="right" sx={{ fontFamily: "Rubik" }}>
+                    Npay Address
+                  </TableCell>
+                  <TableCell align="right" sx={{ fontFamily: "Rubik" }}>
+                    Amount
+                  </TableCell>
+                  <TableCell align="right" sx={{ fontFamily: "Rubik" }}>
+                    Time{" "}
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -174,7 +219,9 @@ const NPayConverter = () => {
                     key={row.id}
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   >
-                    <TableCell align="right">{row.transactions_hash}</TableCell>
+                    <TableCell sx={{ paddingRight: "100px" }} align="right">
+                      {row.transactions_hash}
+                    </TableCell>
                     <TableCell align="right">{row.npay_address}</TableCell>
                     <TableCell align="right">{row.amount}</TableCell>
                     <TableCell align="right">{row.createdon}</TableCell>
@@ -190,22 +237,32 @@ const NPayConverter = () => {
         elevation={4}
         sx={{
           display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-evenly",
-          alignItems: "flex-start",
-          width: "80%",
-          borderRadius: "36px",
+          width: "900px",
+          height: "60%",
+          borderRadius: "24px",
           backgroundColor: "#F0EBFF",
         }}
       >
-        <Typography>FAQ</Typography>
+        <Typography
+          sx={{ fontFamily: "Rubik", fontSize: "24px", paddingLeft: "40px",paddingTop:"40px" }}
+        >
+          FAQ
+        </Typography>
         {FAQ.map((x) => (
           <Box key={x.id}>
-            <Typography>{x.questions}</Typography>
+            <Typography sx={{ fontFamily: "Rubik" }}>{x.questions}</Typography>
             <Typography>{x.answers}</Typography>
           </Box>
         ))}
       </Paper>
+      <Typography sx={{ fontFamily: "Rubik" }}>
+        Powered By {""}
+        <img
+          className="footer"
+          src="../../assets/images/icons/ndau.svg "
+        ></img>{" "}
+        All rights reserved.
+      </Typography>
     </Box>
   );
 };

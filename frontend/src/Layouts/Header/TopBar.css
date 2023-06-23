@@ -1,7 +1,6 @@
 img {
-  width: 40px;
-  height: 40px;
-  align-items: center;
+  width: 120px;
+  height: 60px;
 }
 .container {
   display: flex;
