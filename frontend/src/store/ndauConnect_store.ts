@@ -1,8 +1,8 @@
-import { socketBase } from '../types/socketTypes';
+import { socketBase } from "../types/socketTypes";
 
-import { axiosRequest } from '../api/api';
+import { axiosRequest } from "../api/api";
 
-import create from 'zustand';
+import create from "zustand";
 
 interface ndauConnectStateI {
   walletAddress: string;
@@ -20,27 +20,42 @@ interface ndauConnectStateI {
 
   isSuperAdmin: boolean;
   getIsSuperAdmin: () => void;
+
+  transactions: any;
+  updateTransactions: (_transactions: any) => void;
 }
 
 const useNdauConnectStore = create<ndauConnectStateI>((set, get) => ({
-  walletAddress: '',
-  updateWalletAddress: (_walletAddress: string) => set(() => ({ walletAddress: _walletAddress })),
+  walletAddress: "",
+  updateWalletAddress: (_walletAddress: string) =>
+    set(() => ({ walletAddress: _walletAddress })),
+  transactions: [],
+  updateTransactions: (_transactions: any) =>
+    set(() => ({ transactions: _transactions })),
 
   votes: {},
   resetVotes: () => set(() => ({ votes: {} })),
   setVoted: (_voted: boolean, proposal_id: string) =>
-    set((prevState: ndauConnectStateI) => ({ votes: { ...prevState.votes, [proposal_id]: _voted } })),
+    set((prevState: ndauConnectStateI) => ({
+      votes: { ...prevState.votes, [proposal_id]: _voted },
+    })),
 
   socket: null,
-  setSocket: <T extends socketBase>(_socket: T) => set(() => ({ socket: _socket })),
+  setSocket: <T extends socketBase>(_socket: T) =>
+    set(() => ({ socket: _socket })),
 
   isAdmin: false,
   getIsAdmin: () => {
     async function getIsAdmin() {
-      let getIsAdminResponse = await axiosRequest('get', 'admin/is-admin', undefined, {
-        walletAddress: get().walletAddress,
-      });
-      console.log(getIsAdminResponse, 'getIsAdminResponse');
+      let getIsAdminResponse = await axiosRequest(
+        "get",
+        "admin/is-admin",
+        undefined,
+        {
+          walletAddress: get().walletAddress,
+        }
+      );
+      console.log(getIsAdminResponse, "getIsAdminResponse");
       let _isAdmin = getIsAdminResponse.data.isAdmin;
       set(() => ({ isAdmin: _isAdmin }));
     }
@@ -50,18 +65,28 @@ const useNdauConnectStore = create<ndauConnectStateI>((set, get) => ({
   isSuperAdmin: false,
   getIsSuperAdmin: () => {
     async function getIsSuperAdmin() {
-      let getIsAdminResponse = await axiosRequest('get', 'superadmin/is-superadmin', undefined, {
-        walletAddress: get().walletAddress,
-      });
+      let getIsAdminResponse = await axiosRequest(
+        "get",
+        "superadmin/is-superadmin",
+        undefined,
+        {
+          walletAddress: get().walletAddress,
+        }
+      );
       let _isSuperAdmin = getIsAdminResponse.data.isSuperAdmin;
-      console.log(getIsAdminResponse, 'getIsAdminResponse');
+      console.log(getIsAdminResponse, "getIsAdminResponse");
       set(() => ({ isSuperAdmin: _isSuperAdmin }));
     }
     getIsSuperAdmin();
   },
 
   logout: () => {
-    set(() => ({ isAdmin: false, isSuperAdmin: false, walletAddress: '', socket: null }));
+    set(() => ({
+      isAdmin: false,
+      isSuperAdmin: false,
+      walletAddress: "",
+      socket: null,
+    }));
   },
 }));
 

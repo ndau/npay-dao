@@ -1,0 +1,9 @@
+.footer {
+  width: 50px;
+  height: 40px;
+}
+
+.bg {
+  background-image: url("../../../public/assets/images/icons/background.jpg");
+  background-size: cover;
+}

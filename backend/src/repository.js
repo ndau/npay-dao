@@ -1,32 +1,61 @@
-import { db_query, pgp, getConditionClause, generateUpdatedSet, trimStringProperties, QUERY } from './db';
+import {
+  db_query,
+  pgp,
+  getConditionClause,
+  generateUpdatedSet,
+  trimStringProperties,
+  QUERY,
+} from "./db";
 
 const repository = {
-  update: async (schema, table, keys, fields, { isTx = false, errMsg = '', tracking_number = '' }) => {
+  update: async (
+    schema,
+    table,
+    keys,
+    fields,
+    { isTx = false, errMsg = "", tracking_number = "" }
+  ) => {
     const { columns, values } = generateUpdatedSet(fields);
     const clause = getConditionClause(keys);
     const columnSet = new pgp.helpers.ColumnSet(columns, {
       table: { schema, table },
     });
-    const sql = `${pgp.helpers.update(values, columnSet)} WHERE ${clause.conditions.join('AND ')}`;
+    const sql = `${pgp.helpers.update(
+      values,
+      columnSet
+    )} WHERE ${clause.conditions.join("AND ")}`;
 
     return db_query(
       QUERY.any,
       sql,
       clause.values,
       isTx,
-      errMsg || `${tracking_number} Error updating table ${schema}.${table}, ${JSON.stringify(keys)}`
+      errMsg ||
+        `${tracking_number} Error updating table ${schema}.${table}, ${JSON.stringify(
+          keys
+        )}`
     );
   },
 
-  getAllVotes: async ({ isTx = false, errMsg = '', tracking_number = '' } = {}) => {
+  getAllVotes: async ({
+    isTx = false,
+    errMsg = "",
+    tracking_number = "",
+  } = {}) => {
     const sql = `SELECT * FROM votes`;
-    return db_query(QUERY.any, sql, [], isTx, errMsg || `${tracking_number} Error reading data from the table votes`);
+    return db_query(
+      QUERY.any,
+      sql,
+      [],
+      isTx,
+      errMsg || `${tracking_number} Error reading data from the table votes`
+    );
   },
 
   countVoteByAddress: async (
     proposal_id,
     user_address,
-    { isTx = false, errMsg = '', tracking_number = '' } = {}
+    { isTx = false, errMsg = "", tracking_number = "" } = {}
   ) => {
     const sql = `SELECT COUNT(*) from votes WHERE user_address = $1 and proposal_id = $2`;
 
@@ -46,7 +75,7 @@ const repository = {
     user_address,
     ballot,
     signature,
-    { isTx = false, errMsg = '', tracking_number = '' } = {}
+    { isTx = false, errMsg = "", tracking_number = "" } = {}
   ) => {
     const sql = `
 			INSERT INTO votes (proposal_id, voting_option_id, user_address, ballot, signature)
@@ -63,7 +92,10 @@ const repository = {
     );
   },
 
-  getProposalVotesDetails: async (proposal_id, { isTx = false, errMsg = '', tracking_number = '' } = {}) => {
+  getProposalVotesDetails: async (
+    proposal_id,
+    { isTx = false, errMsg = "", tracking_number = "" } = {}
+  ) => {
     const sql = `SELECT v.createdon, v.user_address, v.ballot, v.signature, v.voting_option_id, vo.summary, COALESCE(v.concluded_votes, a.votes) voting_power
 									 FROM proposals p
 									 JOIN voting_options vo on p.proposal_id = vo.proposal_id
@@ -72,13 +104,49 @@ const repository = {
 									WHERE p.proposal_id = $1
                   ORDER BY v.createdon desc`;
 
-    return db_query(
+    return (
       QUERY.any,
       sql,
       [proposal_id],
       isTx,
-      errMsg || `${tracking_number} Error getting proposal vote details for proposal id ${proposal_id}`
+      errMsg ||
+        `${tracking_number} Error getting proposal vote details for proposal id ${proposal_id}`
     );
+  },
+
+  addConversion: async (
+    ndau_address,
+    npay_address,
+    amount,
+    signature,
+    transaction_hash,
+    { isTx = false, errMsg = "", tracking_number = "" } = {}
+  ) => {
+    const sql = `
+			INSERT INTO ndau_conversion (ndau_address, npay_address, amount, signature, transaction_hash)
+			VALUES($1, $2, $3, $4, $5)`;
+
+    return db_query(
+      QUERY.any,
+      sql,
+      [ndau_address, npay_address, amount, signature, transaction_hash],
+      isTx
+    );
+  },
+
+  getConversion: async (ndau_address) => {
+    const sql = `
+			SELECT id, npay_address, amount, transaction_hash, createdon 
+        FROM ndau_conversion 
+       WHERE ndau_address='${ndau_address}' `;
+       
+    return db_query(QUERY.any, sql);
+  },
+
+  getFAQ: async () => {
+    const sql = `SELECT id,questions,answers FROM faq`;
+
+    return db_query(QUERY.any, sql);
   },
 };
 
