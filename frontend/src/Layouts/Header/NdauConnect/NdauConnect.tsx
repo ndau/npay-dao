@@ -287,12 +287,15 @@ function NdauConnect(props) {
           backgroundColor: "#b6a6e6",
           height: "40px",
           width: "10vw",
+          ":&hover": {
+            backgroundColor: "#957EDB",
+          },
         }}
       >
         {walletAddress ? (
           `${walletAddress.slice(0, 10)}...`
         ) : (
-          <>{" Connect To Wallet"}</>
+          <>{"Wallet Connect"}</>
         )}
       </Button>
       <Modal

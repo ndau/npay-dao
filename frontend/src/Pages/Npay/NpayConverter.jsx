@@ -242,7 +242,7 @@ const NPayConverter = () => {
                       align="right"
                       sx={{ fontFamily: "Rubik", fontSize: "10px" }}
                     >
-                      {new Date(row.createdon).toLocaleDateString('en-US')}
+                      {new Date(row.createdon).toLocaleDateString("en-US")}
                     </TableCell>
                   </TableRow>
                 ))}
@@ -258,7 +258,6 @@ const NPayConverter = () => {
           display: "flex",
           flexDirection: "column",
           width: "900px",
-          height: "60%",
           borderRadius: "24px",
           backgroundColor: "#F0EBFF",
         }}
@@ -278,7 +277,8 @@ const NPayConverter = () => {
             <Typography
               sx={{
                 fontFamily: "Rubik",
-                fontSize: "24px",
+                fontSize: "16px",
+                fontWeight: 700,
                 paddingLeft: "40px",
                 paddingTop: "40px",
               }}
@@ -288,7 +288,7 @@ const NPayConverter = () => {
             <Typography
               sx={{
                 fontFamily: "Rubik",
-                fontSize: "18px",
+                fontSize: "14px",
                 paddingLeft: "40px",
                 paddingTop: "40px",
               }}
