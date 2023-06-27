@@ -287,7 +287,8 @@ function NdauConnect(props) {
           backgroundColor: "#b6a6e6",
           height: "40px",
           width: "10vw",
-          ":&hover": {
+          "&:hover": {
+            color: "#E6E6E6",
             backgroundColor: "#957EDB",
           },
         }}

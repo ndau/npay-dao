@@ -67,7 +67,7 @@ const NPayConverter = () => {
         flexDirection: "column",
         // justifyContent: "space-around",
         alignItems: "center",
-        height: "200vh",
+        height: "160vh",
         widht: "100%",
       }}
     >
@@ -162,9 +162,19 @@ const NPayConverter = () => {
                   backgroundColor: "#b6a6e6",
                   height: "40px",
                   width: "10vw",
+                  "&:hover": {
+                    color: "#E6E6E6",
+                    backgroundColor: "#957EDB",
+                  },
                 }}
               >
-                <Typography sx={{ fontFamily: "Rubik" }}>Convert</Typography>
+                <Typography
+                  sx={{
+                    fontFamily: "Rubik",
+                  }}
+                >
+                  Convert
+                </Typography>
               </Button>
             ) : (
               <NdauConnect action="burn" />
