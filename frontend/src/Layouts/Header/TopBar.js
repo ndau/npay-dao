@@ -4,6 +4,10 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { Link } from "react-router-dom";
 
+function Redirect() {
+  window.location = "https://npayme.com";
+}
+
 const TopBar = (props) => {
   return (
     <Box
@@ -27,10 +31,10 @@ const TopBar = (props) => {
           width: "100%",
         }}
       >
-        <Typography sx={{ fontFamily: "Rubik" }}>
+        <Button onClick={Redirect} sx={{ fontFamily: "Rubik" }}>
           <img src="../../assets/images/icons/npayme_logo.svg "></img>
-        </Typography>
-        <Link style={{color:"#000000"}} to="/">
+        </Button>
+        <Link style={{ color: "#000000" }} to="/">
           <Typography sx={{ fontFamily: "Rubik" }}>
             Return To BPC DAO
           </Typography>

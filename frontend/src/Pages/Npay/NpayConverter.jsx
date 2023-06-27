@@ -85,7 +85,7 @@ const NPayConverter = () => {
         NDAU CONVERTER
       </Typography>
       <Typography sx={{ fontFamily: "Rubik", marginBottom: "30px" }}>
-        Burn your ndau to mint npay
+        Burn your NDAU to mint NPAY
       </Typography>
       <Paper
         container
@@ -115,7 +115,7 @@ const NPayConverter = () => {
           >
             <Box container>
               <TextField
-                label="Enter Your Wallet Address."
+                label="Enter your NPAY Address."
                 variant="standard"
                 title={npayWalletAddress}
                 sx={{
@@ -130,7 +130,7 @@ const NPayConverter = () => {
             </Box>
             <Box container>
               <TextField
-                label="Amount to convert: "
+                label="NDAU to Convert: "
                 variant="standard"
                 title={amount}
                 sx={{
@@ -217,7 +217,7 @@ const NPayConverter = () => {
                     Your Transaction
                   </TableCell>
                   <TableCell align="left" sx={{ fontFamily: "Rubik" }}>
-                    Npay Address
+                    NPAY Address
                   </TableCell>
                   <TableCell align="right" sx={{ fontFamily: "Rubik" }}>
                     Amount
