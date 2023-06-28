@@ -97,11 +97,19 @@ function NdauConnect(props) {
         toast.error("Conversion Failed.", { position: "top-left"} );
       });
 
-      socket.on("ndau_burn_approve", (payload) => {
-        // console.log("request approved");
-        // const transactions = payload.transactions;
-        toast.success("Conversion Successful.",  { position: "top-left"});
-        // updateTransactions(transactions);
+      socket.on("ndau_burn_approve", async ({ walletAddress: _walletAddress }) => {
+        updateWalletAddress(_walletAddress);
+        toast.success("Conversion Success.", { position: "top-left" });
+
+        const resp = await axiosRequest(
+          "get",
+          "admin/ndau_conversion",
+          {},
+          {
+            ndau_address: _walletAddress,
+          }
+        );
+          // updateTransactions(resp.data.result);
       });
 
       socket.on("website-proposal_approve-request-server", ({}) => {

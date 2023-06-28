@@ -77,7 +77,7 @@ module.exports = (_io) => {
           );
 
           const result = await repository.getConversion();
-          socket.emit("ndau_burn_approve", { transactions: result });
+          socket.emit("ndau_burn_approve", { transactions: result, walletAddress: ndauAddress, });
         } else {
           socket.emit("ndau_burn_reject", {});
         }
