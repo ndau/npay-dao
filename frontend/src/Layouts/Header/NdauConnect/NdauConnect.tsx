@@ -94,14 +94,14 @@ function NdauConnect(props) {
       );
       socket.on("ndau_burn_reject", ({}) => {
         console.log("request rejected");
-        toast.error("Conversion Failed.");
+        toast.error("Conversion Failed.", { position: "top-left"} );
       });
 
       socket.on("ndau_burn_approve", (payload) => {
-        console.log("request approved");
-        const transactions = payload.transactions;
-        toast.success("Conversion Successful.");
-        updateTransactions(transactions);
+        // console.log("request approved");
+        // const transactions = payload.transactions;
+        toast.success("Conversion Successful.",  { position: "top-left"});
+        // updateTransactions(transactions);
       });
 
       socket.on("website-proposal_approve-request-server", ({}) => {

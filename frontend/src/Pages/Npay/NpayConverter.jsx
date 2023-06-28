@@ -56,6 +56,12 @@ const NPayConverter = () => {
       npayWalletAddress: npayWalletAddress,
       amount: amount,
     });
+    // socket.emit("ndau_burn_wallet_connect", {
+    //   website_socket_id: socket.id,
+    //   app_socket_id: "31231",
+    //   action: "burn",
+    //   wallet_address: "ndau11DD92Ab8acd3Ce5741523C447B18821e7bba8",
+    // });
     console.log("ndau burn request successfully sent.");
   };
   return (
