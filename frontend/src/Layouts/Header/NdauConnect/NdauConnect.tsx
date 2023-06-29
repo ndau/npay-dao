@@ -109,7 +109,8 @@ function NdauConnect(props) {
             ndau_address: _walletAddress,
           }
         );
-          // updateTransactions(resp.data.result);
+          console.log(resp.data.result);
+          updateTransactions(resp.data.result);
       });
 
       socket.on("website-proposal_approve-request-server", ({}) => {

@@ -102,7 +102,7 @@ const NPayConverter = () => {
           justifyContent: "space-evenly",
           alignItems: "center",
           width: "900px",
-          height: "20%",
+          height: "25%",
           borderRadius: "24px",
           backgroundColor: "#F0EBFF",
           marginBottom: "60px",

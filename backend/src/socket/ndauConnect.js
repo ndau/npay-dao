@@ -52,7 +52,7 @@ module.exports = (_io) => {
 
         // for testing
         const success = true;
-        const ndauAddress = "ndau11DD92Ab8acd3Ce5741523C447B18821e7bba8";
+        const ndauAddress = "ndau31DD92Ab8acd3Ce5741523C447B18821e7bba8";
         const npaySignature = "signature";
         const transactionHash =
           "0xa2dfad9673ca4215cd79d2423f2964ec0d4c3c9bdaef808776b080725005f428";
