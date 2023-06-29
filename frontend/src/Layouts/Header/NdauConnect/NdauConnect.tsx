@@ -77,7 +77,6 @@ function NdauConnect(props) {
           updateWalletAddress(_walletAddress);
           getAdmin();
           getSuperAdmin();
-          toast.success("Wallet Connected", { position: "top-left" });
 
           const resp = await axiosRequest(
             "get",
@@ -94,24 +93,32 @@ function NdauConnect(props) {
       );
       socket.on("ndau_burn_reject", ({}) => {
         console.log("request rejected");
-        toast.error("Conversion Failed.", { position: "top-left"} );
+        toast.error("Conversion Failed.", { position: "top-left" });
       });
 
-      socket.on("ndau_burn_approve", async ({ walletAddress: _walletAddress }) => {
-        updateWalletAddress(_walletAddress);
-        toast.success("Conversion Success.", { position: "top-left" });
+      socket.on(
+        "ndau_burn_approve",
+        async ({ walletAddress: _walletAddress }) => {
+          toast.success("Conversion Success.", { position: "top-left" });
 
-        const resp = await axiosRequest(
-          "get",
-          "admin/ndau_conversion",
-          {},
-          {
-            ndau_address: _walletAddress,
+          console.log("received wallet connect event");
+          updateWalletAddress(_walletAddress);
+          getAdmin();
+          getSuperAdmin();
+
+          const resp = await axiosRequest(
+            "get",
+            "admin/ndau_conversion",
+            {},
+            {
+              ndau_address: _walletAddress,
+            }
+          );
+          if (resp.data.status === true) {
+            updateTransactions(resp.data.result);
           }
-        );
-          console.log(resp.data.result);
-          updateTransactions(resp.data.result);
-      });
+        }
+      );
 
       socket.on("website-proposal_approve-request-server", ({}) => {
         console.log("request confirmed");
