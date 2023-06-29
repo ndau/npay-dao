@@ -26,6 +26,7 @@ import "./NpayConverter.css";
 // }
 
 const NPayConverter = () => {
+  const [inputState, setInputState] = useState(true);
   const transactions = useNdauConnectStore((state) => state.transactions);
   const walletAddress = useNdauConnectStore((state) => state.walletAddress);
   const resetVotes = useNdauConnectStore((state) => state.resetVotes);
@@ -51,6 +52,13 @@ const NPayConverter = () => {
     logoutFunction();
   };
 
+  function handleChange(props) {
+    if (amount.length > 0 && npayWalletAddress.length > 5) {
+      setInputState(false);
+    } else {
+      setInputState(true);
+    }
+  }
   const handleClick = (props) => {
     socket.emit("ndau_burn_request", {
       npayWalletAddress: npayWalletAddress,
@@ -131,7 +139,10 @@ const NPayConverter = () => {
                     height: "30px",
                   },
                 }}
-                onChange={(e) => setnpayWalletAddresss(e.target.value)}
+                onChange={(e) => {
+                  setnpayWalletAddresss(e.target.value);
+                  handleChange();
+                }}
               ></TextField>
             </Box>
             <Box container>
@@ -145,7 +156,10 @@ const NPayConverter = () => {
                     height: "30px",
                   },
                 }}
-                onChange={(e) => setAmount(e.target.value)}
+                onChange={(e) => {
+                  setAmount(e.target.value);
+                  handleChange();
+                }}
               ></TextField>
             </Box>
           </Box>
@@ -160,6 +174,7 @@ const NPayConverter = () => {
             {walletAddress ? (
               <Button
                 variant="contained"
+                disabled={inputState}
                 onClick={handleClick}
                 sx={{
                   display: "flex",
