@@ -53,7 +53,7 @@ const NPayConverter = () => {
   };
 
   function handleChange(props) {
-    if (amount.length > 0 && npayWalletAddress.length > 5) {
+    if (amount.length > 0 && npayWalletAddress.length > 20) {
       setInputState(false);
     } else {
       setInputState(true);
