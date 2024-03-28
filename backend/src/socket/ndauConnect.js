@@ -26,7 +26,7 @@ module.exports = (_io) => {
     console.log(socket.id);
     //event format: source-action-stage-target   = source_of_event-what_to_do-which_stage_we_are_at-target
     socket.on("ndau_burn_wallet_connect", (payload) => {
-      toast.success("Wallet Connected", { position: "top-left" });
+      console.log("Wallet Connected");
       const { website_socket_id, action, wallet_address, app_socket_id } =
         payload;
       console.log(website_socket_id, action, wallet_address, app_socket_id);
