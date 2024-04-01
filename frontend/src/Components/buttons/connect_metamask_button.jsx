@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react"
 import { Button, Spinner } from "react-bootstrap"
-import useMetamask from "../../utils/hooks/use_metamask";
 import useNdauConnectStore from "../../store/ndauConnect_store";
 import { axiosRequest, baseURL } from "../../api/api";
 import { io } from "socket.io-client";
 import { toast } from "react-toastify";
+import useMetamask from "../../contexts/metamask/use_metamask";
 
 const ndauConnectApi = baseURL.slice(0, -4);
 let socket;

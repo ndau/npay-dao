@@ -83,7 +83,7 @@ const PollDetail = () => {
         proposal_Id: proposalId,
         loggedInWalletAddress: walletAddress,
       });
-
+console.log("pollDetailResponse", pollDetailResponse)
       const proposalDetail = pollDetailResponse.data.proposalDetails[0];
       const {
         voting_options_headings,

@@ -16,6 +16,8 @@ import { useDebouncedCallback } from 'use-debounce';
 
 import { socketBase } from '../../types/socketTypes';
 import useNdauConnectStore from '../../store/ndauConnect_store';
+import useMetamask from '../../contexts/metamask/use_metamask';
+import ButtonSpinner from '../spinners/btn_spinner';
 
 type VoteButtonPropsI = {
   dynamicClassName?: string;
@@ -72,6 +74,7 @@ const VoteButton = ({ dynamicClassName, allowVote, selectedVoteOption }: VoteBut
   const [voteOffline, setVoteOffline] = useState(false);
   const [pubkey, setPubkey] = useState<any>();
   const [payload, setPayload] = useState<string>('');
+  const { signInUser, metamaskWeb3 } = useMetamask();  
 
   const handleAddressChange = useDebouncedCallback(
     async (value) => {
@@ -104,44 +107,69 @@ const VoteButton = ({ dynamicClassName, allowVote, selectedVoteOption }: VoteBut
     formState: { errors },
   } = useForm<FormInputsI>({ resolver: yupResolver(schema) });
 
-  const submitVote = (
-    _socket: socketBase | null,
-    _selectedVoteOptionId: number | undefined,
-    _walletAddress: string,
-    useWallet?: boolean
-  ) => {
-    if (!_selectedVoteOptionId) {
-      toast.warning('Please select a vote option');
-    } else {
-      if (useWallet) {
-        if (_socket) {
-          _socket.emit('website-create_vote-request-server', {
-            websiteSocketId: _socket.id,
-            selectedVoteOptionId: _selectedVoteOptionId,
-            walletAddress: _walletAddress,
-          });
+  // const submitVote = (
+  //   _socket: socketBase | null,
+  //   _selectedVoteOptionId: number | undefined,
+  //   _walletAddress: string,
+  //   useWallet?: boolean
+  // ) => {
+  //   if (!_selectedVoteOptionId) {
+  //     toast.warning('Please select a vote option');
+  //   } else {
+  //     if (useWallet) {
+  //       if (_socket) {
+  //         _socket.emit('website-create_vote-request-server', {
+  //           websiteSocketId: _socket.id,
+  //           selectedVoteOptionId: _selectedVoteOptionId,
+  //           walletAddress: _walletAddress,
+  //         });
 
-          try {
-            toast.info('Awaiting Vote Confirmation');
-          } catch {
-            toast.error("Something went wrong. Couldn't vote");
-          }
-        } else {
-          toast.warning('Wallet Not Connected');
-        }
-      } else {
-        // Show offline vote
-        setVoteOffline(!voteOffline);
-      }
-    }
-  };
+  //         try {
+  //           toast.info('Awaiting Vote Confirmation');
+  //         } catch {
+  //           toast.error("Something went wrong. Couldn't vote");
+  //         }
+  //       } else {
+  //         toast.warning('Wallet Not Connected');
+  //       }
+  //     } else {
+  //       // Show offline vote
+  //       setVoteOffline(!voteOffline);
+  //     }
+  //   }
+  // };
 
-  const signManually = async ({ signature }: FormInputsI) => {
-    console.log('payload, signature', payload, signature);
+  const [isVoting, setIsVoting] = useState<boolean>(false);
+
+  const submitVote = async () => {
+    setIsVoting(true);
+    
+    const signatureObj : any = await signInUser();
+    if(!signatureObj){
+      setIsVoting(false);
+      return false;
+    } 
+
+    const { signature, welcomeMessage } = signatureObj;
+    
+    let _payload : any = {
+      vote: 'yes',
+      proposal: {
+        proposal_id,
+        proposal_heading,
+        voting_option_id: selectedVoteOptionId,
+        voting_option_heading,
+      },
+      wallet_address: metamaskWeb3.walletAddress,
+      message: welcomeMessage
+    };
+
+    _payload = btoa(yaml.stringify(_payload));
+
     try {
       const resp = await axiosRequest('post', 'vote', {
-        payload,
-        signature,
+        payload: _payload,
+        signature
       });
 
       toast.success(resp.data.message);
@@ -152,6 +180,7 @@ const VoteButton = ({ dynamicClassName, allowVote, selectedVoteOption }: VoteBut
         console.log('Unexpected error', err);
       }
     }
+    setIsVoting(false);
   };
 
   const onCopy = () => {
@@ -164,22 +193,24 @@ const VoteButton = ({ dynamicClassName, allowVote, selectedVoteOption }: VoteBut
         {!voteOffline && (
           <Button
             disabled={!allowVote}
-            onClick={() => submitVote(socket, selectedVoteOptionId, connectedWallet, true)}
+            onClick={submitVote}
             className={dynamicClassName}
             variant="success"
           >
-            Add Vote
+            { isVoting ? <ButtonSpinner  variant="white" /> : "Add Vote" }
           </Button>
         )}{' '}
-        <Button
-          disabled={!!connectedWallet || !allowVote}
-          onClick={() => submitVote(socket, selectedVoteOptionId, connectedWallet, false)}
-          variant="primary"
-        >
-          {!voteOffline ? 'Sign Manually' : 'Hide'}
-        </Button>
+        {/* 
+          <Button
+            disabled={!!connectedWallet || !allowVote}
+            onClick={() => submitVote(socket, selectedVoteOptionId, connectedWallet, false)}
+            variant="primary"
+          >
+            {!voteOffline ? 'Sign Manually' : 'Hide'}
+          </Button>
+         */}
       </div>
-      {voteOffline && (
+      {/* {voteOffline && (
         <form onSubmit={handleSubmit(signManually)}>
           <Card
             style={{
@@ -253,7 +284,7 @@ const VoteButton = ({ dynamicClassName, allowVote, selectedVoteOption }: VoteBut
             </Card.Body>
           </Card>
         </form>
-      )}
+      )} */}
     </>
   );
 };
