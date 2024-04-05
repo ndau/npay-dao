@@ -30,74 +30,10 @@ const ConnectMetamaskButton = () => {
     }
 
     useEffect(() => {
-        if(metamaskWeb3.walletAddress){
-           
-            socketEmit("ndau_burn_wallet_connect", {
-                website_socket_id: socket.id,
-                app_socket_id: "31231",
-                action: "burn",
-                wallet_address:metamaskWeb3.walletAddress,
-            });
-
-            socket.on(
-                "server-ndau_connection-established-website",
-                async ({ walletAddress: _walletAddress }) => {
-                  updateWalletAddress(metamaskWeb3.walletAddress);
-                  getAdmin();
-                  getSuperAdmin();
-        
-                  const resp = await axiosRequest(
-                    "get",
-                    "admin/ndau_conversion",
-                    {},
-                    {
-                      ndau_address: _walletAddress,
-                    }
-                  );
-                  if (resp.data.status === true) {
-                    updateTransactions(resp.data.result);
-                  }
-                }
-            );
+        if(metamaskWeb3.walletAddress){    
+          updateWalletAddress(metamaskWeb3.walletAddress);
         }
     }, [metamaskWeb3.walletAddress]);
-
-    useEffect(() => {
-        socket = io(ndauConnectApi);
-    
-        if (socket) {
-          //even though socket is initialized here, it is not accessible via the global store until socket connection with wallet is established
-          socket.on("ndau_burn_reject", ({}) => {
-            toast.error("Conversion Failed.", { position: "top-left" });
-          });
-    
-          socket.on(
-            "ndau_burn_approve",
-            async ({ walletAddress: _walletAddress }) => {
-              toast.success("Conversion Success.", { position: "top-left" });
-    
-              console.log("received wallet connect event");
-              updateWalletAddress(_walletAddress);
-              getAdmin();
-              getSuperAdmin();
-    
-              const resp = await axiosRequest(
-                "get",
-                "admin/ndau_conversion",
-                {},
-                {
-                  ndau_address: _walletAddress,
-                }
-              );
-              if (resp.data.status === true) {
-                updateTransactions(resp.data.result);
-              }
-            }
-          );
-              
-          setSocket(socket);
-        }
-      }, []);
 
     return(
         <Button
