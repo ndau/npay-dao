@@ -11,7 +11,7 @@ const ed = require('@noble/ed25519');
 
 const { pg } = require('../pg');
 const checkIsBodyIncomplete = require('../utils/checkIsBodyIncomplete');
-const web3 = require('web3');
+const { recoverTypedSignature, SignTypedDataVersion } = require('@metamask/eth-sig-util');
 
 // console.log('testing generate....');
 // const testPayload =
@@ -206,14 +206,16 @@ exports.getVoteObjectForConfirmation = async ({ votingOptionId, userAddress }) =
 exports.hasUserVoted = async (req, res, next) => {};
 
 exports.addVote = async (req, res, next) => {
-  const { payload, signature } = req.body;
+  const { signature: payload } = req.body;
+
   try {
     const b64DecodedMsg = atob(payload);
     const ballot = yaml.parse(b64DecodedMsg);
-    const { proposal, wallet_address, message } = ballot;
+    
+    const { proposal, wallet_address, message, signature: _signature, version } = ballot;
     const { proposal_id, voting_option_id } = proposal;
 
-    console.log('ballot, wallet_address, signature', ballot, wallet_address, signature);
+    console.log('ballot, wallet_address, signature', ballot, wallet_address, _signature);
 
     if (!wallet_address) {
       return res.status(400).json({
@@ -222,16 +224,20 @@ exports.addVote = async (req, res, next) => {
       });
     }
 
-    const extractedAddress = web3.eth.accounts.recover(message, signature);
+    const recoveredAddress = recoverTypedSignature({
+        data: message,
+        signature: _signature,
+        version: SignTypedDataVersion[version]
+    });
 
-    if (!extractedAddress) {
+    if (!recoveredAddress) {
       return res.status(400).json({
         status: false,
         message: 'Bad signature',
       });
     }
 
-    if (extractedAddress.toLowerCase() !== wallet_address.toLowerCase()) {
+    if (recoveredAddress.toLowerCase() !== wallet_address.toLowerCase()) {
       return res.status(400).json({
         status: false,
         message: 'Failed in signature verification process',
@@ -248,7 +254,7 @@ exports.addVote = async (req, res, next) => {
     }
 
     // Save vote to database
-    const result = await repository.addVote(proposal_id, voting_option_id, wallet_address, ballot, signature, {
+    const result = await repository.addVote(proposal_id, voting_option_id, wallet_address, ballot, _signature, {
       tracking_number: '',
     });
     if (result && result.vote_id) {

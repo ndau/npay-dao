@@ -144,13 +144,13 @@ const VoteButton = ({ dynamicClassName, allowVote, selectedVoteOption }: VoteBut
   const submitVote = async () => {
     setIsVoting(true);
     
-    const signatureObj : any = await signInUser();
+    const signatureObj : any = await signInUser(selectedVoteOption);
     if(!signatureObj){
       setIsVoting(false);
       return false;
     } 
 
-    const { signature, welcomeMessage } = signatureObj;
+    const { signature, message } = signatureObj;
     
     let _payload : any = {
       vote: 'yes',
@@ -161,15 +161,16 @@ const VoteButton = ({ dynamicClassName, allowVote, selectedVoteOption }: VoteBut
         voting_option_heading,
       },
       wallet_address: metamaskWeb3.walletAddress,
-      message: welcomeMessage
+      message,
+      signature,
+      version: 'V4'
     };
 
     _payload = btoa(yaml.stringify(_payload));
 
     try {
       const resp = await axiosRequest('post', 'vote', {
-        payload: _payload,
-        signature
+        signature: _payload
       });
 
       toast.success(resp.data.message);

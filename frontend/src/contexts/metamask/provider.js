@@ -33,7 +33,7 @@ const MetamaskContextProvider = ({ children }) => {
         }
     }
 
-    const signInUser = async () => {
+    const signInUser = async (selectedVoteOption) => {
         try {
 
             if(!metamaskWeb3.provider){
@@ -41,23 +41,58 @@ const MetamaskContextProvider = ({ children }) => {
                 return false;
             }
 
-            const host = window.location.hostname;
-            const uri = window.location.href;
-            const nonce = Date.now();
-            const dateTime = new Date().toISOString();
-            const chainId = parseInt(window.ethereum.chainId);
-            const walletAddress = metamaskWeb3.walletAddress;
-
-            const welcomeMessage = `${host} wants you to sign in with your account: ${walletAddress} \n\nWelcome to Oneiro. Signing is the only way we can truly know that you are the owner of the wallet you are connecting. Signing is a safe, gas-less transaction that does not in any way give permission to perform any transactions with your wallet. \n\nURI: ${uri} \nVersion: 1 \nChain ID: ${chainId} \nNonce: ${nonce} \nIssued At: ${dateTime}`;
-
+            const domain = {
+                name: 'Oneiro',
+                version: '1',
+                chainId: 1,
+                verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC'
+            };
+            
+            const types = {    
+                "Voting:": [
+                    {
+                        name: 'Proposal ID',
+                        type: 'string'
+                    },
+                    {
+                        name: "Proposal Heading",
+                        type: 'string'
+                    },
+                    {
+                        name: "Voting Option ID",
+                        type: 'string'
+                    },
+                    {
+                        name: "Voting Option Heading",
+                        type: 'string'
+                    }
+                ]
+            };
+            
+            const value =  {
+                "Proposal ID": selectedVoteOption?.proposal_id,
+                "Proposal Heading": selectedVoteOption?.proposal_heading,
+                "Voting Option ID": selectedVoteOption?.voting_option_id,
+                "Voting Option Heading": selectedVoteOption?.voting_option_heading
+            
+            };
+               
+              
+            // Define the typed data according to the EIP-712 schema
+            const msgParams =  {
+                types,
+                primaryType: 'Voting:',
+                domain,
+                message: value
+            }
             const signature = await metamaskWeb3.provider.request({
-                "method": "personal_sign",
-                params: [welcomeMessage, walletAddress]
+                "method": "eth_signTypedData_v4",
+                params: [metamaskWeb3.walletAddress, msgParams]
             });
 
            return {
             signature,
-            welcomeMessage
+            message: msgParams
            };
         } catch (err) {
             toast.error(err?.message || "Something went wrong!");

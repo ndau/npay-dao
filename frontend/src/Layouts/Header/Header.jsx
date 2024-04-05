@@ -102,7 +102,7 @@ const Header = () => {
                   </Dropdown>
                 ) : (
                   <>
-                    <NdauConnect />
+                    {/* <NdauConnect /> */}
                     <ConnectMetamaskButton />
                   </>
                 )}

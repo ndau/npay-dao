@@ -7,7 +7,7 @@ interface MetamaskWeb3 {
 }
 
 interface MetamaskContextType {
-    signInUser: () => boolean | string;
+    signInUser: (props: any) => boolean | string;
     connectMetamask: any;
     metamaskWeb3: MetamaskWeb3;
 }

@@ -12,6 +12,7 @@
   "license": "UNLICENSED",
   "dependencies": {
     "@assemblyscript/loader": "^0.24.1",
+    "@metamask/eth-sig-util": "^7.0.1",
     "@noble/ed25519": "^1.7.1",
     "@noble/secp256k1": "^1.7.0",
     "axios": "^1.2.1",
