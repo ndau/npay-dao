@@ -72,10 +72,7 @@ const VoteButton = ({ dynamicClassName, allowVote, selectedVoteOption }: VoteBut
 
   const walletAddress = useNdauConnectStore((state) => state.walletAddress);
   const provider = useNdauConnectStore(state => state.provider);
- console.log({
-  provider,
-  walletAddress
- })
+
   const socket = useNdauConnectStore((state) => state.socket);
   const [voteOffline, setVoteOffline] = useState(false);
   const [pubkey, setPubkey] = useState<any>();
@@ -154,8 +151,10 @@ const VoteButton = ({ dynamicClassName, allowVote, selectedVoteOption }: VoteBut
     let signatureObj: any = null;
     if(provider === "metamask"){
       signatureObj = await signInUser(selectedVoteOption);
-    }else{
+    }else if(provider === "walletConnect"){
       signatureObj = await handleWalletConnectSignin(selectedVoteOption);
+    }else{
+      toast.error("No wallet connected");
     }
 
     if(!signatureObj){

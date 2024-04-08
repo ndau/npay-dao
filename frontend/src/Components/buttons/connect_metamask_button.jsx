@@ -11,14 +11,11 @@ const ConnectMetamaskButton = () => {
 
     const connectMetamaskHandler = async () => {
         updateProvider('metamask');
-        await connectMetamask(setIsMetamasConnecting); 
+        const walletAddress = await connectMetamask(setIsMetamasConnecting); 
+        
+        if(walletAddress) updateWalletAddress(walletAddress);
     }
 
-    useEffect(() => {
-        if(metamaskWeb3.walletAddress){    
-          updateWalletAddress(metamaskWeb3.walletAddress);
-        }
-    }, [metamaskWeb3.walletAddress]);
 
     return(
         <Button

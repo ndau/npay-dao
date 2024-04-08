@@ -32,12 +32,12 @@ const WalletConnectContextProvider = ({ children }) => {
         }
     }
 
-    async function onSessionConnected(sessionNamespace){
+    async function onSessionConnected(sessionNamespace, walletAddress){
         try {
             setWalletConnectWeb3(prev => ({
                 ...prev,
                 session: sessionNamespace,
-                walletAddress: sessionNamespace.namespaces.eip155.accounts[0].slice(9)
+                walletAddress
             }));
         } catch(e){
           console.error(e)
@@ -70,15 +70,18 @@ const WalletConnectContextProvider = ({ children }) => {
           const { uri, approval  } = await signClient.connect({
             requiredNamespaces: proposalNamespace
           });
-         
+          
+          let walletAddress = '';
           if (uri){
             web3Modal.openModal({ uri });
             const sessionNamespace = await approval();
-          
-              onSessionConnected(sessionNamespace);
-              web3Modal.closeModal();
+            walletAddress = sessionNamespace.namespaces.eip155.accounts[0].slice(9);
+            onSessionConnected(sessionNamespace, walletAddress);
+            web3Modal.closeModal();
           } 
+
           setIsWalletConnectConnecting(false);
+          return walletAddress;
         } catch(e){
             let msg =  "Something went wrong!";
             if(e.code === 5002){

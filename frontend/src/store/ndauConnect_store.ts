@@ -89,10 +89,11 @@ const useNdauConnectStore = create<ndauConnectStateI>((set, get) => ({
   },
 
   logout: () => {
-    set(() => ({
+    set((state) => ({
+      ...state,
       isAdmin: false,
       isSuperAdmin: false,
-      walletAddress: "",
+      walletAddress: "", // Clear walletAddress
       socket: null,
       provider: ""
     }));

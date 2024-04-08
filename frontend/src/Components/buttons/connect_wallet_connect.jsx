@@ -12,13 +12,9 @@ const ConnectWalletConnectButton = () => {
     const connectWalletConnectHandler = async () => {
         updateProvider('walletConnect');
        await walletConnectConnectHandler(setIsWalletConnectConnecting); 
-    }
 
-    useEffect(() => {
-        if(walletConnectWeb3.walletAddress){
-            updateWalletAddress(walletConnectWeb3.walletAddress);
-        }
-    }, [walletConnectWeb3.walletAddress]);
+       if(walletConnectWeb3.walletAddress) updateWalletAddress(walletConnectWeb3.walletAddress);
+    } 
 
     return(
         <Button
