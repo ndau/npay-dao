@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "@walletconnect/sign-client": "^2.12.1",
-    "@web3modal/standalone": "^2.4.3"
-  }
-}
