@@ -45,7 +45,7 @@ const MetamaskContextProvider = ({ children }) => {
                 name: 'Oneiro',
                 version: '1',
                 chainId: 1,
-                verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC'
+                //verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC'
             };
             
             const types = {    
