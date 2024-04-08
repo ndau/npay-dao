@@ -1,32 +1,17 @@
 import { useEffect, useState } from "react"
 import { Button, Spinner } from "react-bootstrap"
 import useNdauConnectStore from "../../store/ndauConnect_store";
-import { axiosRequest, baseURL } from "../../api/api";
-import { io } from "socket.io-client";
-import { toast } from "react-toastify";
 import useMetamask from "../../contexts/metamask/use_metamask";
-
-const ndauConnectApi = baseURL.slice(0, -4);
-let socket;
-
-export const socketEmit = (event, data) => {
-    if (socket) {
-      socket.emit(event, data);
-    }
-  };
 
 const ConnectMetamaskButton = () => {
     const [isMetamasConnecting, setIsMetamasConnecting] = useState(false);
     const { connectMetamask, metamaskWeb3 } = useMetamask();
     const updateWalletAddress = useNdauConnectStore( (state) => state.updateWalletAddress );
-    
-    const setSocket = useNdauConnectStore((state) => state.setSocket);
-    const getAdmin = useNdauConnectStore((state) => state.getIsAdmin);
-    const getSuperAdmin = useNdauConnectStore((state) => state.getIsSuperAdmin);
-    const updateTransactions = useNdauConnectStore( (state) => state.updateTransactions);
+    const updateProvider = useNdauConnectStore( (state) => state.updateProvider );
 
     const connectMetamaskHandler = async () => {
-       await connectMetamask(setIsMetamasConnecting); 
+        updateProvider('metamask');
+        await connectMetamask(setIsMetamasConnecting); 
     }
 
     useEffect(() => {

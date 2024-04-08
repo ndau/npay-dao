@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import MetamaskContextProvider from "./contexts/metamask/provider";
+import WalletConnectContextProvider from "./contexts/wallet_connect/provider";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -10,7 +11,9 @@ const root = ReactDOM.createRoot(
 root.render(
   // <React.StrictMode>
   <MetamaskContextProvider>
-    <App />
+    <WalletConnectContextProvider>
+      <App />
+    </WalletConnectContextProvider>
   </MetamaskContextProvider>
   // </React.StrictMode>
 );

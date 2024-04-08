@@ -74,7 +74,6 @@ const MetamaskContextProvider = ({ children }) => {
                 "Proposal Heading": selectedVoteOption?.proposal_heading,
                 "Voting Option ID": selectedVoteOption?.voting_option_id,
                 "Voting Option Heading": selectedVoteOption?.voting_option_heading
-            
             };
                
               
