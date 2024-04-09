@@ -85,6 +85,7 @@ const WalletConnectContextProvider = ({ children }) => {
         } catch(e){
             let msg =  "Something went wrong!";
             if(e.code === 5002){
+                web3Modal.closeModal();
                 msg = "Permission request rejected";
             }
             toast.error(msg);

@@ -11,9 +11,9 @@ const ConnectWalletConnectButton = () => {
     
     const connectWalletConnectHandler = async () => {
         updateProvider('walletConnect');
-       await walletConnectConnectHandler(setIsWalletConnectConnecting); 
+        const walletAddress = await walletConnectConnectHandler(setIsWalletConnectConnecting); 
 
-       if(walletConnectWeb3.walletAddress) updateWalletAddress(walletConnectWeb3.walletAddress);
+       if(walletAddress) updateWalletAddress(walletAddress);
     } 
 
     return(

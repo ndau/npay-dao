@@ -108,7 +108,7 @@ const Header = () => {
                     {/* <NdauConnect /> */}
                     <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                       <ConnectMetamaskButton />
-                     <ConnectWalletConnectButton />
+                      <ConnectWalletConnectButton />
                     </div>
                   </>
                 )}
