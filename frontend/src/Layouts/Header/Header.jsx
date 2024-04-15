@@ -7,6 +7,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import NdauConnect from './NdauConnect/NdauConnect';
 import useNdauConnectStore from '../../store/ndauConnect_store';
 import Dropdown from 'react-bootstrap/Dropdown';
+import ConnectMetamaskButton from '../../Components/buttons/connect_metamask_button';
 
 const Header = () => {
   const isAdmin = useNdauConnectStore((state) => state.isAdmin);
@@ -100,7 +101,10 @@ const Header = () => {
                     </Dropdown.Menu>
                   </Dropdown>
                 ) : (
-                  <NdauConnect />
+                  <>
+                    {/* <NdauConnect /> */}
+                    <ConnectMetamaskButton />
+                  </>
                 )}
               </Nav>
             </Navbar.Collapse>

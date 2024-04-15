@@ -6,6 +6,7 @@
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",
     "@hookform/resolvers": "^2.9.8",
+    "@metamask/detect-provider": "^2.0.0",
     "@mui/material": "^5.13.4",
     "@mui/styled-engine-sc": "^5.12.0",
     "@mui/system": "^5.13.2",

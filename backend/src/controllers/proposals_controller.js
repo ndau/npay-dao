@@ -58,14 +58,14 @@ exports.createProposal = async (req, res, next) => {
       });
       return;
     }
-    const firstTwoLettersOfAddress = walletAddress.slice(0, 2);
-    if (walletAddress.length != 48 || firstTwoLettersOfAddress !== "nd") {
-      res.status(400).json({
-        status: "false",
-        message: "wallet-address does not belong to the ndau chain",
-      });
-      return;
-    }
+    // const firstTwoLettersOfAddress = walletAddress.slice(0, 2);
+    // if (walletAddress.length != 48 || firstTwoLettersOfAddress !== "nd") {
+    //   res.status(400).json({
+    //     status: "false",
+    //     message: "wallet-address does not belong to the ndau chain",
+    //   });
+    //   return;
+    // }
 
     if (isAnyValUndefined) {
       res.status(400).json({

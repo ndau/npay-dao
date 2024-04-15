@@ -257,7 +257,7 @@ const PollDetail = () => {
                                 proposal_id,
                                 proposal_heading,
                                 voting_option_id: selectedVoteOptionId || -1,
-                                voting_option_heading: votingOptionsArray[selectedVoteOptionId || -1],
+                                voting_option_heading: voting_options_headings[selectedVoteOptionId || -1]
                               }}
                             />
                           ))}

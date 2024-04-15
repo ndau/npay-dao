@@ -11,6 +11,7 @@ const ed = require('@noble/ed25519');
 
 const { pg } = require('../pg');
 const checkIsBodyIncomplete = require('../utils/checkIsBodyIncomplete');
+const { recoverTypedSignature, SignTypedDataVersion } = require('@metamask/eth-sig-util');
 
 // console.log('testing generate....');
 // const testPayload =
@@ -205,67 +206,38 @@ exports.getVoteObjectForConfirmation = async ({ votingOptionId, userAddress }) =
 exports.hasUserVoted = async (req, res, next) => {};
 
 exports.addVote = async (req, res, next) => {
-  const { payload, signature } = req.body;
+  const { signature: payload } = req.body;
+
   try {
     const b64DecodedMsg = atob(payload);
     const ballot = yaml.parse(b64DecodedMsg);
-    const { validation_key, proposal, wallet_address } = ballot;
+    
+    const { proposal, wallet_address, message, signature: _signature, version } = ballot;
     const { proposal_id, voting_option_id } = proposal;
 
-    console.log('ballot, validation_key, wallet_address, signature', ballot, validation_key, wallet_address, signature);
+    console.log('ballot, wallet_address, signature', ballot, wallet_address, _signature);
 
-    const account = await getAccount(wallet_address);
-    if (!account || !account[wallet_address]) {
+    if (!wallet_address) {
       return res.status(400).json({
         status: false,
         message: 'Wallet address not found or blank',
       });
     }
 
-    const { validationKeys } = account[wallet_address];
-    const ndauPubkey = validationKeys[0];
-    console.log('ndauPubkey.....', ndauPubkey);
-    if (validation_key !== ndauPubkey) {
-      return res.status(400).json({
-        status: false,
-        message: 'The validation keys are mismatched. Please try again!',
-      });
-    }
+    const recoveredAddress = recoverTypedSignature({
+        data: message,
+        signature: _signature,
+        version: SignTypedDataVersion[version]
+    });
 
-    console.log('Extracting signature...');
-    const [sign, err] = ndauSignatureToBytes(signature);
-    if (err !== null) {
+    if (!recoveredAddress) {
       return res.status(400).json({
         status: false,
         message: 'Bad signature',
       });
     }
-    const [pk, _] = ndauPubkeyToBytes(ndauPubkey);
-    // const wallet_address = Generate('a', pk.key);
 
-    let hexPayload;
-    let bytePayload;
-    let hashPayload;
-    let isValid = false;
-    switch (sign.algorithm) {
-      case 'Ed25519':
-        hexPayload = Buffer.from(b64DecodedMsg).toString('hex');
-        isValid = await ed.verify(sign.data, hexPayload, pk.key);
-        break;
-      case 'Secp256k1':
-        bytePayload = new Uint8Array(Buffer.from(b64DecodedMsg));
-        hashPayload = crypto.createHash('sha256').update(bytePayload).digest();
-        isValid = await secp256k1.verify(sign.data, hashPayload, pk.key);
-        break;
-      default:
-        return res.status(400).json({
-          status: false,
-          message: 'Unsupported signature algorithm',
-        });
-    }
-
-    console.log('Signature verified: ', isValid);
-    if (!isValid) {
+    if (recoveredAddress.toLowerCase() !== wallet_address.toLowerCase()) {
       return res.status(400).json({
         status: false,
         message: 'Failed in signature verification process',
@@ -282,7 +254,7 @@ exports.addVote = async (req, res, next) => {
     }
 
     // Save vote to database
-    const result = await repository.addVote(proposal_id, voting_option_id, wallet_address, ballot, signature, {
+    const result = await repository.addVote(proposal_id, voting_option_id, wallet_address, ballot, _signature, {
       tracking_number: '',
     });
     if (result && result.vote_id) {
