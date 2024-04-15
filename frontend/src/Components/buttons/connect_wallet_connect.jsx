@@ -1,25 +1,24 @@
 import { useEffect, useState } from "react"
 import { Button, Spinner } from "react-bootstrap"
 import useNdauConnectStore from "../../store/ndauConnect_store";
-import useMetamask from "../../contexts/metamask/use_metamask";
+import useWalletConnect from "../../contexts/wallet_connect/use_wallet_connect";
 
-const ConnectMetamaskButton = () => {
-    const [isMetamasConnecting, setIsMetamasConnecting] = useState(false);
-    const { connectMetamask, metamaskWeb3 } = useMetamask();
+const ConnectWalletConnectButton = () => {
+    const [isWalletConnectConnecting, setIsWalletConnectConnecting] = useState(false);
+    const { walletConnectConnectHandler, walletConnectWeb3 } = useWalletConnect();
     const updateWalletAddress = useNdauConnectStore( (state) => state.updateWalletAddress );
     const updateProvider = useNdauConnectStore( (state) => state.updateProvider );
+    
+    const connectWalletConnectHandler = async () => {
+        updateProvider('walletConnect');
+        const walletAddress = await walletConnectConnectHandler(setIsWalletConnectConnecting); 
 
-    const connectMetamaskHandler = async () => {
-        updateProvider('metamask');
-        const walletAddress = await connectMetamask(setIsMetamasConnecting); 
-        
-        if(walletAddress) updateWalletAddress(walletAddress);
-    }
-
+       if(walletAddress) updateWalletAddress(walletAddress);
+    } 
 
     return(
         <Button
-            onClick={connectMetamaskHandler}
+            onClick={connectWalletConnectHandler}
             variant="contained"
             sx={{
             display: "flex",
@@ -33,14 +32,14 @@ const ConnectMetamaskButton = () => {
             }}
         >
             {
-                isMetamasConnecting ? (
+                isWalletConnectConnecting ? (
                     <Spinner variant="white" animation="border" size="sm" />
                 ) : (
-                    <img src="/assets/images/mm.svg" alt="My SVG" style={{ width: '30px', height: '25px' }} />
+                    <img src="/assets/images/wc.png" alt="My SVG" style={{ width: '30px', height: '25px' }} />
                 )
             }
       </Button>
     )
 }
 
-export default ConnectMetamaskButton;
+export default ConnectWalletConnectButton;

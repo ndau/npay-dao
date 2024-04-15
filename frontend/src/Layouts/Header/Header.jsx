@@ -8,6 +8,7 @@ import NdauConnect from './NdauConnect/NdauConnect';
 import useNdauConnectStore from '../../store/ndauConnect_store';
 import Dropdown from 'react-bootstrap/Dropdown';
 import ConnectMetamaskButton from '../../Components/buttons/connect_metamask_button';
+import ConnectWalletConnectButton from '../../Components/buttons/connect_wallet_connect';
 
 const Header = () => {
   const isAdmin = useNdauConnectStore((state) => state.isAdmin);
@@ -22,7 +23,9 @@ const Header = () => {
   const handleLogout = (value) => {
     console.log(`Logout ${value}`);
     resetVotes();
-    socket.disconnect();
+    if(socket){
+      socket.disconnect();
+    }
     logoutFunction();
   };
 
@@ -103,7 +106,10 @@ const Header = () => {
                 ) : (
                   <>
                     {/* <NdauConnect /> */}
-                    <ConnectMetamaskButton />
+                    <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                      <ConnectMetamaskButton />
+                      <ConnectWalletConnectButton />
+                    </div>
                   </>
                 )}
               </Nav>

@@ -8,6 +8,9 @@ interface ndauConnectStateI {
   walletAddress: string;
   updateWalletAddress: (_walletAddress: string) => void;
 
+  provider: string;
+  updateProvider: (_provider: string) => void;
+
   socket: socketBase | null;
   setSocket: (_socket: any) => void;
 
@@ -29,6 +32,11 @@ const useNdauConnectStore = create<ndauConnectStateI>((set, get) => ({
   walletAddress: "",
   updateWalletAddress: (_walletAddress: string) =>
     set(() => ({ walletAddress: _walletAddress })),
+
+  provider: "",
+  updateProvider: (_provider: string) =>
+    set(() => ({ provider: _provider })),
+
   transactions: [],
   updateTransactions: (_transactions: any) =>
     set(() => ({ transactions: _transactions })),
@@ -81,11 +89,13 @@ const useNdauConnectStore = create<ndauConnectStateI>((set, get) => ({
   },
 
   logout: () => {
-    set(() => ({
+    set((state) => ({
+      ...state,
       isAdmin: false,
       isSuperAdmin: false,
-      walletAddress: "",
+      walletAddress: "", // Clear walletAddress
       socket: null,
+      provider: ""
     }));
   },
 }));

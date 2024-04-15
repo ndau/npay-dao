@@ -18,6 +18,7 @@ import { socketBase } from '../../types/socketTypes';
 import useNdauConnectStore from '../../store/ndauConnect_store';
 import useMetamask from '../../contexts/metamask/use_metamask';
 import ButtonSpinner from '../spinners/btn_spinner';
+import useWalletConnect from '../../contexts/wallet_connect/use_wallet_connect';
 
 type VoteButtonPropsI = {
   dynamicClassName?: string;
@@ -69,12 +70,15 @@ const VoteButton = ({ dynamicClassName, allowVote, selectedVoteOption }: VoteBut
     voting_option_heading,
   } = selectedVoteOption;
 
-  const connectedWallet = useNdauConnectStore((state) => state.walletAddress);
+  const walletAddress = useNdauConnectStore((state) => state.walletAddress);
+  const provider = useNdauConnectStore(state => state.provider);
+
   const socket = useNdauConnectStore((state) => state.socket);
   const [voteOffline, setVoteOffline] = useState(false);
   const [pubkey, setPubkey] = useState<any>();
   const [payload, setPayload] = useState<string>('');
   const { signInUser, metamaskWeb3 } = useMetamask();  
+  const { handleWalletConnectSignin } = useWalletConnect();
 
   const handleAddressChange = useDebouncedCallback(
     async (value) => {
@@ -143,8 +147,16 @@ const VoteButton = ({ dynamicClassName, allowVote, selectedVoteOption }: VoteBut
 
   const submitVote = async () => {
     setIsVoting(true);
-    
-    const signatureObj : any = await signInUser(selectedVoteOption);
+
+    let signatureObj: any = null;
+    if(provider === "metamask"){
+      signatureObj = await signInUser(selectedVoteOption);
+    }else if(provider === "walletConnect"){
+      signatureObj = await handleWalletConnectSignin(selectedVoteOption);
+    }else{
+      toast.error("No wallet connected");
+    }
+
     if(!signatureObj){
       setIsVoting(false);
       return false;
@@ -160,7 +172,7 @@ const VoteButton = ({ dynamicClassName, allowVote, selectedVoteOption }: VoteBut
         voting_option_id: selectedVoteOptionId,
         voting_option_heading,
       },
-      wallet_address: metamaskWeb3.walletAddress,
+      wallet_address: walletAddress,
       message,
       signature,
       version: 'V4'

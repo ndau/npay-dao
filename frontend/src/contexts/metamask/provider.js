@@ -22,10 +22,11 @@ const MetamaskContextProvider = ({ children }) => {
             }
 
             const walletAddress = await provider.request({ method: 'eth_requestAccounts' });
-            setMetamaskWeb3({ provider, walletAddress: walletAddress.pop().toLowerCase() })
+            const _walletAddress = walletAddress.pop().toLowerCase();
+            setMetamaskWeb3({ provider, walletAddress: _walletAddress })
             setIsConnectingMetamask(false);
 
-            return true;
+            return _walletAddress;
         }catch(err){
             setIsConnectingMetamask(false);
             toast.error(err?.message || "Something went wrong!");
@@ -74,7 +75,6 @@ const MetamaskContextProvider = ({ children }) => {
                 "Proposal Heading": selectedVoteOption?.proposal_heading,
                 "Voting Option ID": selectedVoteOption?.voting_option_id,
                 "Voting Option Heading": selectedVoteOption?.voting_option_heading
-            
             };
                
               
