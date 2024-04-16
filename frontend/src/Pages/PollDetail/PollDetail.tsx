@@ -151,7 +151,7 @@ const PollDetail = () => {
               className="my-2"
               onClick={goBack}
             >
-              <img src="assets/images/icons/backArrow.svg" style={{ height: '20px', marginRight: '10px' }} alt="" />
+              <img src="/assets/images/icons/backArrow.svg" style={{ height: '20px', marginRight: '10px', width: '10px', marginBottom: '2px' }} alt="" />
               {'    Back'}
             </Button>
 
