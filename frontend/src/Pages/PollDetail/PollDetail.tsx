@@ -320,6 +320,14 @@ const PollDetail = () => {
                                 <div style={{ color: 'darkgrey', fontStyle: 'italic', fontSize: 'small' }}>
                                   signature: {item.signature}
                                 </div>
+                                {
+                                  JSON.parse(item?.ballot)?.message && (<>
+                                    <div style={{ color: 'darkgrey', fontStyle: 'italic', fontSize: 'small', marginTop: '5px' }}>
+                                      Message:<br /> {JSON.stringify(JSON.parse(item?.ballot)?.message)}
+                                    </div>
+                                  </>
+                                  )
+                                }
                               </td>
                               <td>{item.summary}</td>
                               <td>
