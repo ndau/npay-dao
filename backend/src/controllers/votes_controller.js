@@ -272,3 +272,56 @@ exports.addVote = async (req, res, next) => {
     console.log('error', e);
   }
 };
+
+exports.verifyVote = async (req, res, next) => {
+  try {
+    const { signature, message, version } = req.body;
+
+    if (!signature) {
+      return res.status(400).json({
+        status: false,
+        message: 'Signature not found or blank',
+      });
+    }
+
+    if (!message) {
+      return res.status(400).json({
+        status: false,
+        message: 'Message not found or blank',
+      });
+    }
+
+    if (!version) {
+      return res.status(400).json({
+        status: false,
+        message: 'Version not found or blank',
+      });
+    }
+
+    const recoveredAddress = recoverTypedSignature({
+        data: message,
+        signature,
+        version: SignTypedDataVersion[version]
+    });
+
+    if (!recoveredAddress) {
+      return res.status(400).json({
+        status: false,
+        message: 'Bad signature',
+      });
+    }
+
+    res.status(200).json({
+      status: true,
+      address: recoveredAddress,
+      message: 'Wallet Address recovered',
+    });
+
+  } catch (e) {
+    console.log('error', e);
+    res.status(500).json({
+      status: false,
+      message: 'Something went wrong',
+    });
+  }
+};

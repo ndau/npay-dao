@@ -70,7 +70,7 @@ const Header = () => {
                   Explorer
                 </Nav.Link>
                 <Nav.Link eventKey="3" as={Link} to="/" style={{ width: '12%', marginBottom: '10px' }}>
-                  <img src="assets/images/download.png" style={{ width: '100%' }} alt="" />
+                  <img src="/assets/images/download.png" style={{ width: '100%' }} alt="" />
                 </Nav.Link>
                 <div>
                   {(isAdmin || isSuperAdmin) && (

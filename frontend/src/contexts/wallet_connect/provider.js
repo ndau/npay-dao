@@ -197,7 +197,7 @@ const WalletConnectContextProvider = ({ children }) => {
             }
 
             } catch (error) {
-                toast.error(error?.message || "Something went wrong!");
+                toast.error("Request rejected, please try again");
                 console.error('Error signing in:', error);
             }
     };

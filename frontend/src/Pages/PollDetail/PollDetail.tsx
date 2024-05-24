@@ -9,6 +9,7 @@ import { adminProcessedProposalResponseI, pollResponseBaseObjI } from '../../typ
 import { indexOfMax } from '../../utils/indexOfMax';
 import useAdminPanelRefreshStore from '../../store/adminPanelRefresh_store';
 import useNdauConnectStore from '../../store/ndauConnect_store';
+import VerifyAddressModal from '../../Components/modals/verify_address';
 
 interface ProposalVotesState {
   user_address: string;
@@ -130,6 +131,18 @@ const PollDetail = () => {
     selectedVoteOptionId = Number(votingOptionsIdArray[selectedVoteOptionIndexState]);
   }
 
+  const [ showModal, setShowModal ] = useState<boolean>(false);
+  const [vote, setVote] = useState({});
+
+  const hideShowModalHandler = () => {
+    setShowModal(show => !show);
+  }
+
+  const verifyUserHandler = (item: any) => {
+    hideShowModalHandler()
+    setVote(item);
+  }
+
   return (
     <>
       <div style={{ backgroundColor: '#0B2140', paddingBottom: 20 }}>
@@ -151,7 +164,7 @@ const PollDetail = () => {
               className="my-2"
               onClick={goBack}
             >
-              <img src="assets/images/icons/backArrow.svg" style={{ height: '20px', marginRight: '10px' }} alt="" />
+              <img src="/assets/images/icons/backArrow.svg" style={{ height: '20px', marginRight: '10px', width: '10px', marginBottom: '2px' }} alt="" />
               {'    Back'}
             </Button>
 
@@ -320,6 +333,14 @@ const PollDetail = () => {
                                 <div style={{ color: 'darkgrey', fontStyle: 'italic', fontSize: 'small' }}>
                                   signature: {item.signature}
                                 </div>
+                                {
+                                  JSON.parse(item?.ballot)?.message && (<>
+                                      <Button size='sm' style={{ backgroundColor: 'rgb(246, 147, 29)', border: 'none', marginTop: '5px' }} onClick={() => verifyUserHandler(item)}>
+                                        Verify User
+                                      </Button>
+                                    </>
+                                  )
+                                }
                               </td>
                               <td>{item.summary}</td>
                               <td>
@@ -343,6 +364,7 @@ const PollDetail = () => {
           </div>
         </Container>
       </div>
+      <VerifyAddressModal hideShowModalHandler={hideShowModalHandler} showModal={showModal} vote={vote} />
     </>
   );
 };
