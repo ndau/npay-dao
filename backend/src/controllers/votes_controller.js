@@ -311,7 +311,7 @@ exports.verifyVote = async (req, res, next) => {
       });
     }
 
-    res.status(201).json({
+    res.status(200).json({
       status: true,
       address: recoveredAddress,
       message: 'Wallet Address recovered',
@@ -319,5 +319,9 @@ exports.verifyVote = async (req, res, next) => {
 
   } catch (e) {
     console.log('error', e);
+    res.status(500).json({
+      status: false,
+      message: 'Something went wrong',
+    });
   }
 };
