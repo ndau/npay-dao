@@ -9,6 +9,7 @@ import { adminProcessedProposalResponseI, pollResponseBaseObjI } from '../../typ
 import { indexOfMax } from '../../utils/indexOfMax';
 import useAdminPanelRefreshStore from '../../store/adminPanelRefresh_store';
 import useNdauConnectStore from '../../store/ndauConnect_store';
+import VerifyAddressModal from '../../Components/modals/verify_address';
 
 interface ProposalVotesState {
   user_address: string;
@@ -128,6 +129,18 @@ const PollDetail = () => {
   let selectedVoteOptionId;
   if (selectedVoteOptionIndexState !== undefined) {
     selectedVoteOptionId = Number(votingOptionsIdArray[selectedVoteOptionIndexState]);
+  }
+
+  const [ showModal, setShowModal ] = useState<boolean>(false);
+  const [vote, setVote] = useState({});
+
+  const hideShowModalHandler = () => {
+    setShowModal(show => !show);
+  }
+
+  const verifyUserHandler = (item: any) => {
+    hideShowModalHandler()
+    setVote(item);
   }
 
   return (
@@ -322,10 +335,10 @@ const PollDetail = () => {
                                 </div>
                                 {
                                   JSON.parse(item?.ballot)?.message && (<>
-                                    <div style={{ color: 'darkgrey', fontStyle: 'italic', fontSize: 'small', marginTop: '5px' }}>
-                                      Message:<br /> {JSON.stringify(JSON.parse(item?.ballot)?.message)}
-                                    </div>
-                                  </>
+                                      <Button size='sm' style={{ backgroundColor: 'rgb(246, 147, 29)', border: 'none', marginTop: '5px' }} onClick={() => verifyUserHandler(item)}>
+                                        Verify User
+                                      </Button>
+                                    </>
                                   )
                                 }
                               </td>
@@ -351,6 +364,7 @@ const PollDetail = () => {
           </div>
         </Container>
       </div>
+      <VerifyAddressModal hideShowModalHandler={hideShowModalHandler} showModal={showModal} vote={vote} />
     </>
   );
 };
